@@ -181,12 +181,7 @@ Payroll shipped to Juablaz of 520.0
 > docker-compose -f  Ejemplo_2/3_docker-compose.yml down
 
 
-
-# Ejemplo 3. Extracción de User Notification.
-Si deseamos extraer la funcionalidad de User Notification, al llamarse desde diferentes partes del monolito no podemos redirigir las llamadas fuera del sistema. Para ello deberemos utilizar al patrón Branch By Abstraction.
-
-
-# Ejemplo 4. Uso de HTTP Proxy.
+# Ejemplo 3. Uso de HTTP Proxy.
 https://dzone.com/articles/how-to-nginx-reverse-proxy-with-docker-compose
 
 Ejemplo con HTTP Proxy(ng-inx) + docker-compose.
@@ -200,12 +195,19 @@ Con el ejemplo de payroll, se sugiere el uso de un proxy en 3 etapas.
 ![alt text](3.10_strangler_fig_pattern.png)
 
 
+> docker-compose -f  Ejemplo_3/1_docker-compose.yml up
+
+
+TODO Fix que funcione.
+
 # Ejemplo 5. Interceptación de mensajes.
 Tenemos un monolito que recibe mensajes a través de una cola.
 
 
 <h3>Continuará...</h3>
 
+# Ejemplo 3. Extracción de User Notification.
+Si deseamos extraer la funcionalidad de User Notification, al llamarse desde diferentes partes del monolito no podemos redirigir las llamadas fuera del sistema. Para ello deberemos utilizar al patrón Branch By Abstraction.
 
 # COMANDOS ÚTILES:
 
