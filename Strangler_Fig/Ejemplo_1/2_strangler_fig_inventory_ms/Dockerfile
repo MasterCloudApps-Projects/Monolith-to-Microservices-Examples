@@ -13,7 +13,7 @@ COPY pom.xml /project/
 COPY src /project/src
 
 # Compile project
-RUN mvn package
+RUN mvn package -DskipTests
 
 ########################################
 # Base image for application container #

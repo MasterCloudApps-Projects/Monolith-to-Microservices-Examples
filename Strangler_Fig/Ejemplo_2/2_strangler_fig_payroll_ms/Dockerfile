@@ -27,7 +27,10 @@ WORKDIR /usr/src/app/
 COPY --from=builder /project/target/*.jar /usr/src/app/
 
 # Port
-EXPOSE 8080
+EXPOSE 8081
+
+ENV MONOLITH_HOST localhost
+ENV MONOLITH_PORT 8080
 
 # Command executed with docker run
-CMD [ "java", "-jar", "3_strangler_fig_monolith-0.0.1-SNAPSHOT.jar" ]
+CMD [ "java", "-jar", "2_strangler_fig_payroll_ms-0.0.1-SNAPSHOT.jar" ]

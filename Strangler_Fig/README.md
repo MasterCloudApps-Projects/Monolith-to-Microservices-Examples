@@ -23,39 +23,32 @@ A continuación, se muestra una imagen del estado inicial y final de la aplicaci
 ### **Paso 1**
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 ```
-> docker build -t 1_strangler_fig_monolith:v1 Ejemplo_1/1_strangler_fig_monolith/
-
-> docker run --name 1_strangler_fig_monolith -p 8080:8080 1_strangler_fig_monolith:v1
+> docker-compose -f Ejemplo_1/1_docker-compose.yml up 
 ```
 Podemos probar nuestro monolito:
 ```
 > curl http:\\localhost:8080/inventory
 
-> docker stop 1_strangler_fig_monolith 
+> docker-compose -f Ejemplo_1/1_docker-compose.yml down
 ```
 
 ### **Paso 2**
 Debemos implementar la funcionalidad en un nuevo microservicio.
 El monolito se queda sin cambios, con la misma implementación.
 ```
-> docker build -t 2_strangler_fig_monolith:v1 Ejemplo_1/2_strangler_fig_monolith/
-> docker run --name 2_strangler_fig_monolith -p 8080:8080 2_strangler_fig_monolith:v1
+> docker-compose -f  Ejemplo_1/2_docker-compose.yml up
 
 > curl http:\\localhost:8080/inventory
 ```
 
 Probemos ahora nuestro microservicio:
 ```
-> docker build -t 2_strangler_fig_inventory_ms:v1 Ejemplo_1/2_strangler_fig_inventory_ms/
-> docker run --name 2_strangler_fig_inventory_ms -p 8081:8081 2_strangler_fig_inventory_ms:v1
-
 > curl http:\\localhost:8081/inventory
 ```
 Detengamos el paso 2:
 
 ```
-> docker stop 2_strangler_fig_monolith 
-> docker stop 2_strangler_fig_inventory_ms 
+> docker-compose -f  Ejemplo_1/2_docker-compose.yml down
 ```
 
 En este punto, conviven ambas implementaciones de la misma funcionalidad.
@@ -65,22 +58,18 @@ Con su nueva implementación lista, debe poder redireccionar las llamadas desde 
 
 El monolito se queda sin la funcionalidad de inventory.
 ```
-> docker build -t 3_strangler_fig_monolith:v1 Ejemplo_1/3_strangler_fig_monolith/
-> docker run --name 3_strangler_fig_monolith -p 8080:8080 3_strangler_fig_monolith:v1
+> docker-compose -f  Ejemplo_1/3_docker-compose.yml up
+
 > curl http:\\localhost:8080/inventory
 Retorna 404 ERROR.
 ```
 
 Nuestro microservicio se queda igual, con la implementación anterior.
 ```
-> docker build -t 3_strangler_fig_inventory_ms:v1 Ejemplo_1/3_strangler_fig_inventory_ms/
-> docker run --name 3_strangler_fig_inventory_ms -p 8081:8081 3_strangler_fig_inventory_ms:v1
-
 > curl http:\\localhost:8081/inventory
-
-> docker stop 3_strangler_fig_monolith 
-> docker stop 3_strangler_fig_inventory_ms 
 ```
+
+> docker-compose -f  Ejemplo_1/3_docker-compose.yml down
 
 Esquema seguido durante la aplicación del patrón:
 
@@ -90,7 +79,107 @@ Esquema seguido durante la aplicación del patrón:
 
 # Ejemplo 2. Extracción de funcionalidad interna.
 Si deseamos aplicar el patrón sobre Payroll, que utiliza una funcionalidad interna en el monolito (User notification), debemos exponer la funcionalidad a través de una API.
+
 ![alt text](3.3_strangler_fig_pattern.png)
+
+### **Paso 1**
+Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
+```
+> docker-compose -f Ejemplo_2/1_docker-compose.yml up 
+```
+Podemos probar nuestro monolito:
+`http://localhost:8080/swagger-ui/`
+
+| verb | url                                 |
+|------|-------------------------------------|
+| POST | http:\\localhost:8080/payroll |
+
+Mandamos en el body:
+
+```
+{
+  "shipTo": "Juablaz",
+  "total": 520
+}
+```
+
+Se loguea la notificación:
+```
+Payroll shipped to Juablaz of 520.0
+```
+
+Paramos el ejemplo:
+```
+> docker-compose -f Ejemplo_2/1_docker-compose.yml down
+```
+
+### **Paso 2**
+Debemos implementar la funcionalidad en un nuevo microservicio que comunicará con el monolito. Por tanto, el monolito debe implementar una API para exponer el servicio de notificaciones de usuario.
+
+```
+> docker-compose -f Ejemplo_2/2_docker-compose.yml up
+```
+Podemos probar nuestro microservicio:
+`http://localhost:8081/swagger-ui/`
+
+| verb | url                                 |
+|------|-------------------------------------|
+| POST | http:\\localhost:8081/payroll |
+
+Mandamos en el body:
+
+```
+{
+  "shipTo": "Juablaz",
+  "total": 520
+}
+```
+
+Se loguea la notificación en el monolito:
+```
+Payroll shipped to Juablaz of 520.0
+```
+
+Detengamos el paso 2:
+
+```
+> docker-compose -f  Ejemplo_2/2_docker-compose.yml down
+```
+
+En este punto, conviven ambas implementaciones de la misma funcionalidad, en este caso de `Payroll`.
+
+### **Paso 3**
+Con su nueva implementación lista, podemos quitar la implementación antigua del monolito y utilizar solamente el microservicio para la funcionalidad de `Payroll`.
+
+```
+> docker-compose -f  Ejemplo_2/3_docker-compose.yml up
+
+
+> curl http:\\localhost:8080/payroll
+Retorna 404 ERROR.
+```
+
+Nuestro microservicio se queda igual, con la implementación anterior.
+| verb | url                                 |
+|------|-------------------------------------|
+| POST | http:\\localhost:8081/payroll |
+
+Mandamos en el body:
+
+```
+{
+  "shipTo": "Juablaz",
+  "total": 520
+}
+```
+
+Se loguea la notificación en el monolito:
+```
+Payroll shipped to Juablaz of 520.0
+```
+
+> docker-compose -f  Ejemplo_2/3_docker-compose.yml down
+
 
 
 # Ejemplo 3. Extracción de User Notification.
@@ -116,3 +205,10 @@ Tenemos un monolito que recibe mensajes a través de una cola.
 
 
 <h3>Continuará...</h3>
+
+
+# COMANDOS ÚTILES:
+
+> docker stop $(docker ps -a -q)
+
+> docker rm $(docker ps -a -q)

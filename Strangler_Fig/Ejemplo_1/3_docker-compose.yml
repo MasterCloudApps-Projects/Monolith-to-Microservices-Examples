@@ -1,0 +1,20 @@
+version: '3.9'
+services: 
+  3-strangler-fig-monolith:
+    image: 3_strangler_fig_monolith
+    container_name: '3_strangler_fig_monolith'
+    restart: on-failure
+    build: 
+      context: ./3_strangler_fig_monolith
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8080:8080
+  3-strangler-fig-inventory_ms:
+    image: 3_strangler_fig_inventory_ms
+    container_name: '3_strangler_fig_inventory_ms'
+    restart: on-failure
+    build: 
+      context: ./3_strangler_fig_inventory_ms
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8081:8081
