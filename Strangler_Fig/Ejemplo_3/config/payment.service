@@ -1,7 +1,7 @@
-location /app1 {
-  proxy_pass http://app1:8000;
+location ~ ^/(?!(payroll)) {
+  proxy_pass http://2-strangler-fig-monolith:8080;
 }
 
-location /app2 {
-  proxy_pass http://app2:8000;
+location /payroll {
+  proxy_pass http://2-strangler-fig-payroll-ms:8081;
 }
