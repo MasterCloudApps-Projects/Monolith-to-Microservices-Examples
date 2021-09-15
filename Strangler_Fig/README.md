@@ -183,7 +183,6 @@ Payroll shipped to Juablaz of 520.0
 
 # Ejemplo 3. Uso de HTTP Proxy.
 https://dzone.com/articles/how-to-nginx-reverse-proxy-with-docker-compose
-
 Ejemplo con HTTP Proxy(ng-inx) + docker-compose.
 Con el ejemplo de payroll, se sugiere el uso de un proxy en 3 etapas.
 1. Añadir un proxy que permita que todas las peticiones vayan al monolito.
@@ -193,6 +192,9 @@ Con el ejemplo de payroll, se sugiere el uso de un proxy en 3 etapas.
 3. Mover las peticiones del monolito al microservicio. Si hay un error podemos redirigir las peticiones de nuevo al monolito.
 
 ![alt text](3.10_strangler_fig_pattern.png)
+
+Configuración de host:
+`C:/Windows/System32/drivers/etc/hosts`
 
 
 > docker-compose -f  Ejemplo_3/1_docker-compose.yml up
@@ -218,3 +220,4 @@ Si deseamos extraer la funcionalidad de User Notification, al llamarse desde dif
 # Enlaces de interes:
 
 > https://github.com/javieraviles/split-the-monolith
+> https://www.it-swarm-es.com/es/nginx/docker-nginx-proxy-como-enrutar-el-trafico-un-contenedor-diferente-utilizando-la-ruta-y-no-el-nombre-de-host/828289465/

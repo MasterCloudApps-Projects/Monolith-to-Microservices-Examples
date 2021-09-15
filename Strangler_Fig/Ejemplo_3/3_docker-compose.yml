@@ -1,33 +1,57 @@
 version: '3.9'
+
 services: 
-  3-strangler-fig-monolith:
-    image: 3_strangler_fig_monolith
-    container_name: '3_strangler_fig_monolith'
-    restart: on-failure
-    build: 
-      context: ./3_strangler_fig_monolith
-      dockerfile: ./Dockerfile
-    ports: 
-      - 8080:8080
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+    - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./vhost.d:/etc/nginx/vhost.d:ro
+
+    environment:
+      - ENABLE_IPV6=true
+      - DEFAULT_HOST=payment.service
     networks:
-      - appnetwork
-  
+      - app-network
+
   3-strangler-fig-payroll-ms:
     image: 3_strangler_fig_payroll_ms
     container_name: '3_strangler_fig_payroll_ms'
     restart: on-failure
     environment:
-      MONOLITH_HOST: 3-strangler-fig-monolith
-      MONOLITH_PORT: 8080
+      - MONOLITH_HOST=3-strangler-fig-monolith
+      - MONOLITH_PORT=8080
+      - VIRTUAL_HOST=payment.service
     build: 
-      context: ./3_strangler_fig_payroll_ms
+      context: ../Ejemplo_2/3_strangler_fig_payroll_ms
       dockerfile: ./Dockerfile
     ports: 
       - 8081:8081
     depends_on: 
       - 3-strangler-fig-monolith
     networks:
-      - appnetwork
+      - app-network
+
+  3-strangler-fig-monolith:
+    image: 3_strangler_fig_monolith
+    container_name: '3_strangler_fig_monolith'
+    restart: on-failure
+    build: 
+      context: ../Ejemplo_2/3_strangler_fig_monolith
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8080:8080
+    networks:
+      - app-network
+    environment:
+      - VIRTUAL_HOST=payment.service
+
 networks:
-  appnetwork:
-    driver: bridge
+  app-network:
+    external: false
+
+#Docker Networks
+#networks:
+#  app-network:
+#    driver: bridge
