@@ -5,7 +5,7 @@ services:
     container_name: '2_strangler_fig_monolith'
     restart: on-failure
     build: 
-      context: ./2_strangler_fig_monolith
+      context: ../Ejemplo_2/2_strangler_fig_monolith
       dockerfile: ./Dockerfile
     ports: 
       - 8080:8080
@@ -20,7 +20,7 @@ services:
       MONOLITH_HOST: 2-strangler-fig-monolith
       MONOLITH_PORT: 8080
     build: 
-      context: ./2_strangler_fig_payroll_ms
+      context: ../Ejemplo_2/2_strangler_fig_payroll_ms
       dockerfile: ./Dockerfile
     ports: 
       - 8081:8081

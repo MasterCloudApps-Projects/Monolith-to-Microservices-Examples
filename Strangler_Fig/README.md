@@ -214,3 +214,7 @@ Si deseamos extraer la funcionalidad de User Notification, al llamarse desde dif
 > docker stop $(docker ps -a -q)
 
 > docker rm $(docker ps -a -q)
+
+# Enlaces de interes:
+
+> https://github.com/javieraviles/split-the-monolith
