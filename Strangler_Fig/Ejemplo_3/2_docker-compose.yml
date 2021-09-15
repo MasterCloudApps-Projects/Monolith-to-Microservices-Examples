@@ -1,17 +1,33 @@
 version: '3.9'
+
 services: 
-  2-strangler-fig-monolith:
-    image: 2_strangler_fig_monolith
-    container_name: '2_strangler_fig_monolith'
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    environment:
+      - ENABLE_IPV6=true
+      - DEFAULT_HOST=payment.service
+    networks:
+      - app-network
+      
+  1-strangler-fig-monolith:
+    image: 1_strangler_fig_monolith
+    container_name: '1_strangler_fig_monolith'
     restart: on-failure
     build: 
-      context: ../Ejemplo_2/2_strangler_fig_monolith
+      context: ../Ejemplo_2/1_strangler_fig_monolith
       dockerfile: ./Dockerfile
     ports: 
       - 8080:8080
     networks:
-      - appnetwork
-  
+      - app-network
+    environment:
+      - VIRTUAL_HOST=payment.service
+      - VIRTUAL_PORT=8080
+
   2-strangler-fig-payroll-ms:
     image: 2_strangler_fig_payroll_ms
     container_name: '2_strangler_fig_payroll_ms'
@@ -20,7 +36,7 @@ services:
       MONOLITH_HOST: 2-strangler-fig-monolith
       MONOLITH_PORT: 8080
     build: 
-      context: ../Ejemplo_2/2_strangler_fig_payroll_ms
+      context: ./2_strangler_fig_payroll_ms
       dockerfile: ./Dockerfile
     ports: 
       - 8081:8081
@@ -28,6 +44,8 @@ services:
       - 2-strangler-fig-monolith
     networks:
       - appnetwork
+
+#Docker Networks
 networks:
-  appnetwork:
-    driver: bridge
+  app-network:
+    external: true
