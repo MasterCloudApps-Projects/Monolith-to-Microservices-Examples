@@ -33,8 +33,8 @@ services:
     container_name: '2_strangler_fig_payroll_ms'
     restart: on-failure
     environment:
-      MONOLITH_HOST: 2-strangler-fig-monolith
-      MONOLITH_PORT: 8080
+      - VIRTUAL_HOST=payment.service
+      - VIRTUAL_PORT=8081
     build: 
       context: ./2_strangler_fig_payroll_ms
       dockerfile: ./Dockerfile
@@ -43,7 +43,7 @@ services:
     depends_on: 
       - 2-strangler-fig-monolith
     networks:
-      - appnetwork
+      - app-network
 
 #Docker Networks
 networks:
