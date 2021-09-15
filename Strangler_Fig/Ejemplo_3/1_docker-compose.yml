@@ -1,7 +1,5 @@
 version: '3.9'
-networks:
-  app-network:
-    external: true
+
 services: 
   nginx-proxy:
     image: nginxproxy/nginx-proxy
@@ -11,7 +9,7 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     environment:
       - ENABLE_IPV6=true
-      - DEFAULT_HOST=whoami.local
+      - DEFAULT_HOST=payment.service
     networks:
       - app-network
       
@@ -27,10 +25,10 @@ services:
     networks:
       - app-network
     environment:
-      - VIRTUAL_HOST=whoami.local
+      - VIRTUAL_HOST=payment.service
       - VIRTUAL_PORT=8080
 
 #Docker Networks
-#networks:
-#  app-network:
-#    driver: bridge
+networks:
+  app-network:
+    external: true
