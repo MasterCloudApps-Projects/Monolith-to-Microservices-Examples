@@ -115,6 +115,9 @@ curl --header "Content-Type: application/json" --request POST  --data '{"shipTo"
 curl -X POST -H "Content-Type: application/json" -d "{ \"shipTo\": \"Juablaz\",
 \"total\": 520 }" http:\\payment.service/inventory/payroll    
 
+curl -X POST -H "Content-Type:application/json" -d "{ \"shipto\": \"Juablaz\",
+\"total\": 520 }"http://payment.service/payroll
+
 
 Mandamos en el body:
 

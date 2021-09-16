@@ -1,5 +1,19 @@
 version: '3.9'
 services: 
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+    - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./config_2:/etc/nginx/vhost.d:ro
+    environment:
+      - ENABLE_IPV6=true
+      - DEFAULT_HOST=payment.service
+    networks:
+      - app-network
+      
   2-strangler-fig-monolith:
     image: 2_strangler_fig_monolith
     container_name: '2_strangler_fig_monolith'

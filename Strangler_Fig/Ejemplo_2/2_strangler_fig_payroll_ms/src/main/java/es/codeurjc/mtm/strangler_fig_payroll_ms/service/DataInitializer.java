@@ -19,17 +19,17 @@ public class DataInitializer {
 
     // Payroll
     Payroll payroll = Payroll.builder()
-        .shipTo("user 1")
+        .shipTo("[MS] user 1")
         .total(10549.95)
         .build();
 
     Payroll payroll2 = Payroll.builder()
-        .shipTo("user 2")
+        .shipTo("[MS] user 2")
         .total(6549.95)
         .build();
 
     Payroll payroll3 = Payroll.builder()
-        .shipTo("user 3")
+        .shipTo("[MS] user 3")
         .total(1449.95)
         .build();
 
