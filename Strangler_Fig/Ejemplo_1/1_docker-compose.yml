@@ -13,12 +13,12 @@ services:
     networks:
       - app-network
 
-  1-strangler-fig-monolith:
-    image: 1_strangler_fig_monolith
-    container_name: '1_strangler_fig_monolith'
+  strangler-fig-monolith:
+    image: strangler_fig_monolith
+    container_name: 'strangler_fig_monolith'
     restart: on-failure
     build: 
-      context: ./1_strangler_fig_monolith
+      context: ./strangler_fig_monolith
       dockerfile: ./Dockerfile
     ports: 
       - 8080:8080
