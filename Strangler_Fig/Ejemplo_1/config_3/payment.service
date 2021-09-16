@@ -1,7 +1,7 @@
-location ~ ^/(?!(payroll)) {
+location ~ ^/(?!(inventory)) {
   proxy_pass http://3-strangler-fig-monolith:8080;
 }
 
-location /payroll {
-  proxy_pass http://3-strangler-fig-payroll-ms:8081;
+location /inventory {
+  proxy_pass http://3-strangler-fig-inventory-ms:8081;
 }

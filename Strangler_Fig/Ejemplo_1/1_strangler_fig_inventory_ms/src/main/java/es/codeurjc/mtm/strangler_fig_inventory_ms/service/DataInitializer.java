@@ -19,17 +19,17 @@ public class DataInitializer {
     // Inventory
     Inventory inventory = Inventory.builder()
         .prize(1049.95)
-        .description("Bicycle")
+        .description("[MS] Bicycle")
         .build();
 
     Inventory inventory2 = Inventory.builder()
         .prize(549.95)
-        .description("Scooter")
+        .description("[MS] Scooter")
         .build();
 
     Inventory inventory3 = Inventory.builder()
         .prize(4549.95)
-        .description("Motorcycle")
+        .description("[MS] Motorcycle")
         .build();
 
     inventoryService.saveInventory(inventory);
