@@ -108,6 +108,14 @@ Podemos probar nuestro monolito:
 |------|-------------------------------------|
 | POST | http:\\localhost:8080/payroll |
 
+curl --header "Content-Type: application/json" --request POST  --data '{"shipTo":"Juablaz","total":"520"}' 
+  http:\\payment.service/inventory/payroll
+
+
+curl -X POST -H "Content-Type: application/json" -d "{ \"shipTo\": \"Juablaz\",
+\"total\": 520 }" http:\\payment.service/inventory/payroll    
+
+
 Mandamos en el body:
 
 ```

@@ -2,6 +2,7 @@ package es.codeurjc.mtm.strangler_fig_monolith.service;
 
 import es.codeurjc.mtm.strangler_fig_monolith.model.Inventory;
 import es.codeurjc.mtm.strangler_fig_monolith.model.Invoicing;
+import es.codeurjc.mtm.strangler_fig_monolith.model.Payroll;
 import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
@@ -10,12 +11,15 @@ public class DataInitializer {
 
   private final InventoryService inventoryService;
   private final InvoicingService invoicingService;
+  private final PayrollService payrollService;
 
   public DataInitializer(
       InventoryService inventoryService,
-      InvoicingService invoicingService) {
+      InvoicingService invoicingService,
+      PayrollService payrollService) {
     this.inventoryService = inventoryService;
     this.invoicingService = invoicingService;
+    this.payrollService = payrollService;
   }
 
   @PostConstruct
@@ -60,5 +64,24 @@ public class DataInitializer {
     invoicingService.saveInvoicing(invoicing2);
     invoicingService.saveInvoicing(invoicing3);
 
+    // Payroll
+    Payroll payroll = Payroll.builder()
+        .shipTo("user 1")
+        .total(10549.95)
+        .build();
+
+    Payroll payroll2 = Payroll.builder()
+        .shipTo("user 2")
+        .total(6549.95)
+        .build();
+
+    Payroll payroll3 = Payroll.builder()
+        .shipTo("user 3")
+        .total(1449.95)
+        .build();
+
+    payrollService.savePayroll(payroll);
+    payrollService.savePayroll(payroll2);
+    payrollService.savePayroll(payroll3);
   }
 }
