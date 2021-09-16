@@ -30,4 +30,4 @@ COPY --from=builder /project/target/*.jar /usr/src/app/
 EXPOSE 8081
 
 # Command executed with docker run
-CMD [ "java", "-jar", "strangler_fig_inventory_ms-0.0.1-SNAPSHOT.jar" ]
+CMD [ "java", "-jar", "1_strangler_fig_inventory_ms-0.0.1-SNAPSHOT.jar" ]

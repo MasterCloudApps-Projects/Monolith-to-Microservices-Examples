@@ -14,7 +14,18 @@ El patrón se divide en la aplicación de 3 pasos:
 Vamos a aplicar el patrón en diferentes ejemplos con los tres pasos explicados anteriormente.
 
 ## **Ejemplo 1. Extracción de funcionalidad independiente**
-Partimos de un monolito en el puerto `8080` con toda la lógica de la aplicación. Surge la necesidad de extraer una funcionalidad independiente, en este caso ``Inventory`` a un microservicio independiente nuevo localizado en el puerto `8081`.
+Para este ejemplo vamos a utilizar un ejemplo con HTTP Proxy (ng-inx) + docker-compose.
+
+En primer lugar debemos configurar el host de nuestra aplicación: `payment.service`. 
+
+Para ello debemos añadir a:
+
+- Linux: `/etc/hosts`
+- Windows: `C:/Windows/System32/drivers/etc/hosts`
+
+La siguiente línea: `127.0.0.1 payment.service`
+
+Partimos de un monolito con toda la lógica de la aplicación. Surge la necesidad de extraer una funcionalidad independiente, en este caso ``Inventory`` a un microservicio nuevo.
 
 A continuación, se muestra una imagen del estado inicial y final de la aplicación tras aplicar el patrón.
 
@@ -25,31 +36,36 @@ Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se res
 ```
 > docker-compose -f Ejemplo_1/1_docker-compose.yml up 
 ```
-Podemos probar nuestro monolito:
-```
-> curl http:\\localhost:8080/inventory
 
+Podemos probar nuestro monolito a través del proxy:
+```
+> curl http:\\payment.service/inventory
+```
+
+Detenemos el paso 1:
+```
 > docker-compose -f Ejemplo_1/1_docker-compose.yml down
 ```
-
 ### **Paso 2**
 Debemos implementar la funcionalidad en un nuevo microservicio.
 El monolito se queda sin cambios, con la misma implementación.
 ```
 > docker-compose -f  Ejemplo_1/2_docker-compose.yml up
-
-> curl http:\\localhost:8080/inventory
 ```
 
 Las peticiones seguirían llegando a nuestro monolito.
+```
+> curl http:\\payment.service/inventory
+```
+
 Podemos probar ahora nuestro microservicio:
 ```
 > curl http:\\localhost:8081/inventory
 ```
-Detengamos el paso 2:
 
+Detengamos el paso 2:
 ```
-> docker-compose -f  Ejemplo_1/2_docker-compose.yml down
+> docker-compose -f Ejemplo_1/2_docker-compose.yml down
 ```
 
 En este punto, conviven ambas implementaciones de la misma funcionalidad.
@@ -60,9 +76,6 @@ Con su nueva implementación lista, debe poder redireccionar las llamadas desde 
 El monolito se queda inmutable, para poder hacer un rollback en caso de ser necesario.
 ```
 > docker-compose -f  Ejemplo_1/3_docker-compose.yml up
-
-> curl http:\\localhost:8080/inventory
-Retorna 404 ERROR.
 ```
 
 Nuestro microservicio se queda igual, con la implementación anterior.
