@@ -1,20 +1,39 @@
 version: '3.9'
 services: 
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+    - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./config_3:/etc/nginx/vhost.d:ro
+    environment:
+      - ENABLE_IPV6=true
+      - DEFAULT_HOST=payment.service
+    networks:
+      - app-network
+
   3-strangler-fig-monolith:
-    image: 3_strangler_fig_monolith
-    container_name: '3_strangler_fig_monolith'
+    image: strangler_fig_monolith
+    container_name: 'strangler_fig_monolith'
     restart: on-failure
     build: 
-      context: ./3_strangler_fig_monolith
+      context: ./strangler_fig_monolith
       dockerfile: ./Dockerfile
     ports: 
       - 8080:8080
+
   3-strangler-fig-inventory_ms:
-    image: 3_strangler_fig_inventory_ms
-    container_name: '3_strangler_fig_inventory_ms'
+    image: strangler_fig_inventory_ms
+    container_name: 'strangler_fig_inventory_ms'
     restart: on-failure
     build: 
-      context: ./3_strangler_fig_inventory_ms
+      context: ./strangler_fig_inventory_ms
       dockerfile: ./Dockerfile
     ports: 
       - 8081:8081
+
+networks:
+  app-network:
+    external: false

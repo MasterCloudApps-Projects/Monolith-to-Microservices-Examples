@@ -8,13 +8,13 @@ Vamos a proceder a la realización y explicación del patrón Strangler Fig, que
 El patrón se divide en la aplicación de 3 pasos:
 1. Aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 2. Implementación de la funcionalidad en un nuevo microservicio.
-3. Con su nueva implementación lista, quitamos la implementación antigua, dejando la funcionalidad restante en el interior del monolito y redireccionamos las llamadas de la funcionalidad extraída al nuevo microservicio.
+3. Con su nueva implementación lista, migramos las peticiones del monolito al microservicio. Se mantiene la funcionalidad en el monolito por si hay que hacer rollback y redireccionamos las llamadas de la funcionalidad extraída al nuevo microservicio.
 ![alt text](3.1_strangler_fig_pattern.png)
 
-Vamos a ir explicando diferentes casos mediante ejemplos.
+Vamos a aplicar el patrón en diferentes ejemplos con los tres pasos explicados anteriormente.
 
 ## **Ejemplo 1. Extracción de funcionalidad independiente**
-Vamos a aplicar el patrón en el siguiente ejemplo con los tres pasos explicados anteriormente. Partimos de un monolito en el puerto `8080` con toda la lógica de la aplicación. Surge la necesidad de extraer la funcionalidad ``Inventory`` a un microservicio independiente nuevo localizado en el puerto `8081`.
+Partimos de un monolito en el puerto `8080` con toda la lógica de la aplicación. Surge la necesidad de extraer una funcionalidad independiente, en este caso ``Inventory`` a un microservicio independiente nuevo localizado en el puerto `8081`.
 
 A continuación, se muestra una imagen del estado inicial y final de la aplicación tras aplicar el patrón.
 
@@ -41,7 +41,8 @@ El monolito se queda sin cambios, con la misma implementación.
 > curl http:\\localhost:8080/inventory
 ```
 
-Probemos ahora nuestro microservicio:
+Las peticiones seguirían llegando a nuestro monolito.
+Podemos probar ahora nuestro microservicio:
 ```
 > curl http:\\localhost:8081/inventory
 ```
@@ -56,7 +57,7 @@ En este punto, conviven ambas implementaciones de la misma funcionalidad.
 ### **Paso 3**
 Con su nueva implementación lista, debe poder redireccionar las llamadas desde el monolito al nuevo microservicio.
 
-El monolito se queda sin la funcionalidad de inventory.
+El monolito se queda inmutable, para poder hacer un rollback en caso de ser necesario.
 ```
 > docker-compose -f  Ejemplo_1/3_docker-compose.yml up
 
