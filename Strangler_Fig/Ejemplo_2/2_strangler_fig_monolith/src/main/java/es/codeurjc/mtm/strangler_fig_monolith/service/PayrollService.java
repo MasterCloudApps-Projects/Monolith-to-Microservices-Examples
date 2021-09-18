@@ -28,7 +28,7 @@ public class PayrollService {
     payroll.setId(id);
     this.payrolls.put(id, payroll);
 
-    userNotificationService.notify(String.format("Payroll shipped to %s of %s", payroll.getShipTo(),
+    userNotificationService.notify(String.format("Payroll %s shipped to %s of %s", payroll.getId(), payroll.getShipTo(),
         payroll.getTotal()));
   }
 

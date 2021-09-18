@@ -58,6 +58,8 @@ public class InvoicingController {
     Invoicing invoicing = this.invoicingService.getInvoicing(id);
 
     if (invoicing != null) {
+      this.invoicingService.deleteInvoicing(id);
+
       return ResponseEntity.ok(invoicing);
     } else {
       return ResponseEntity.notFound().build();

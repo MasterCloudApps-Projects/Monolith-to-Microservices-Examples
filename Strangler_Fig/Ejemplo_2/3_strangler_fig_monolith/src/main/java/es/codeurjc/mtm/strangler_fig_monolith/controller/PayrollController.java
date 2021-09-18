@@ -59,6 +59,8 @@ public class PayrollController {
     Payroll payroll = this.payrollService.getPayroll(id);
 
     if (payroll != null) {
+      this.payrollService.deletePayroll(id);
+
       return ResponseEntity.ok(payroll);
     } else {
       return ResponseEntity.notFound().build();

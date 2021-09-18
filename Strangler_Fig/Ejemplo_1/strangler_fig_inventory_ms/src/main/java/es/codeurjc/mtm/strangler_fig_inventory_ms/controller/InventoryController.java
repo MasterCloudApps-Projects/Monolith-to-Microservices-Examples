@@ -59,6 +59,7 @@ public class InventoryController {
     Inventory inventory = this.inventoryService.getInventory(id);
 
     if (inventory != null) {
+      this.inventoryService.deleteInventory(id);
       return ResponseEntity.ok(inventory);
     } else {
       return ResponseEntity.notFound().build();

@@ -28,7 +28,7 @@ public class InvoicingService {
     invoicing.setId(id);
     this.invoicings.put(id, invoicing);
 
-    userNotificationService.notify(String.format("Invoicing billed to %s of %s", invoicing.getBillTo(),
+    userNotificationService.notify(String.format("Invoicing %s billed to %s of %s", invoicing.getId(), invoicing.getBillTo(),
         invoicing.getTotal()));
   }
 

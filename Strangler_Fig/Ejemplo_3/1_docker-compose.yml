@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+  zookeeper:
+    image: debezium/zookeeper:1.2
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    networks:
+      - app-network
+  
+  kafka:
+    image: debezium/kafka:1.2
+    ports:
+      - 9092:9092
+    links:
+      - zookeeper
+    environment:
+      - ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_DELETE_TOPIC_ENABLE=true
+      - KAFKA_CREATE_TOPICS=payroll-topic:1:1,invoicing-topic:1:1
+    networks:
+      - app-network
+
+  1-strangler-fig-monolith:
+    image: 1_strangler_fig_monolith
+    container_name: '1_strangler_fig_monolith'
+    restart: on-failure
+    build: 
+      context: ./1_strangler_fig_monolith
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8080:8080
+    networks:
+      - app-network
+    environment:
+      - PAYROLL_TOPIC=payroll-topic
+      - INVOICING_TOPIC=invoicing-topic
+      - KAFKA_HOST=kafka
+      - KAFKA_PORT=9092
+      - CONSUMER_GROUP_ID=payment-service-group
+
+  strangler-fig-producer:
+    image: strangler_fig_producer
+    container_name: 'strangler_fig_producer'
+    restart: on-failure
+    build: 
+      context: ./strangler_fig_producer
+      dockerfile: ./Dockerfile
+    ports: 
+      - 9090:9090
+    networks:
+      - app-network
+    environment:
+      - PAYROLL_TOPIC=payroll-topic
+      - INVOICING_TOPIC=invoicing-topic
+      - KAFKA_HOST=kafka
+      - KAFKA_PORT=9092
+
+networks:
+  app-network:
+    external: false

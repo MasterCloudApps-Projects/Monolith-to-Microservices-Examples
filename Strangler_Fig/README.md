@@ -53,7 +53,7 @@ Detenemos el paso 1:
 Debemos implementar la funcionalidad en un nuevo microservicio.
 El monolito se queda sin cambios, con la misma implementación.
 ```
-> docker-compose -f  Ejemplo_1/2_docker-compose.yml up
+> docker-compose -f Ejemplo_1/2_docker-compose.yml up
 ```
 
 Las peticiones seguirían llegando a nuestro monolito.
@@ -88,7 +88,7 @@ Ahora la respuesta contará con un prefijo ``[MS]`` que hemos añadido a los dat
 > docker-compose -f  Ejemplo_1/3_docker-compose.yml down
 
 
-# Ejemplo 2. Extracción de funcionalidad interna .
+# Ejemplo 2. Extracción de funcionalidad interna
 Si deseamos aplicar el patrón sobre ``Payroll``, que utiliza una funcionalidad interna en el monolito ``User notification``, debemos dicha funcionalidad interna al exterior a través de un endpoint.
 
 ![alt text](3.3_strangler_fig_pattern.png)
@@ -118,7 +118,7 @@ Podemos probar nuestro monolito:
 
 Se loguea en la notificación:
 ```
-Payroll shipped to Juablaz of 120.0
+Payroll 3 shipped to Juablaz of 120.0
 ```
 
 Paramos el ejemplo:
@@ -129,7 +129,6 @@ Paramos el ejemplo:
 ### **Paso 2**
 Debemos implementar la funcionalidad en un nuevo microservicio que comunicará con el monolito. Por tanto, el monolito debe implementar una API para exponer el servicio de notificaciones de usuario.
 
-
 ```
 > docker-compose -f Ejemplo_2/2_docker-compose.yml up
 ```
@@ -137,12 +136,12 @@ Debemos implementar la funcionalidad en un nuevo microservicio que comunicará c
 Podemos probar nuestro microservicio:
 
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz2","total":220}' localhost:8081/payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:8081/payroll
 ```
 
 Se loguea la notificación en el monolito, por lo tanto la comunicación es correcta:
 ```
-Payroll shipped to Juablaz2 of 220.0
+Payroll shipped to Juablaz of 220.0
 ```
 
 Detengamos el paso 2:
@@ -161,33 +160,101 @@ Con la nueva implementación lista, redirigimos las peticiones al monolito de la
 
 Podemos probar nuestra aplicación:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz3","total":320}' payment.service/payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
 Se loguea la notificación en el monolito:
 ```
-Payroll shipped to Juablaz of 320.0
+Payroll 3 shipped to Juablaz of 320.0
 ```
 
 ¿Cómo sabemos si ha ido a través del monolito o del microservicio?
-Hagamos una petición ``GET`` de ``Payroll``.
+Hagamos una petición ``GET`` de ``Payroll`` a través del proxy y directa al microservicio para comparar las respuestas.
 ```
 > curl payment.service/payroll
+
+> > curl localhost:8081/payroll
+
+
+> curl payment.service/payroll/3
+
+> curl localhost:8081/payroll/3
 ```
-Vemos que en la respuesta aparece el tag ``[MS]`` en los datos retornados, por lo que la respuesta es del microservicio.
+Vemos que las respuestas son las mismas. Aparece el tag ``[MS]`` en los datos retornados y aparece nuestro dato recién creado.
 
 ```
 > docker-compose -f  Ejemplo_2/3_docker-compose.yml down
 ```
 
 # Ejemplo 3. Interceptación de mensajes.
-Tenemos un monolito que recibe mensajes a través de una cola.
+Tenemos un monolito que recibe mensajes a través de una cola. 
+Para ello, hemos creado también un productor de mensajes `strangler_fig_producer` y hemos configurado un sistema de colas basado en Kafka.
+Está formado por dos topics: `invoicing-topic`, `payroll-topic`.
 
+![alt text](3.16_strangler_fig_pattern.png)
 
-<h3>Continuará...</h3>
+```
+> docker-compose -f  Ejemplo_3/1_docker-compose.yml up
+```
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+
+> curl -v -H "Content-Type: application/json" -d '{"billTo":"Juablaz","total":220}' localhost:9090/messages/send-invoicing
+```
+
+Podemos ver cómo se loguea en nuestro monolito: 
+```
+> Payroll 3 shipped to Juablaz of 220.0
+
+> Invoicing billed to Juablaz of 220.0
+```
+
+Tenemos dos posibles casuísticas:
+- Podemos cambiar el código monolito.
+- No podemos cambiar el código del monolito.
+
+## Podemos cambiar el código del monolito
+![alt text](3.18_strangler_fig_pattern.png)
+
+Simplemente tenemos que modificar el código del monolito para ignorar las peticiones de ``Payroll``, ya no tendrá configurado el `payroll-topic` del que recibía mensajes.
+
+NOTA:
+Recordemos que si configuramos varios consumidores con un `group-id` diferente, ambos leerán los mensajes de la cola. 
+Podríamos descartar la lectura de dichos mensajes en el interior del propio monolito.
+
+```
+> docker-compose -f  Ejemplo_3/2_docker-compose.yml up
+```
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+
+> curl -v -H "Content-Type: application/json" -d '{"billTo":"Juablaz","total":220}' localhost:9090/messages/send-invoicing
+```
+
+```
+> Payroll 3 shipped to Juablaz of 220.0
+
+> Invoicing billed to Juablaz of 220.0
+```
+
+Para confirmarlo, hagamos una petición al microservicio para ver si tiene el dato:
+> curl localhost:8081/payroll
+
+Contiene nuestro mensaje:
+```
+{"id":3,"shipTo":"Juablaz","total":220.0}
+```
+
+## NO podemos cambiar el código del monolito
+![alt text](3.17_strangler_fig_pattern.png)
+
 
 # Ejemplo 4. Extracción de User Notification.
 Nos falta por probar la extracción de la funcionalidad de ``User Notification``, a necesitar interceptar las peticiones dentro del monolito, no podemos redirigir las llamadas fuera del sistema. Para ello deberemos utilizar al patrón ``Branch By Abstraction``.
+
+[LINK]
 
 # COMANDOS ÚTILES:
 
@@ -200,3 +267,5 @@ Nos falta por probar la extracción de la funcionalidad de ``User Notification``
 > https://github.com/javieraviles/split-the-monolith
 
 > https://www.it-swarm-es.com/es/nginx/docker-nginx-proxy-como-enrutar-el-trafico-un-contenedor-diferente-utilizando-la-ruta-y-no-el-nombre-de-host/828289465/
+
+> https://refactorizando.com/kafka-spring-boot-parte-uno/

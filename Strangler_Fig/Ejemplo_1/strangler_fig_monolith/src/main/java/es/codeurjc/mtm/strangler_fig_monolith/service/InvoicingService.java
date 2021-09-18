@@ -29,7 +29,7 @@ public class InvoicingService {
     this.invoicings.put(id, invoicing);
 
     userNotificationService.notify(String.format("Invoicing billed to %s of %s", invoicing.getBillTo(),
-        invoicing.getTotal()));
+    invoicing.getTotal()));
   }
 
   public Invoicing getInvoicing(Long id) {
