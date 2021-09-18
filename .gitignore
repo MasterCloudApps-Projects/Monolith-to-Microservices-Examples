@@ -42,3 +42,7 @@ mvnw.cmd
 
 .project
 
+
+node_modules/
+
+package-lock.json

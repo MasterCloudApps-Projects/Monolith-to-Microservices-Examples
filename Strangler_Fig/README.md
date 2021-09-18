@@ -207,7 +207,7 @@ Podemos ver cómo se loguea en nuestro monolito:
 ```
 > Payroll 3 shipped to Juablaz of 220.0
 
-> Invoicing billed to Juablaz of 220.0
+> Invoicing 3 billed to Juablaz of 220.0
 ```
 
 Tenemos dos posibles casuísticas:
@@ -236,7 +236,7 @@ Podríamos descartar la lectura de dichos mensajes en el interior del propio mon
 ```
 > Payroll 3 shipped to Juablaz of 220.0
 
-> Invoicing billed to Juablaz of 220.0
+> Invoicing 3 billed to Juablaz of 220.0
 ```
 
 Para confirmarlo, hagamos una petición al microservicio para ver si tiene el dato:
@@ -249,6 +249,18 @@ Contiene nuestro mensaje:
 
 ## NO podemos cambiar el código del monolito
 ![alt text](3.17_strangler_fig_pattern.png)
+
+```
+> docker-compose -f  Ejemplo_3/3_docker-compose.yml up
+```
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+
+> curl -v -H "Content-Type: application/json" -d '{"billTo":"Juablaz","total":220}' localhost:9090/messages/send-invoicing
+```
+
+> curl localhost:8081/payroll
 
 
 # Ejemplo 4. Extracción de User Notification.
