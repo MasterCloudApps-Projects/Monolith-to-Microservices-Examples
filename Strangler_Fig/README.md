@@ -2,9 +2,6 @@
 
 Vamos a proceder a la realización y explicación del patrón Strangler Fig, que consiste en ir migrando de forma incremental y gradual las funcionalidades específicas situadas dentro del monolito a microservicios independientes.
 
-> Todos los proyectos tienen configurado un swagger para poder realizar peticiones:
-`localhost:${PORT}/swagger-ui/`
-
 El patrón se divide en la aplicación de 3 pasos:
 1. Aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 2. Implementación de la funcionalidad en un nuevo microservicio.
@@ -250,6 +247,16 @@ Contiene nuestro mensaje:
 ## NO podemos cambiar el código del monolito
 ![alt text](3.17_strangler_fig_pattern.png)
 
+En este caso no podemos tocar el monolito, por lo que necesitamos que exclusivamente lleguen mensajes de `Invoicing` al monolito porque no podemos quitar el procesado de los que llegan a `Payroll`.
+
+Hemos creado el siguiente flujo:
+- Llega una petición POST a `strangler-fig-producer` 
+- Genera un mensaje a la cola de Kafka a los dos posibles topics `invoicing-all-msg-topic`, `payroll-all-msg-topic`
+- Tenemos un microservicio de enrutamiento basado en contenido `strangler-fig-cbr` que consume y redirige los topics
+    - `payroll-topic` - Monolito
+    - `payroll-ms-topic` - Payroll
+- El topic `payroll-topic` se quedaría sin uso.
+
 ```
 > docker-compose -f  Ejemplo_3/3_docker-compose.yml up
 ```
@@ -260,8 +267,17 @@ Contiene nuestro mensaje:
 > curl -v -H "Content-Type: application/json" -d '{"billTo":"Juablaz","total":220}' localhost:9090/messages/send-invoicing
 ```
 
-> curl localhost:8081/payroll
+```
+> Payroll 3 shipped to Juablaz of 220.0
 
+> Invoicing 3 billed to Juablaz of 220.0
+```
+
+```
+> curl localhost:8081/payroll/3
+
+> curl localhost:8080/invoicing/3
+```
 
 # Ejemplo 4. Extracción de User Notification.
 Nos falta por probar la extracción de la funcionalidad de ``User Notification``, a necesitar interceptar las peticiones dentro del monolito, no podemos redirigir las llamadas fuera del sistema. Para ello deberemos utilizar al patrón ``Branch By Abstraction``.
@@ -281,3 +297,5 @@ Nos falta por probar la extracción de la funcionalidad de ``User Notification``
 > https://www.it-swarm-es.com/es/nginx/docker-nginx-proxy-como-enrutar-el-trafico-un-contenedor-diferente-utilizando-la-ruta-y-no-el-nombre-de-host/828289465/
 
 > https://refactorizando.com/kafka-spring-boot-parte-uno/
+
+> https://github.com/flipkart-incubator/kafka-filtering#:~:text=Kafka%20doesn't%20support%20filtering,deserialized%20%26%20make%20such%20a%20decision.

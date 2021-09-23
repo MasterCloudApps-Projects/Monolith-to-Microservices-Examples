@@ -1,5 +1,10 @@
 # Monolith-to-Microservices-Examples
 
+
+> Todos los proyectos tienen configurado un swagger para poder realizar peticiones:
+`localhost:${PORT}/swagger-ui/`
+
+
 Patrones a estudiar:
 Patrones de código:
 
