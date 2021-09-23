@@ -6,14 +6,16 @@ Este patrón, `Parallel Run` en lugar de llamar a la implementación antigua o n
 
 ![alt text](3.30_parallel_run.png)
 
-Utiliza la técnica de Dark Launching, implementar una nueva funcionalidad pero que sea invisible para los usuarios. Por lo tnato parallel run es una forma de implementar esta técnica, ya que la nueva funcionalidad es invisible.
+Utiliza la técnica de `Dark Launching`, implementar una nueva funcionalidad pero que sea invisible para los usuarios. `Parallel Run` es una forma de implementar esta técnica, ya que la nueva funcionalidad es invisible para el usuario.
 
 
 ## **Ejemplo 1. Usando Spies**
 
 ![alt text](3.31_parallel_run.png)
 
-Tener una implementación fake en el MS, que no envíe el mail, pero registre "como que se hubiera enviado".
+Tener una implementación fake en el MS, que no envíe el mail, pero registra "como que se hubiera enviado".
+
+Añadir base de datos que guarda: Destino y contenido, luego comparamos ambos registros, marcamos elementos como "consumidos".
 
 ## **Ejemplo 2. Github Scientist**
 
@@ -24,5 +26,5 @@ https://github.com/rawls238/Scientist4J
 Lanzar una versión Canary para un subconjunto de usuarios, por si se produce algún problema sólo un pequeño grupo de usuarios se verán afectados.
 Llamaríamos a ambas implementaciones.
 
-
+Nginx as `Load Balancer`.
 
