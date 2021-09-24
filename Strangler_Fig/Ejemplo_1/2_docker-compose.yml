@@ -13,12 +13,12 @@ services:
     networks:
       - app-network
 
-  strangler-fig-monolith:
-    image: strangler_fig_monolith
-    container_name: 'strangler_fig_monolith'
+  2-strangler-fig-monolith:
+    image: 2_strangler_fig_monolith
+    container_name: '2_strangler_fig_monolith'
     restart: on-failure
     build: 
-      context: ./strangler_fig_monolith
+      context: ./2_strangler_fig_monolith
       dockerfile: ./Dockerfile
     ports: 
       - 8080:8080
@@ -28,12 +28,12 @@ services:
     networks:
       - app-network
 
-  strangler-fig-inventory-ms:
-    image: strangler_fig_inventory_ms
-    container_name: 'strangler_fig_inventory_ms'
+  2-strangler-fig-inventory-ms:
+    image: 2_strangler_fig_inventory_ms
+    container_name: '2_strangler_fig_inventory_ms'
     restart: on-failure
     build: 
-      context: ./strangler_fig_inventory_ms
+      context: ./2_strangler_fig_inventory_ms
       dockerfile: ./Dockerfile
     ports: 
       - 8081:8081

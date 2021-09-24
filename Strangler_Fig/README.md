@@ -1,8 +1,8 @@
 # Strangler Fig
 
-Vamos a proceder a la realización y explicación del patrón Strangler Fig, que consiste en ir migrando de forma incremental y gradual las funcionalidades específicas situadas dentro del monolito a microservicios independientes.
+Vamos a proceder a la realización y explicación del patrón ``Strangler Fig``, que consiste en ir migrando de forma incremental y gradual las funcionalidades específicas situadas dentro del monolito a microservicios independientes.
 
-El patrón se divide en la aplicación de 3 pasos:
+El patrón se basa en nuestra posibilidad de interceptar peticiones en el exterior del monolitol. Se aplica en 3 pasos:
 1. Aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 2. Implementación de la funcionalidad en un nuevo microservicio.
 3. Con su nueva implementación lista, migramos las peticiones del monolito al microservicio. Se mantiene la funcionalidad en el monolito por si hay que hacer rollback y redireccionamos las llamadas de la funcionalidad extraída al nuevo microservicio.
@@ -284,11 +284,7 @@ Nos falta por probar la extracción de la funcionalidad de ``User Notification``
 
 [LINK]
 
-# COMANDOS ÚTILES:
 
-> docker stop $(docker ps -a -q)
-
-> docker rm $(docker ps -a -q)
 
 # Enlaces de interes:
 

@@ -1,0 +1,35 @@
+version: '1.9'
+services: 
+
+  2-branch-by-abstraction-monolith:
+    image: 2_branch_by_abstraction_monolith
+    container_name: '2_branch_by_abstraction_monolith'
+    restart: on-failure
+    build: 
+      context: ./2_branch_by_abstraction_monolith
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8080:8080
+    networks:
+      - app-network
+    environment:
+      - USER_NOTIFICATION_MS_HOST=2-branch-by-abstraction-notification-ms
+      - USER_NOTIFICATION_MS_PORT=8081
+    depends_on: 
+      - 2-branch-by-abstraction-notification-ms
+
+  2-branch-by-abstraction-notification-ms:
+    image: 2_branch_by_abstraction_notification_ms
+    container_name: '2_branch_by_abstraction_notification_ms'
+    restart: on-failure
+    build: 
+      context: ./2_branch_by_abstraction_notification_ms
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8081:8081
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

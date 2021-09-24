@@ -38,3 +38,10 @@ Utilizar Debezium, eventos con Kafka o con Redis.
 Patrones de BBDD: (más complejos)
 - Database as a Service, con debezium
 - Change Data Ownership
+
+
+# COMANDOS ÚTILES:
+
+> docker stop $(docker ps -a -q)
+
+> docker rm $(docker ps -a -q)

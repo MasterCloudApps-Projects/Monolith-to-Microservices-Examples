@@ -1,0 +1,18 @@
+version: '1.9'
+services: 
+
+  1-branch-by-abstraction-monolith:
+    image: 1_branch_by_abstraction_monolith
+    container_name: '1_branch_by_abstraction_monolith'
+    restart: on-failure
+    build: 
+      context: ./1_branch_by_abstraction_monolith
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8080:8080
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
