@@ -170,7 +170,7 @@ Hagamos una petición ``GET`` de ``Payroll`` a través del proxy y directa al mi
 ```
 > curl payment.service/payroll
 
-> > curl localhost:8081/payroll
+> curl localhost:8081/payroll
 
 
 > curl payment.service/payroll/3
