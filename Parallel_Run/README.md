@@ -52,3 +52,24 @@ Llamaríamos a ambas implementaciones.
 
 Nginx as `Load Balancer`.
 
+Hemos configurado un nginx como `Load Balancer` que nos permite balancear la carga utilizando pesos.
+Facilitamos diferentes archivos de configuración que se irían aplicando según viéramos que la versión "Canary" con nuestro microservicio fuera funcionando:
+- nginx_0_100
+- nginx_10_90
+- nginx_20_80
+- ...
+- nginx_80_20
+- nginx_90_10
+- nginx_100_0
+
+
+```
+> docker-compose -f Ejemplo_3/3_docker-compose.yml up 
+```
+
+Hagamos varias peticiones:
+
+```
+curl payment.service/inventory
+```
+
