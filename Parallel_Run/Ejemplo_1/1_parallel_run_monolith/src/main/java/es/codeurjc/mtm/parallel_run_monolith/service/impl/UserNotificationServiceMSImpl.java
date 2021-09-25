@@ -30,9 +30,12 @@ public class UserNotificationServiceMSImpl implements UserNotificationService {
     String url = "http://" + USER_NOTIFICATION_MS_HOST + ":" + USER_NOTIFICATION_MS_PORT + "/notification";
     String response = restTemplate.postForObject(url, msg, String.class);
     CompletableFuture.completedFuture(response);
-    Notification notification = new Notification();
-    notification.setNotification(msg);
-    notificationRepository.save(notification);
+
+    //Se manda la notificacion y se guarda en el MS
+
+    //Notification notification = new Notification();
+    //notification.setNotificationMessage(msg);
+    //notificationRepository.save(notification);
   }
 
 }

@@ -30,6 +30,16 @@ Tener una implementación fake en el MS, que no envíe el mail, pero registra "c
 
 Añadir base de datos que guarda: Destino y contenido, luego comparamos ambos registros, marcamos elementos como "consumidos".
 
+Creamos las BBDD tanto para el monolito como para el Microservicio:
+```
+docker run --network host --name postgresMono -e POSTGRES_PASSWORD=postgres -d postgres
+```
+```
+docker run --network host --name postgresMicro -e POSTGRES_PASSWORD=postgres -d postgres
+```
+
+
+
 
 ## **Ejemplo 2. Github Scientist**
 

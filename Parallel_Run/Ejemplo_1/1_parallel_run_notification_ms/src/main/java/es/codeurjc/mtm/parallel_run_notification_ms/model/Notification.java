@@ -1,4 +1,4 @@
-package es.codeurjc.mtm.parallel_run_monolith.model;
+package es.codeurjc.mtm.parallel_run_notification_ms.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

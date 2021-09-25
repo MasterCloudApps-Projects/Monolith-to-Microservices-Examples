@@ -20,8 +20,9 @@ public class UserNotificationServiceImpl implements UserNotificationService {
   @Override
   public void notify(String message) {
     log.info(message);
+    //Create notification for Monolith
     Notification notification = new Notification();
-    notification.setNotification(message);
+    notification.setNotificationMessage(message);
     notificationRepository.save(notification);
   }
 }
