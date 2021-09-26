@@ -39,6 +39,8 @@ Patrones de BBDD: (más complejos)
 - Database as a Service, con debezium
 - Change Data Ownership
 
+Para la realización de cada ejemplo utilizaremos docker a través de múltiples docker-compose para cada ejemplo.
+
 
 # COMANDOS ÚTILES:
 

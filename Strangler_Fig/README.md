@@ -2,7 +2,7 @@
 
 Vamos a proceder a la realización y explicación del patrón ``Strangler Fig``, que consiste en ir migrando de forma incremental y gradual las funcionalidades específicas situadas dentro del monolito a microservicios independientes.
 
-El patrón se basa en nuestra posibilidad de interceptar peticiones en el exterior del monolitol. Se aplica en 3 pasos:
+El patrón se basa en nuestra posibilidad de interceptar peticiones en el exterior del monolito. Se aplica en 3 pasos:
 1. Aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 2. Implementación de la funcionalidad en un nuevo microservicio.
 3. Con su nueva implementación lista, migramos las peticiones del monolito al microservicio. Se mantiene la funcionalidad en el monolito por si hay que hacer rollback y redireccionamos las llamadas de la funcionalidad extraída al nuevo microservicio.
@@ -10,8 +10,6 @@ El patrón se basa en nuestra posibilidad de interceptar peticiones en el exteri
 ![alt text](3.1_strangler_fig_pattern.png)
 
 Vamos a aplicar el patrón en diferentes ejemplos con los tres pasos explicados anteriormente.
-
-Para la realización de cada ejemplo utilizaremos un HTTP Proxy (ng-inx) y docker.
 
 ## **Ejemplo 1. Extracción de funcionalidad independiente**
 
@@ -80,7 +78,7 @@ Nuestro microservicio se queda igual, con la implementación anterior.
 ```
 > curl payment.service/inventory
 ```
-Ahora la respuesta contará con un prefijo ``[MS]`` que hemos añadido a los datos dados de alta en el microservicio.
+Ahora la respuesta contará con un prefijo ``[MS]`` que hemos añadido a los datos de ejemplo dados de alta de forma automática en el microservicio.
 
 > docker-compose -f  Ejemplo_1/3_docker-compose.yml down
 
@@ -90,7 +88,7 @@ Si deseamos aplicar el patrón sobre ``Payroll``, que utiliza una funcionalidad 
 
 ![alt text](3.3_strangler_fig_pattern.png)
 
-Se recomienda en el caso de no disponer de un proxy añadirlo para el desarrollo de este ejemplo, añadiríamos una capa entre medias de la petición para seleccionar el destino de la misma. 
+Se recomienda en el caso de no disponer de un proxy añadirlo para el desarrollo de este ejemplo, añadiríamos una capa entre medias de la petición para indicar el destino de la misma. 
 
 ¿Cómo encaja esto en nuestros 3 pasos?:
 
@@ -124,7 +122,7 @@ Paramos el ejemplo:
 ```
 
 ### **Paso 2**
-Debemos implementar la funcionalidad en un nuevo microservicio que comunicará con el monolito. Por tanto, el monolito debe implementar una API para exponer el servicio de notificaciones de usuario.
+Debemos implementar la funcionalidad en un nuevo microservicio que comunicará con el monolito. Por tanto, el monolito debe exponer un endpoint para que el microservicio se comunique a través del él.
 
 ```
 > docker-compose -f Ejemplo_2/2_docker-compose.yml up
@@ -177,7 +175,8 @@ Hagamos una petición ``GET`` de ``Payroll`` a través del proxy y directa al mi
 
 > curl localhost:8081/payroll/3
 ```
-Vemos que las respuestas son las mismas. Aparece el tag ``[MS]`` en los datos retornados y aparece nuestro dato recién creado.
+
+Podemos comprobar que aparece el tag ``[MS]`` en los datos retornados y aparece nuestro dato recién creado.
 
 ```
 > docker-compose -f  Ejemplo_2/3_docker-compose.yml down
@@ -186,7 +185,7 @@ Vemos que las respuestas son las mismas. Aparece el tag ``[MS]`` en los datos re
 # Ejemplo 3. Interceptación de mensajes.
 Tenemos un monolito que recibe mensajes a través de una cola. 
 Para ello, hemos creado también un productor de mensajes `strangler_fig_producer` y hemos configurado un sistema de colas basado en Kafka.
-Está formado por dos topics: `invoicing-topic`, `payroll-topic`.
+Está formado por dos topics: `invoicing-topic` y `payroll-topic`.
 
 ![alt text](3.16_strangler_fig_pattern.png)
 
@@ -250,9 +249,9 @@ Contiene nuestro mensaje:
 En este caso no podemos tocar el monolito, por lo que necesitamos que exclusivamente lleguen mensajes de `Invoicing` al monolito porque no podemos quitar el procesado de los que llegan a `Payroll`.
 
 Hemos creado el siguiente flujo:
-- Llega una petición POST a `strangler-fig-producer` 
+- Llega una petición POST a `strangler-fig-producer`.
 - Genera un mensaje a la cola de Kafka a los dos posibles topics `invoicing-all-msg-topic`, `payroll-all-msg-topic`
-- Tenemos un microservicio de enrutamiento basado en contenido `strangler-fig-cbr` que consume y redirige los topics
+- Tenemos un microservicio de enrutamiento basado en contenido `strangler-fig-cbr` que consume y redirige los topics:
     - `payroll-topic` - Monolito
     - `payroll-ms-topic` - Payroll
 - El topic `payroll-topic` se quedaría sin uso.
