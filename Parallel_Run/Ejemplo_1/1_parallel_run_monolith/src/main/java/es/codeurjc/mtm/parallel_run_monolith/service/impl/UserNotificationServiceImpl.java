@@ -39,21 +39,20 @@ public class UserNotificationServiceImpl implements UserNotificationService {
 
     List<Notification> notificationsMono = notificationRepository.getAllNotConsumedNotifications();
     List<Notification> notificationsMicro = userNotificationService.allNotifications();
-    List<Notification> notificationsMicroFilter = new ArrayList<>();
-    List<Notification> notificationsMonoFilter = new ArrayList<>();
 
     for (Notification n :notificationsMono){
-
+      boolean consumeOneMicro = false;
       for(Notification notification : notificationsMicro) {
-        if(!notification.isConsumed() && n.getNotificationMessage().equals(notification.getNotificationMessage())){
-          //notificationsMicro.forEach(notification1 -> {if(notification1.getId()==notification.getId()){notification1.setConsumed(true);}});
-          //notificationsMono.forEach(notification1 -> {if(notification1.getId()==n.getId()){notification1.setConsumed(true);}});
+        if(!consumeOneMicro && !notification.isConsumed() && n.getNotificationMessage().equals(notification.getNotificationMessage())){
+          notificationsMicro.forEach(notification1 -> {if(notification1.getId()==notification.getId()){notification1.setConsumed(true);}});
+          notificationsMono.forEach(notification1 -> {if(notification1.getId()==n.getId()){notification1.setConsumed(true);}});
+          consumeOneMicro = true;
         }
       };
     };
     Predicate<Notification> consumed = Notification::isConsumed;
-    Integer consumedMono = (int) notificationsMono.stream().filter(consumed).count();
-    Integer consumedMicro = (int) notificationsMicro.stream().filter(consumed).count();
+    int consumedMono = (int) notificationsMono.stream().filter(consumed).count();
+    int consumedMicro = (int) notificationsMicro.stream().filter(consumed).count();
 
     return notificationsMicro.size() == consumedMicro && notificationsMono.size() == consumedMono;
   }

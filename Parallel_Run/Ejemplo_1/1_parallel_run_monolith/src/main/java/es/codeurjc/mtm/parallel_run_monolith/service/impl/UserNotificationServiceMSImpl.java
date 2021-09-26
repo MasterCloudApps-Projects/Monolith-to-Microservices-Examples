@@ -1,5 +1,7 @@
 package es.codeurjc.mtm.parallel_run_monolith.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import es.codeurjc.mtm.parallel_run_monolith.model.Notification;
 import es.codeurjc.mtm.parallel_run_monolith.repository.NotificationRepository;
 import es.codeurjc.mtm.parallel_run_monolith.service.UserNotificationService;
@@ -33,12 +35,6 @@ public class UserNotificationServiceMSImpl implements UserNotificationService {
     String url = "http://" + USER_NOTIFICATION_MS_HOST + ":" + USER_NOTIFICATION_MS_PORT + "/notification";
     String response = restTemplate.postForObject(url, msg, String.class);
     CompletableFuture.completedFuture(response);
-
-    //Se manda la notificacion y se guarda en el MS
-
-    //Notification notification = new Notification();
-    //notification.setNotificationMessage(msg);
-    //notificationRepository.save(notification);
   }
 
   @Override
@@ -46,19 +42,11 @@ public class UserNotificationServiceMSImpl implements UserNotificationService {
     return false;
   }
 
-  @Async
-  public List<Notification> allNotifications() throws ExecutionException, InterruptedException {
+  public List<Notification> allNotifications() {
     RestTemplate restTemplate = new RestTemplate();
     String url = "http://" + USER_NOTIFICATION_MS_HOST + ":" + USER_NOTIFICATION_MS_PORT + "/notification";
-    List<Notification> response = restTemplate.getForObject(url, List.class);
-    List<Notification> re = new ArrayList<>();
-    re.addAll(response);
-
-  return re;
-    //Se manda la notificacion y se guarda en el MS
-
-    //Notification notification = new Notification();
-    //notification.setNotificationMessage(msg);
-    //notificationRepository.save(notification);
+    List response = restTemplate.getForObject(url, List.class);
+    ObjectMapper mapper = new ObjectMapper();
+    return mapper.convertValue(response, new TypeReference<List<Notification>>() { });
   }
 }
