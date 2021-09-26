@@ -48,11 +48,9 @@ https://github.com/rawls238/Scientist4J
 
 ## **Ejemplo 3. Canary Releasing**
 Lanzar una versión Canary para un subconjunto de usuarios, por si se produce algún problema sólo un pequeño grupo de usuarios se verán afectados.
-Llamaríamos a ambas implementaciones.
-
-Nginx as `Load Balancer`.
 
 Hemos configurado un nginx como `Load Balancer` que nos permite balancear la carga utilizando pesos.
+
 Facilitamos diferentes archivos de configuración que se irían aplicando según viéramos que la versión "Canary" con nuestro microservicio fuera funcionando:
 - nginx_0_100
 - nginx_10_90
@@ -67,9 +65,8 @@ Facilitamos diferentes archivos de configuración que se irían aplicando según
 > docker-compose -f Ejemplo_3/3_docker-compose.yml up 
 ```
 
-Hagamos varias peticiones:
+Podemos realiar varias peticiones para verificar de forma aproximada los pesos:
 
 ```
 curl payment.service/inventory
 ```
-

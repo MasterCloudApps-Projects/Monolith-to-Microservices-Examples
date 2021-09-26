@@ -2,7 +2,7 @@
 
 Vamos a proceder a la realización y explicación del patrón ``Branch By Abstraction``, que se basa en permitir que dos implementaciones del mismo código coexistan en la misma versión, sin romper la funcionalidad.
 
-Nos situamos en el caso de que necesitamos migrar un código interio del monolito el cuál recibe peticiones internas de otros servicios también internos del mismo. Se aplica en 5 pasos:
+Nos situamos en el caso de que necesitamos migrar un código interio del monolito el cuál recibe peticiones internas de otros servicios. Se aplica en múltiples pasos:
 1. Crear una abstracción para reemplazar la funcionalidad.
 2. Cambiar los clientes de la funcionalidad existente para utilizar la nueva abstracción.
 3. Crear una nueva implementación de la abstracción que realice la petición a nuestro nuevo microservicio.
@@ -52,7 +52,9 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 Se loguea en el monolito:
 
-``1_parallel_run_monolith         | 2021-09-24 11:02:32.470  INFO 1 --- [nio-8080-exec-1] e.c.m.p.s.i.UserNotificationServiceImpl  : Payroll 3 shipped to Juablaz of 320.0``
+```
+1_parallel_run_monolith         | 2021-09-24 11:02:32.470  INFO 1 --- [nio-8080-exec-1] e.c.m.p.s.i.UserNotificationServiceImpl  : Payroll 3 shipped to Juablaz of 320.0
+```
 
 Si entramos en `http://localhost:8080/ff4j-web-console` y cambiamos el flag a habilitado, se realizará a través del microservicio.
 
@@ -62,7 +64,10 @@ Repetimos la petición:
 curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
 ```
 
-``2_parallel_run_notification_ms  | 2021-09-24 11:02:39.123  INFO 1 --- [nio-8081-exec-1] e.c.m.p.service.UserNotificationService  : Payroll 4 shipped to Juablaz of 320.0``
+Se loguea en el monolito:
+```
+2_parallel_run_notification_ms  | 2021-09-24 11:02:39.123  INFO 1 --- [nio-8081-exec-1] e.c.m.p.service.UserNotificationService  : Payroll 4 shipped to Juablaz of 320.0
+```
 
 Detenemos el paso 2:
 ```
@@ -87,4 +92,6 @@ Hacemos una petición:
 curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
 ```
 
-``3_branch_by_abstraction_notification_ms  | 2021-09-24 14:38:13.520  INFO 1 --- [nio-8081-exec-8] e.c.m.b.service.UserNotificationService  : Payroll 4 shipped to Juablaz of 320.0``
+```
+3_branch_by_abstraction_notification_ms  | 2021-09-24 14:38:13.520  INFO 1 --- [nio-8081-exec-8] e.c.m.b.service.UserNotificationService  : Payroll 4 shipped to Juablaz of 320.0
+```
