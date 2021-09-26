@@ -3,7 +3,10 @@ package es.codeurjc.mtm.parallel_run_monolith.service.impl;
 import es.codeurjc.mtm.parallel_run_monolith.model.Notification;
 import es.codeurjc.mtm.parallel_run_monolith.repository.NotificationRepository;
 import es.codeurjc.mtm.parallel_run_monolith.service.UserNotificationService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,4 +41,24 @@ public class UserNotificationServiceMSImpl implements UserNotificationService {
     //notificationRepository.save(notification);
   }
 
+  @Override
+  public Boolean compareAllNotifications() throws ExecutionException, InterruptedException {
+    return false;
+  }
+
+  @Async
+  public List<Notification> allNotifications() throws ExecutionException, InterruptedException {
+    RestTemplate restTemplate = new RestTemplate();
+    String url = "http://" + USER_NOTIFICATION_MS_HOST + ":" + USER_NOTIFICATION_MS_PORT + "/notification";
+    List<Notification> response = restTemplate.getForObject(url, List.class);
+    List<Notification> re = new ArrayList<>();
+    re.addAll(response);
+
+  return re;
+    //Se manda la notificacion y se guarda en el MS
+
+    //Notification notification = new Notification();
+    //notification.setNotificationMessage(msg);
+    //notificationRepository.save(notification);
+  }
 }

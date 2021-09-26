@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 import org.ff4j.FF4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class InvoicingService {
     this.userNotificationService = userNotificationService;
     this.userNotificationServiceMS = userNotificationServiceMS;
     this.ff4j = ff4j;
+
   }
 
   public Collection<Invoicing> findAll() {
