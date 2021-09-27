@@ -39,12 +39,14 @@ docker run --network host --name postgresMicro -e POSTGRES_PASSWORD=postgres -d 
 ```
 
 
-
+- docker compose por el momento no funciona.
+- extraer el batch a un proyecto a parte y conectarse con dos BBDD.
 
 ## **Ejemplo 2. Github Scientist**
 
 https://github.com/rawls238/Scientist4J
 
+- Falta subir 
 
 ## **Ejemplo 3. Canary Releasing**
 Lanzar una versión Canary para un subconjunto de usuarios, por si se produce algún problema sólo un pequeño grupo de usuarios se verán afectados.
@@ -70,3 +72,5 @@ Podemos realiar varias peticiones para verificar de forma aproximada los pesos:
 ```
 curl payment.service/inventory
 ```
+
+- Quizá cambios en caliente
