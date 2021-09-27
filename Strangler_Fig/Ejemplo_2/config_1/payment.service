@@ -1,3 +1,0 @@
-location * {
-  proxy_pass http://1-strangler-fig-monolith:8080;
-}

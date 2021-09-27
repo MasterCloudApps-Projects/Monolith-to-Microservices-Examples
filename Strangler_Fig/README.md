@@ -39,11 +39,6 @@ Podemos probar nuestro monolito a través del proxy:
 > curl payment.service/inventory
 ```
 
-Detenemos el paso 1:
-```
-> docker-compose -f Ejemplo_1/1_docker-compose.yml down
-```
-
 ### **Paso 2**
 Debemos implementar la funcionalidad en un nuevo microservicio.
 El monolito se queda sin cambios, con la misma implementación.
@@ -61,11 +56,6 @@ Podemos probar ahora nuestro microservicio llamándolo directamente y no a trav�
 > curl localhost:8081/inventory
 ```
 
-Detengamos el paso 2:
-```
-> docker-compose -f Ejemplo_1/2_docker-compose.yml down
-```
-
 ### **Paso 3**
 Con su nueva implementación lista, procedemos a redireccionar las llamadas desde el monolito al nuevo microservicio.
 
@@ -79,9 +69,6 @@ Nuestro microservicio se queda igual, con la implementación anterior.
 > curl payment.service/inventory
 ```
 Ahora la respuesta contará con un prefijo ``[MS]`` que hemos añadido a los datos de ejemplo dados de alta de forma automática en el microservicio.
-
-> docker-compose -f  Ejemplo_1/3_docker-compose.yml down
-
 
 # Ejemplo 2. Extracción de funcionalidad interna
 Si deseamos aplicar el patrón sobre ``Payroll``, que utiliza una funcionalidad interna en el monolito ``User notification``, debemos dicha funcionalidad interna al exterior a través de un endpoint.
@@ -104,8 +91,13 @@ Se recomienda en el caso de no disponer de un proxy añadirlo para el desarrollo
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 
 ```
-> docker-compose -f Ejemplo_2/1_docker-compose.yml up 
+> docker-compose -f Ejemplo_2/1_docker-compose_monolith.yml up 
+
+> docker-compose -f Ejemplo_2/1_docker-compose_nginx.yml up -d
+
 ```
+Ponemos -d en el nginx porque no necesitamos ver logs del mismo.
+
 Podemos probar nuestro monolito:
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":120}' payment.service/payroll
@@ -116,13 +108,9 @@ Se loguea en la notificación:
 Payroll 3 shipped to Juablaz of 120.0
 ```
 
-Paramos el ejemplo:
-```
-> docker-compose -f Ejemplo_2/1_docker-compose.yml down
-```
-
 ### **Paso 2**
 Debemos implementar la funcionalidad en un nuevo microservicio que comunicará con el monolito. Por tanto, el monolito debe exponer un endpoint para que el microservicio se comunique a través del él.
+Lanzamos una nueva versión del monolito y nuestro microservicio.
 
 ```
 > docker-compose -f Ejemplo_2/2_docker-compose.yml up
@@ -134,23 +122,19 @@ Podemos probar nuestro microservicio:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:8081/payroll
 ```
 
-Se loguea la notificación en el monolito, por lo tanto la comunicación es correcta:
+Se loguea la notificación en el monolito nuevo (v2), por lo tanto la comunicación es correcta:
 ```
-Payroll shipped to Juablaz of 220.0
+Payroll 3 shipped to Juablaz of 220.0
 ```
 
-Detengamos el paso 2:
-
-```
-> docker-compose -f  Ejemplo_2/2_docker-compose.yml down
-```
+Las peticiones siguen llegando al monolito anterior, pero hemos probado el correcto funcionamiento del nuevo monolito y del microservicio.
 
 
 ### **Paso 3**
 Con la nueva implementación lista, redirigimos las peticiones al monolito de la funcionalidad de `Payroll`.
 
 ```
-> docker-compose -f  Ejemplo_2/3_docker-compose.yml up
+> docker-compose -f  Ejemplo_2/3_docker-compose.yml up -d
 ```
 
 Podemos probar nuestra aplicación:
@@ -158,7 +142,7 @@ Podemos probar nuestra aplicación:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
-Se loguea la notificación en el monolito:
+Se loguea la notificación en el monolito v2:
 ```
 Payroll 3 shipped to Juablaz of 320.0
 ```
@@ -178,9 +162,20 @@ Hagamos una petición ``GET`` de ``Payroll`` a través del proxy y directa al mi
 
 Podemos comprobar que aparece el tag ``[MS]`` en los datos retornados y aparece nuestro dato recién creado.
 
+En este punto podemos plantearnos quitar la versión 1 del monolito:
+
 ```
-> docker-compose -f  Ejemplo_2/3_docker-compose.yml down
+> docker-compose -f  Ejemplo_2/1_docker-compose_monolith.yml down
 ```
+
+¿Pero qué ocurre si hemos tenido algún problema en la nueva versión?
+Podemos rápidamente, cargar la configuración del nginx antigua:
+
+```
+> docker-compose -f Ejemplo_2/1_docker-compose_nginx.yml up -d
+```
+
+De esta forma de nuevo las peticiones van al monolito antiguo.
 
 # Ejemplo 3. Interceptación de mensajes.
 Tenemos un monolito que recibe mensajes a través de una cola. 

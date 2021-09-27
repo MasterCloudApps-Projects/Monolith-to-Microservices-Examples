@@ -6,40 +6,10 @@ services:
     - "80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./config_3:/etc/nginx/vhost.d:ro
+      - ./3_config:/etc/nginx/vhost.d:ro
     environment:
       - ENABLE_IPV6=true
       - DEFAULT_HOST=payment.service
-    networks:
-      - app-network
-
-  3-strangler-fig-monolith:
-    image: 3_strangler_fig_monolith
-    container_name: '3_strangler_fig_monolith'
-    restart: on-failure
-    build: 
-      context: ./3_strangler_fig_monolith
-      dockerfile: ./Dockerfile
-    ports: 
-      - 8080:8080
-    environment:
-      - VIRTUAL_HOST=payment.service
-      - VIRTUAL_PORT=8080
-    networks:
-      - app-network
-
-  3-strangler-fig-inventory-ms:
-    image: 3_strangler_fig_inventory_ms
-    container_name: '3_strangler_fig_inventory_ms'
-    restart: on-failure
-    build: 
-      context: ./3_strangler_fig_inventory_ms
-      dockerfile: ./Dockerfile
-    ports: 
-      - 8081:8081
-    environment:
-      - VIRTUAL_HOST=payment.service
-      - VIRTUAL_PORT=8081
     networks:
       - app-network
 

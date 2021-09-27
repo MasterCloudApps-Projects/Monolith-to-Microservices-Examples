@@ -1,13 +1,12 @@
 version: '3.9'
 services: 
-
   nginx-proxy:
     image: jwilder/nginx-proxy
     ports:
     - "80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./3_config:/etc/nginx/vhost.d:ro
+      - ./1_config:/etc/nginx/vhost.d:ro
     environment:
       - ENABLE_IPV6=true
       - DEFAULT_HOST=payment.service
@@ -16,4 +15,4 @@ services:
 
 networks:
   app-network:
-    driver: bridge
+    external: false

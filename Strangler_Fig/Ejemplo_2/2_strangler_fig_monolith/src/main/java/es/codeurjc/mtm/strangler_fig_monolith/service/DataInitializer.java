@@ -46,17 +46,17 @@ public class DataInitializer {
 
     // Invoicing
     Invoicing invoicing = Invoicing.builder()
-        .billTo("user 1")
+        .billTo("[Monolith V2] user 1")
         .total(4549.95)
         .build();
 
     Invoicing invoicing2 = Invoicing.builder()
-        .billTo("user 2")
+        .billTo("[Monolith V2] user 2")
         .total(549.95)
         .build();
 
     Invoicing invoicing3 = Invoicing.builder()
-        .billTo("user 3")
+        .billTo("[Monolith V2] user 3")
         .total(1049.95)
         .build();
 
@@ -66,17 +66,17 @@ public class DataInitializer {
 
     // Payroll
     Payroll payroll = Payroll.builder()
-        .shipTo("user 1")
+        .shipTo("[Monolith V2] user 1")
         .total(10549.95)
         .build();
 
     Payroll payroll2 = Payroll.builder()
-        .shipTo("user 2")
+        .shipTo("[Monolith V2] user 2")
         .total(6549.95)
         .build();
 
     Payroll payroll3 = Payroll.builder()
-        .shipTo("user 3")
+        .shipTo("[Monolith V2] user 3")
         .total(1449.95)
         .build();
 
