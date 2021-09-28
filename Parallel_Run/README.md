@@ -49,9 +49,72 @@ https://github.com/rawls238/Scientist4J
 - Falta subir 
 
 ## **Ejemplo 3. Canary Releasing**
+
+### **Paso 1**
 Lanzar una versión Canary para un subconjunto de usuarios, por si se produce algún problema sólo un pequeño grupo de usuarios se verán afectados.
 
 Hemos configurado un nginx como `Load Balancer` que nos permite balancear la carga utilizando pesos.
+
+```
+> docker-compose -f Ejemplo_3/1_docker-compose.yml up 
+```
+
+La configuración por defecto es la siguiente:
+```
+upstream loadbalancer {
+  server 1-parallel-run-monolith:8080 weight=10;
+}
+server {
+  listen 8080;
+  server_name payment.service;
+
+  location / {
+    proxy_pass http://loadbalancer;
+  }
+}
+```
+
+Toda la carga de peticiones irán a nuestro monolito.
+
+Nuestra aplicación es accesible a través de:
+
+```
+> curl payment.service/payroll
+```
+
+Todas las peticiones van al monolito.
+
+
+### **Paso 2**
+Lanzamos una nueva versión de la aplicación.
+
+```
+> docker-compose -f Ejemplo_3/2_docker-compose.yml up 
+```
+
+Podemos probarla utilizando peticiones directas al monolito v2 y al microservicio
+
+```
+> curl localhost:8081/payroll
+> curl localhost:8082/payroll
+```
+
+### **Paso 3**
+Vamos a migrar poco a poco las peticiones.
+
+```
+upstream loadbalancer {
+  server 1-parallel-run-monolith:8080 weight=9;
+  server 2-parallel-run-monolith:8080 weight=1;
+}
+server {
+  listen 80;
+  server_name payment.service;
+  location / {
+    proxy_pass http://loadbalancer;
+  }
+}
+```
 
 Facilitamos diferentes archivos de configuración que se irían aplicando según viéramos que la versión "Canary" con nuestro microservicio fuera funcionando:
 - nginx_0_100
@@ -62,6 +125,7 @@ Facilitamos diferentes archivos de configuración que se irían aplicando según
 - nginx_90_10
 - nginx_100_0
 
+Arrancamos una nueva configuración del nginx:
 
 ```
 > docker-compose -f Ejemplo_3/3_docker-compose.yml up 
@@ -73,4 +137,7 @@ Podemos realiar varias peticiones para verificar de forma aproximada los pesos:
 curl payment.service/inventory
 ```
 
-- Quizá cambios en caliente
+En caso de cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito inicial.
+```
+> docker-compose -f  Ejemplo_3/1_docker-compose-proxy.yml up
+```

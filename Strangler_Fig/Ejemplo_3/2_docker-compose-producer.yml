@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  
+  strangler-fig-producer:
+    image: strangler_fig_producer
+    container_name: 'strangler_fig_producer'
+    restart: on-failure
+    build: 
+      context: ./strangler_fig_producer
+      dockerfile: ./Dockerfile
+    ports: 
+      - 9090:9090
+    networks:
+      - app-network
+    environment:
+      - PAYROLL_TOPIC=payroll-v2-topic
+      - INVOICING_TOPIC=invoicing-v2-topic
+      - KAFKA_HOST=kafka-v2
+      - KAFKA_PORT=9092
+      - CONSUMER_GROUP_ID=payment-service-group
+    depends_on: 
+      - kafka-v2
+
+
+networks:
+  app-network:
+    external: false

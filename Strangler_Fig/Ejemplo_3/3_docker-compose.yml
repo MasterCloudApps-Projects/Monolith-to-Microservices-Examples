@@ -1,35 +1,13 @@
 version: '3.9'
 
 services:
-  zookeeper:
-    image: debezium/zookeeper:1.2
-    ports:
-     - 2181:2181
-     - 2888:2888
-     - 3888:3888
-    networks:
-      - app-network
-  
-  kafka:
-    image: debezium/kafka:1.2
-    ports:
-     - 9092:9092
-    links:
-     - zookeeper
-    environment:
-      - ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
-      - KAFKA_DELETE_TOPIC_ENABLE=true
-      - KAFKA_CREATE_TOPICS=payroll-topic:1:1,invoicing-topic:1:1,invoicing-all-msg-topic:1:1,payroll-all-msg-topic:1:1,payroll-ms-topic
-    networks:
-      - app-network
 
-  3-strangler-fig-monolith:
-    image: 3_strangler_fig_monolith
-    container_name: '3_strangler_fig_monolith'
+  1-strangler-fig-monolith:
+    image: 1_strangler_fig_monolith
+    container_name: '1_strangler_fig_monolith'
     restart: on-failure
     build: 
-      context: ./3_strangler_fig_monolith
+      context: ./1_strangler_fig_monolith
       dockerfile: ./Dockerfile
     ports: 
       - 8080:8080
@@ -41,19 +19,19 @@ services:
     networks:
       - app-network
   
-  3-strangler-fig-payroll-ms:
-    image: 3_strangler_fig_payroll_ms
-    container_name: '3_strangler_fig_payroll_ms'
+  2-strangler-fig-payroll-ms:
+    image: 2_strangler_fig_payroll_ms
+    container_name: '2_strangler_fig_payroll_ms'
     restart: on-failure
     build: 
-      context: ./3_strangler_fig_payroll_ms
+      context: ./2_strangler_fig_payroll_ms
       dockerfile: ./Dockerfile
     ports: 
       - 8081:8081
     depends_on: 
-      - 3-strangler-fig-monolith
+      - 1-strangler-fig-monolith
     environment:
-      - MONOLITH_HOST=3-strangler-fig-monolith
+      - MONOLITH_HOST=1-strangler-fig-monolith
       - MONOLITH_PORT=8080
       - PAYROLL_TOPIC=payroll-ms-topic
       - KAFKA_HOST=kafka
@@ -72,8 +50,8 @@ services:
     ports: 
       - 8082:8082
     environment:
-      - PAYROLL_CONSUMER_TOPIC=payroll-all-msg-topic
-      - INVOICING_CONSUMER_TOPIC=invoicing-all-msg-topic
+      - PAYROLL_CONSUMER_TOPIC=payroll-v2-topic
+      - INVOICING_CONSUMER_TOPIC=invoicing-v2-topic
       - PAYROLL_PRODUCER_TOPIC=payroll-ms-topic
       - INVOICING_PRODUCER_TOPIC=invoicing-topic
       - KAFKA_HOST=kafka
@@ -92,13 +70,14 @@ services:
     ports: 
       - 9090:9090
     environment:
-      - PAYROLL_TOPIC=payroll-all-msg-topic
-      - INVOICING_TOPIC=invoicing-all-msg-topic
+      - PAYROLL_TOPIC=payroll-v2-topic
+      - INVOICING_TOPIC=invoicing-v2-topic
       - KAFKA_HOST=kafka
       - KAFKA_PORT=9092
       - CONSUMER_GROUP_ID=payment-service-group
     networks:
       - app-network
+
 networks:
   app-network:
     external: false

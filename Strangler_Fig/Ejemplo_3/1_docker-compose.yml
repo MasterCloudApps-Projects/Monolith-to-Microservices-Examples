@@ -20,7 +20,7 @@ services:
       - ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
       - KAFKA_DELETE_TOPIC_ENABLE=true
-      - KAFKA_CREATE_TOPICS=payroll-topic:1:1,invoicing-topic:1:1
+      - KAFKA_CREATE_TOPICS=payroll-v1-topic:1:1,invoicing-v1-topic:1:1
     networks:
       - app-network
 
@@ -36,28 +36,14 @@ services:
     networks:
       - app-network
     environment:
-      - PAYROLL_TOPIC=payroll-topic
-      - INVOICING_TOPIC=invoicing-topic
+      - PAYROLL_TOPIC=payroll-v1-topic
+      - INVOICING_TOPIC=invoicing-v1-topic
       - KAFKA_HOST=kafka
       - KAFKA_PORT=9092
       - CONSUMER_GROUP_ID=payment-service-group
+    depends_on: 
+      - kafka
 
-  strangler-fig-producer:
-    image: strangler_fig_producer
-    container_name: 'strangler_fig_producer'
-    restart: on-failure
-    build: 
-      context: ./strangler_fig_producer
-      dockerfile: ./Dockerfile
-    ports: 
-      - 9090:9090
-    networks:
-      - app-network
-    environment:
-      - PAYROLL_TOPIC=payroll-topic
-      - INVOICING_TOPIC=invoicing-topic
-      - KAFKA_HOST=kafka
-      - KAFKA_PORT=9092
 
 networks:
   app-network:

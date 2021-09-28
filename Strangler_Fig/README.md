@@ -31,7 +31,11 @@ A continuación, se muestra una imagen del estado inicial y final de la aplicaci
 ### **Paso 1**
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 ```
-> docker-compose -f Ejemplo_1/1_docker-compose.yml up 
+> docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up 
+```
+
+```
+> docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up 
 ```
 
 Podemos probar nuestro monolito a través del proxy:
@@ -43,7 +47,7 @@ Podemos probar nuestro monolito a través del proxy:
 Debemos implementar la funcionalidad en un nuevo microservicio.
 El monolito se queda sin cambios, con la misma implementación.
 ```
-> docker-compose -f Ejemplo_1/2_docker-compose.yml up
+> docker-compose -f Ejemplo_1/2_docker-compose-ms.yml up
 ```
 
 Las peticiones seguirían llegando a nuestro monolito.
@@ -61,7 +65,7 @@ Con su nueva implementación lista, procedemos a redireccionar las llamadas desd
 
 En caso de cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito.
 ```
-> docker-compose -f  Ejemplo_1/3_docker-compose.yml up
+> docker-compose -f  Ejemplo_1/3_docker-compose-proxy.yml up
 ```
 
 Nuestro microservicio se queda igual, con la implementación anterior.
@@ -178,16 +182,20 @@ Podemos rápidamente, cargar la configuración del nginx antigua:
 De esta forma de nuevo las peticiones van al monolito antiguo.
 
 # Ejemplo 3. Interceptación de mensajes.
+### **Paso 1**
 Tenemos un monolito que recibe mensajes a través de una cola. 
 Para ello, hemos creado también un productor de mensajes `strangler_fig_producer` y hemos configurado un sistema de colas basado en Kafka.
-Está formado por dos topics: `invoicing-topic` y `payroll-topic`.
+Está formado por dos topics: `invoicing-v1-topic` y `payroll-v1-topic`.
 
 ![alt text](3.16_strangler_fig_pattern.png)
 
 ```
 > docker-compose -f  Ejemplo_3/1_docker-compose.yml up
+
+> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up
 ```
 
+Hagamos un par de peticiones:
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
 
@@ -206,17 +214,39 @@ Tenemos dos posibles casuísticas:
 - No podemos cambiar el código del monolito.
 
 ## Podemos cambiar el código del monolito
+### **Paso 2**
+
 ![alt text](3.18_strangler_fig_pattern.png)
 
-Simplemente tenemos que modificar el código del monolito para ignorar las peticiones de ``Payroll``, ya no tendrá configurado el `payroll-topic` del que recibía mensajes.
+Simplemente tenemos que modificar el código del monolito para ignorar las peticiones de ``Payroll``, ya no tendrá configurado el `payroll-v1-topic` del que recibía mensajes.
 
-NOTA:
-Recordemos que si configuramos varios consumidores con un `group-id` diferente, ambos leerán los mensajes de la cola. 
-Podríamos descartar la lectura de dichos mensajes en el interior del propio monolito.
+La complicación surge si necesitamos realizar un despliegue en caliente, sin parada de servicio. Para ello es necesario que cambiemos los topics de las colas a los que nos conectamos y desde el `` monolito-v2`` y a las que escribimos desde el ``producer`` porque si son las mismas que las del ``monolito-v1`` y ambas implementaciones conviven, se estarían procesando los datos por duplicado (en caso de poner diferente group-id) o balanceado (en caso de poner el mismo group-id).
+
+------
+NOTA: 
+Hemos configurado nuestro kafka para que automáticamente cree topics si no los encuentra, `KAFKA_AUTO_CREATE_TOPICS_ENABLE`, si esta configuración no está habilitada sería necesario conectarse al contenedor docker y ejecutar un comando. 
+
+Se haría:
+
+```
+> docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic payroll-v2-topic
+
+> docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic invoicing-v2-topic
+```
+------
+
+Vamos a ejecutar el ejemplo siguiendo el patrón, primero la implementación y luego migrando las "peticiones":
 
 ```
 > docker-compose -f  Ejemplo_3/2_docker-compose.yml up
 ```
+
+### **Paso 3**
+Vamos a migrar las "peticiones", en este caso, migrar los topics a los que escribimos:
+```
+> docker-compose -f  Ejemplo_3/2_docker-compose-producer.yml up
+```
+
 
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
@@ -236,6 +266,11 @@ Para confirmarlo, hagamos una petición al microservicio para ver si tiene el da
 Contiene nuestro mensaje:
 ```
 {"id":3,"shipTo":"Juablaz","total":220.0}
+```
+
+En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
+```
+> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up
 ```
 
 ## NO podemos cambiar el código del monolito
