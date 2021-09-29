@@ -84,7 +84,7 @@ Con su nueva implementación lista, procedemos a redireccionar las llamadas desd
 > docker-compose -f  Ejemplo_1/3_docker-compose-proxy.yml up
 ```
 
-La nueva configuración tendría este aspecto:
+La nueva configuración es:
 ```
 server {
   listen 80;
@@ -132,12 +132,11 @@ Si deseamos aplicar el patrón sobre ``Payroll``, que utiliza una funcionalidad 
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 
 ```
-> docker-compose -f Ejemplo_2/1_docker-compose_monolith.yml up 
+> docker-compose -f Ejemplo_2/1_docker-compose-monolith.yml up 
 
-> docker-compose -f Ejemplo_2/1_docker-compose_nginx.yml up -d
+> docker-compose -f Ejemplo_2/1_docker-compose-proxy.yml up -d
 
 ```
-Ponemos -d en el nginx porque no necesitamos ver logs del mismo.
 
 Podemos probar nuestro monolito:
 ```
@@ -150,8 +149,8 @@ Payroll 3 shipped to Juablaz of 120.0
 ```
 
 ### **Paso 2**
-Debemos implementar la funcionalidad en un nuevo microservicio que comunicará con el monolito. Por tanto, el monolito debe exponer un endpoint para que el microservicio se comunique a través del él.
-Lanzamos una nueva versión del monolito y nuestro microservicio.
+Debemos implementar la funcionalidad en un nuevo microservicio que comunicará con el monolito. Por tanto, el monolito debe exponer un endpoint para que el microservicio se comunique a través del él ```/notification```.
+Lanzamos una versión del monolito (v2) y nuestro nuevo microservicio.
 
 ```
 > docker-compose -f Ejemplo_2/2_docker-compose.yml up
@@ -168,14 +167,30 @@ Se loguea la notificación en el monolito nuevo (v2), por lo tanto la comunicaci
 Payroll 3 shipped to Juablaz of 220.0
 ```
 
-Las peticiones siguen llegando al monolito anterior, pero hemos probado el correcto funcionamiento del nuevo monolito y del microservicio.
+Las peticiones a través del proxy ``payment.service`` siguen llegando al monolito anterior, pero hemos probado el correcto funcionamiento del nuevo monolito y del microservicio.
 
 
 ### **Paso 3**
 Con la nueva implementación lista, redirigimos las peticiones al monolito de la funcionalidad de `Payroll`.
 
 ```
-> docker-compose -f  Ejemplo_2/3_docker-compose.yml up -d
+> docker-compose -f  Ejemplo_2/3_docker-compose-proxy.yml up -d
+```
+
+La nueva configuración es:
+```
+server {
+  listen 80;
+  server_name payment.service;
+
+  location ~ ^/(?!(payroll)) {
+    proxy_pass http://2-strangler-fig-monolith:8082;
+  }
+
+  location /payroll {
+    proxy_pass http://2-strangler-fig-payroll-ms:8081;
+  }
+}
 ```
 
 Podemos probar nuestra aplicación:
@@ -188,35 +203,20 @@ Se loguea la notificación en el monolito v2:
 Payroll 3 shipped to Juablaz of 320.0
 ```
 
-¿Cómo sabemos si ha ido a través del monolito o del microservicio?
-Hagamos una petición ``GET`` de ``Payroll`` a través del proxy y directa al microservicio para comparar las respuestas.
-```
-> curl payment.service/payroll
-
-> curl localhost:8081/payroll
-
-
-> curl payment.service/payroll/3
-
-> curl localhost:8081/payroll/3
-```
-
-Podemos comprobar que aparece el tag ``[MS]`` en los datos retornados y aparece nuestro dato recién creado.
-
 En este punto podemos plantearnos quitar la versión 1 del monolito:
 
 ```
 > docker-compose -f  Ejemplo_2/1_docker-compose_monolith.yml down
 ```
 
-¿Pero qué ocurre si hemos tenido algún problema en la nueva versión?
+¿Y qué ocurre si hemos tenido algún problema en la nueva versión?
 Podemos rápidamente, cargar la configuración del nginx antigua:
 
 ```
 > docker-compose -f Ejemplo_2/1_docker-compose_nginx.yml up -d
 ```
 
-De esta forma de nuevo las peticiones van al monolito antiguo.
+De esta forma de nuevo las peticiones vuelven al monolito antiguo.
 
 # Ejemplo 3. Interceptación de mensajes.
 ### **Paso 1**
