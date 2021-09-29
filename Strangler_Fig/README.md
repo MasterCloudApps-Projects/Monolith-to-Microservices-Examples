@@ -11,18 +11,19 @@ El patrón se basa en nuestra posibilidad de interceptar peticiones en el exteri
 
 Vamos a aplicar el patrón en diferentes ejemplos con los tres pasos explicados anteriormente.
 
+Se recomienda en el caso de no disponer de un proxy añadirlo para el desarrollo del patrón, añadiendo una capa entre medias de la petición para indicar el destino de la misma. 
+
 ## **Ejemplo 1. Extracción de funcionalidad independiente**
 
-En primer lugar debemos configurar el host de nuestra aplicación: `payment.service`. 
+Para poder realizar la migración de las peticiones y los despliegues en caliente, debemos configurar un proxy inverso. El host de nuestra aplicación va a ser: `payment.service`. 
 
-Para ello debemos añadir a:
-
+Para ello, debemos añadir a:
 - Linux: `/etc/hosts`
 - Windows: `C:/Windows/System32/drivers/etc/hosts`
 
 La siguiente línea: `127.0.0.1 payment.service`
 
-Partimos de un monolito con toda la lógica de la aplicación. Surge la necesidad de extraer una funcionalidad independiente, en este caso ``Inventory`` a un microservicio nuevo.
+Partimos de un monolito que contiene toda la lógica de la aplicación. Surge la necesidad de extraer una funcionalidad independiente, en este caso ``Inventory`` a un microservicio nuevo.
 
 A continuación, se muestra una imagen del estado inicial y final de la aplicación tras aplicar el patrón.
 
@@ -35,10 +36,24 @@ Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se res
 ```
 
 ```
-> docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up 
+> docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
 ```
 
-Podemos probar nuestro monolito a través del proxy:
+Nuestro proxy, está configurado para dirigir todas las peticiones al monolito existente. 
+
+```
+server {
+  listen 80;
+  server_name payment.service;
+
+  location ~ ^/ {
+    proxy_pass http://1-strangler-fig-monolith:8080;
+  }
+}
+
+```
+
+Podemos probar nuestro monolito a través de una petición a:
 ```
 > curl payment.service/inventory
 ```
@@ -60,30 +75,52 @@ Podemos probar ahora nuestro microservicio llamándolo directamente y no a trav�
 > curl localhost:8081/inventory
 ```
 
+Vemos que las respuestas vienen con el tag ``[MS]``.
+
 ### **Paso 3**
 Con su nueva implementación lista, procedemos a redireccionar las llamadas desde el monolito al nuevo microservicio.
 
-En caso de cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito.
 ```
 > docker-compose -f  Ejemplo_1/3_docker-compose-proxy.yml up
 ```
 
-Nuestro microservicio se queda igual, con la implementación anterior.
+La nueva configuración tendría este aspecto:
+```
+server {
+  listen 80;
+  server_name payment.service;
+
+  location ~ ^/(?!(inventory)) {
+    proxy_pass http://1-strangler-fig-monolith:8080;
+  }
+
+  location /inventory {
+    proxy_pass http://2-strangler-fig-inventory-ms:8081;
+  }
+}
+```
+
+Probemos a realizar peticiones:
 ```
 > curl payment.service/inventory
 ```
+
 Ahora la respuesta contará con un prefijo ``[MS]`` que hemos añadido a los datos de ejemplo dados de alta de forma automática en el microservicio.
+
+En caso de cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito.
+
+```
+> docker-compose -f  Ejemplo_1/1_docker-compose-proxy.yml up
+```
 
 # Ejemplo 2. Extracción de funcionalidad interna
 Si deseamos aplicar el patrón sobre ``Payroll``, que utiliza una funcionalidad interna en el monolito ``User notification``, debemos dicha funcionalidad interna al exterior a través de un endpoint.
 
 ![alt text](3.3_strangler_fig_pattern.png)
 
-Se recomienda en el caso de no disponer de un proxy añadirlo para el desarrollo de este ejemplo, añadiríamos una capa entre medias de la petición para indicar el destino de la misma. 
-
 ¿Cómo encaja esto en nuestros 3 pasos?:
 
-1. Añadir un proxy que permita que todas las peticiones vayan al monolito.
+1. Nuestro monolito, en caso de no disponer de proxy, añadir uno que permita por el momento dirija todas las peticiones al monolito.
 2. Con el proxy activo, realizamos la extracción de nuestro microservicio. Sugiere el uso de múltiples pasos:
     - Implementar el microservicio vacío, sin funcionalidad retornando ``501 Not Implemented``. Se recomienda llevarlo a producción para familiarizarnos con el proceso de despliegue.
     - Añadir la funcionalidad al microservicio.
