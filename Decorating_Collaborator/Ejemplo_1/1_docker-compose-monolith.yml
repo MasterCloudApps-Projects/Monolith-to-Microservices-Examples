@@ -1,17 +1,16 @@
 version: '3.9'
 services: 
-  1-strangler-fig-monolith:
-    image: 1_strangler_fig_monolith
-    container_name: '1_strangler_fig_monolith'
+  1-decorating-collaborator-monolith:
+    image: 1_decorating_collaborator_monolith
+    container_name: '1_decorating_collaborator_monolith'
     restart: on-failure
     build: 
-      context: ./1_strangler_fig_monolith
+      context: ./1_decorating_collaborator_monolith
       dockerfile: ./Dockerfile
     ports: 
       - 8080:8080
     networks:
       - app-network
-
 
 networks:
   app-network:

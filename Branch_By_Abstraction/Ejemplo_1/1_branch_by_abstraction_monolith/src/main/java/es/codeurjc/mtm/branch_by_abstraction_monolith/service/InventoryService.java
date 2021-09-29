@@ -10,32 +10,32 @@ import org.springframework.stereotype.Service;
 @Service
 public class InventoryService {
 
-  private final ConcurrentMap<Long, Inventory> inventorys = new ConcurrentHashMap<>();
+  private final ConcurrentMap<Long, Inventory> inventories = new ConcurrentHashMap<>();
   private final AtomicLong nextId = new AtomicLong();
 
   public InventoryService() {
   }
 
   public Collection<Inventory> findAll() {
-    return inventorys.values();
+    return inventories.values();
   }
 
   public void saveInventory(Inventory inventory) {
     long id = nextId.getAndIncrement();
     inventory.setId(id);
-    this.inventorys.put(id, inventory);
+    this.inventories.put(id, inventory);
   }
 
   public Inventory getInventory(Long id) {
-    return this.inventorys.get(id);
+    return this.inventories.get(id);
   }
 
   public Inventory deleteInventory(Long id) {
-    return this.inventorys.remove(id);
+    return this.inventories.remove(id);
   }
 
   public Inventory updateInventory(long id, Inventory inventory) {
-    Inventory inventoryStoraged = this.inventorys.get(id);
+    Inventory inventoryStoraged = this.inventories.get(id);
     if (inventoryStoraged == null) {
       return null;
     } else {

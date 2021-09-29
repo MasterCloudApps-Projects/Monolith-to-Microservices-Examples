@@ -12,9 +12,6 @@ services:
       - 8082:8080
     networks:
       - app-network
-    environment:
-      - VIRTUAL_HOST=payment.service
-      - VIRTUAL_PORT=8082
   
   2-strangler-fig-payroll-ms:
     image: 2_strangler_fig_payroll_ms
@@ -30,8 +27,6 @@ services:
     environment:
       - MONOLITH_HOST=2-strangler-fig-monolith
       - MONOLITH_PORT=8080
-      - VIRTUAL_HOST=payment.service
-      - VIRTUAL_PORT=8081
     networks:
       - app-network
   

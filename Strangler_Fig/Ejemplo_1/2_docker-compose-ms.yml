@@ -9,9 +9,6 @@ services:
       dockerfile: ./Dockerfile
     ports: 
       - 8081:8081
-    environment:
-      - VIRTUAL_HOST=payment.service
-      - VIRTUAL_PORT=8081
     networks:
       - app-network
 

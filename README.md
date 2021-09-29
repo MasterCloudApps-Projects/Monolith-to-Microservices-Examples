@@ -66,7 +66,7 @@ Para decorating collaborator: usar spring gateway (problema el uso reactiva func
 
 para reload en caliente de nginx:
 - Consul
-- change dynamically ngins (debería estar la config en un volumen fuera y que se coja de ese volumen, luego hacer un reload, ahora no funciona porque se coge al generar la imagen)
+- change dynamically nginx (debería estar la config en un volumen fuera y que se coja de ese volumen, luego hacer un reload, ahora no funciona porque se coge al generar la imagen)
 
 
 PARA LA DEMO:
