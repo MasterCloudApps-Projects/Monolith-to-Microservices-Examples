@@ -1,12 +1,13 @@
 # Parallel Run
 
-En los patrones anteriormente estudiados `Strangler Fig` y `Branch By Abstraction`, teníamos la posibilidad de que coexistiera la versión antigua y nueva de la funcionalidad, pero sólamente una de ellas se activava en un momento concreto.
+En los patrones anteriormente estudiados `Strangler Fig` y `Branch By Abstraction`, teníamos la posibilidad de que coexistiera la versión antigua y nueva de la funcionalidad, pero sólamente una de ellas se activaba en un momento concreto.
 
 Este patrón, `Parallel Run` en lugar de llamar a la implementación antigua o nueva, llamamos a ambas, lo que nos permite comparar los resultados para asegurarnos de que sean equivalentes.
 
 ![alt text](3.30_parallel_run.png)
 
 Utiliza la técnica de `Dark Launching`, implementar una nueva funcionalidad pero que sea invisible para los usuarios. `Parallel Run` es una forma de implementar esta técnica, ya que la nueva funcionalidad es invisible para el usuario.
+
 
 Vamos a partir para los diferentes ejemplos de la solución anterior del patrón `Branch by Abstraction`:
 
@@ -50,6 +51,7 @@ https://github.com/rawls238/Scientist4J
 
 ## **Ejemplo 3. Canary Releasing**
 
+
 ### **Paso 1**
 Lanzar una versión Canary para un subconjunto de usuarios, por si se produce algún problema sólo un pequeño grupo de usuarios se verán afectados.
 
@@ -57,6 +59,8 @@ Hemos configurado un nginx como `Load Balancer` que nos permite balancear la car
 
 ```
 > docker-compose -f Ejemplo_3/1_docker-compose.yml up 
+
+> docker-compose -f Ejemplo_3/1_docker-compose-proxy.yml up -d
 ```
 
 La configuración por defecto es la siguiente:
@@ -95,8 +99,7 @@ Lanzamos una nueva versión de la aplicación.
 Podemos probarla utilizando peticiones directas al monolito v2 y al microservicio
 
 ```
-> curl localhost:8081/payroll
-> curl localhost:8082/payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8082/payroll
 ```
 
 ### **Paso 3**
@@ -128,7 +131,7 @@ Facilitamos diferentes archivos de configuración que se irían aplicando según
 Arrancamos una nueva configuración del nginx:
 
 ```
-> docker-compose -f Ejemplo_3/3_docker-compose.yml up 
+> docker-compose -f Ejemplo_3/3_docker-compose-proxy.yml up 
 ```
 
 Podemos realiar varias peticiones para verificar de forma aproximada los pesos:

@@ -34,7 +34,7 @@ Vamos a aplicar el patrón para extraer la funcionalidad de `UserNotification` c
 1. Creamos la interfaz `UserNotificationService`.
 2. Adaptamos la implementación de `UserNotificationService` (que pasa a llamarse `UserNotificationServiceImpl`) existente para utilizar la interfaz.
 3. Creamos una nueva implementación de la interfaz, `UserNotificationServiceMSImpl`.
-4. Introducimos `ff4j` que nos permite cambiar el uso de una u otra implementación en tiempo de ejecución.
+4. Introducimos `ff4j` que nos permite cambiar el uso de una u otra implementación en tiempo de ejecución `http://localhost:8080/ff4j-web-console`.
 
 En este paso, vamos a llegar hasta el [``4``], nuestra aplicación se queda con el siguiente estado en el que podemos cambiar la implementación activa:
 
@@ -44,16 +44,17 @@ Vamos a desplegar el ejemplo:
 ```
 > docker-compose -f Ejemplo_2/2_docker-compose.yml up 
 ```
+Tendremos una versión 2 del monolito y nuestro microservicio. Dentro de esta versión, podemos cambiar a usar o no el microservicio.
 
 Hacemos una petición:
 ```
 curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
 ```
 
-Se loguea en el monolito:
+Se loguea en el monolito (v2):
 
 ```
-1_parallel_run_monolith         | 2021-09-24 11:02:32.470  INFO 1 --- [nio-8080-exec-1] e.c.m.p.s.i.UserNotificationServiceImpl  : Payroll 3 shipped to Juablaz of 320.0
+2_branch_by_abstraction_monolith         | 2021-09-29 13:50:34.660  INFO 1 --- [io-8080-exec-10] e.c.m.b.s.i.UserNotificationServiceImpl  : Payroll 6 shipped to Juablaz of 320.0   
 ```
 
 Si entramos en `http://localhost:8080/ff4j-web-console` y cambiamos el flag a habilitado, se realizará a través del microservicio.
@@ -66,7 +67,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 Se loguea en el monolito:
 ```
-2_parallel_run_notification_ms  | 2021-09-24 11:02:39.123  INFO 1 --- [nio-8081-exec-1] e.c.m.p.service.UserNotificationService  : Payroll 4 shipped to Juablaz of 320.0
+2_branch_by_abstraction_notification_ms  | 2021-09-29 13:50:05.941  INFO 1 --- [nio-8081-exec-1] e.c.m.b.service.UserNotificationService  : Payroll 5 shipped to Juablaz of 320.0   
 ```
 
 Detenemos el paso 2:
@@ -74,6 +75,8 @@ Detenemos el paso 2:
 > docker-compose -f Ejemplo_2/2_docker-compose.yml down
 ```
 
+Como podemos observar, esta forma de gestionar los cambios y la migración al microservicio nos permite en caso de error activar/ desactivar el flag.
+Incluso se podría combinar con los pasos aplicados en el ejemplo de ``Strangler Fig``, lanzando las dos versiones convivientes y migrando las peticiones de uno a otro.
 
 ### **Paso 3**
 5. Eliminaríamos el flag y la implementación antigua.
