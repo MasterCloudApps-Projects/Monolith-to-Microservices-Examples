@@ -20,21 +20,21 @@ public class OrderService {
     return orders.values();
   }
 
-  public void saveInventory(Order order) {
+  public void saveOrder(Order order) {
     long id = nextId.getAndIncrement();
     order.setId(id);
     this.orders.put(id, order);
   }
 
-  public Order getInventory(Long id) {
+  public Order getOrder(Long id) {
     return this.orders.get(id);
   }
 
-  public Order deleteInventory(Long id) {
+  public Order deleteOrder(Long id) {
     return this.orders.remove(id);
   }
 
-  public Order updateInventory(long id, Order order) {
+  public Order updateOrder(long id, Order order) {
     Order orderStoraged = this.orders.get(id);
     if (orderStoraged == null) {
       return null;

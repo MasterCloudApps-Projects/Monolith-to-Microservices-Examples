@@ -13,4 +13,6 @@ public class Order {
 
   private Double prize;
 
+  private String userName;
+
 }

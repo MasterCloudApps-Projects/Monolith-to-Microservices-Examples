@@ -80,9 +80,11 @@ Incluso se podría combinar con los pasos aplicados en el ejemplo de ``Strangler
 
 ### **Paso 3**
 5. Eliminaríamos el flag y la implementación antigua.
+
 ![alt text](3.27_branch_by_abstraction.png)
 
 6. (Opcional): Borrar la interfaz.
+
 ![alt text](3.28_branch_by_abstraction.png)
 
 Vamos a desplegar el ejemplo:

@@ -28,20 +28,20 @@ public class OrderController {
   }
 
   @PostMapping({""})
-  public ResponseEntity<Order> createInventory(@RequestBody Order order) {
-    this.orderService.saveInventory(order);
+  public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+    this.orderService.saveOrder(order);
     URI location = fromCurrentRequest().path("/{id}").buildAndExpand(order.getId()).toUri();
 
     return ResponseEntity.created(location).body(order);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Order> getInventory(
+  public ResponseEntity<Order> getOrder(
       @PathVariable long id) {
-    Order order = this.orderService.getInventory(id);
+    Order order = this.orderService.getOrder(id);
 
     if (order != null) {
-      return ResponseEntity.ok(this.orderService.getInventory(id));
+      return ResponseEntity.ok(this.orderService.getOrder(id));
     } else {
       return ResponseEntity.notFound().build();
     }
@@ -53,12 +53,12 @@ public class OrderController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Order> deleteInventory(
+  public ResponseEntity<Order> deleteOrder(
       @PathVariable long id) {
-    Order order = this.orderService.getInventory(id);
+    Order order = this.orderService.getOrder(id);
 
     if (order != null) {
-      this.orderService.deleteInventory(id);
+      this.orderService.deleteOrder(id);
       return ResponseEntity.ok(order);
     } else {
       return ResponseEntity.notFound().build();
@@ -66,9 +66,9 @@ public class OrderController {
   }
 
   @PutMapping({"/{id}"})
-  public ResponseEntity<Order> createInventory(@RequestBody Order order,
+  public ResponseEntity<Order> createOrder(@RequestBody Order order,
       @PathVariable long id) {
-    Order orderUpdated = this.orderService.updateInventory(id, order);
+    Order orderUpdated = this.orderService.updateOrder(id, order);
 
     if (orderUpdated != null) {
       return ResponseEntity.ok(order);
