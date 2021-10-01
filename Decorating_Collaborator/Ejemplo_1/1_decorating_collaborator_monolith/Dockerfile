@@ -30,4 +30,4 @@ COPY --from=builder /project/target/*.jar /usr/src/app/
 EXPOSE 8080
 
 # Command executed with docker run
-CMD [ "java", "-jar", "decorating_collaborator_monolith-0.0.1-SNAPSHOT.jar" ]
+CMD [ "java", "-jar", "1_decorating_collaborator_monolith-0.0.1-SNAPSHOT.jar" ]

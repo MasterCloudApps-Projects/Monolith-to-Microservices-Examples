@@ -27,7 +27,7 @@ WORKDIR /usr/src/app/
 COPY --from=builder /project/target/*.jar /usr/src/app/
 
 # Port
-EXPOSE 8080
+EXPOSE 8082
 
 # Command executed with docker run
-CMD [ "java", "-jar", "decorating_collaborator_loyalty_ms-0.0.1-SNAPSHOT.jar" ]
+CMD [ "java", "-jar", "2_decorating_collaborator_gateway_ms-0.0.1-SNAPSHOT.jar" ]

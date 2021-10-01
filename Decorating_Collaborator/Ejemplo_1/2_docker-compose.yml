@@ -1,0 +1,35 @@
+version: '3.9'
+services: 
+  2-decorating-collaborator-loyalty-ms:
+    image: 2_decorating_collaborator_loyalty_ms
+    container_name: '2_decorating_collaborator_loyalty_ms'
+    restart: on-failure
+    build: 
+      context: ./2_decorating_collaborator_loyalty_ms
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8081:8081
+    networks:
+      - app-network
+
+  2-decorating-collaborator-gateway-ms:
+    image: 2_decorating_collaborator_gateway_ms
+    container_name: '2_decorating_collaborator_gateway_ms'
+    restart: on-failure
+    build: 
+      context: ./2_decorating_collaborator_gateway_ms
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8082:8082
+    environment:
+      - LOYALTY_HOST=2-decorating-collaborator-loyalty-ms
+      - LOYALTY_PORT=8081
+      - ORDER_HOST=1-decorating-collaborator-monolith
+      - ORDER_PORT=8080
+    depends_on: 
+      - 2-decorating-collaborator-loyalty-ms
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge

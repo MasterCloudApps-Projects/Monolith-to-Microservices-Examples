@@ -7,12 +7,9 @@ services:
       - "80:80"
     volumes:
       - ./3_config/nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - 2-strangler-fig-monolith
-      - 2-strangler-fig-payroll-ms
     networks:
       - app-network
 
 networks:
   app-network:
-    external: false
+    driver: bridge
