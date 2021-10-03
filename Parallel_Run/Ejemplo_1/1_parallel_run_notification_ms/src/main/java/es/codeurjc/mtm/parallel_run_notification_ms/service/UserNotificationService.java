@@ -18,7 +18,7 @@ public class UserNotificationService {
   public void notify(String message) {
     log.info(message);
     Notification notification = new Notification();
-    notification.setNotificationMessage(message);
+    notification.setMessage(message);
     notificationRepository.save(notification);
   }
 

@@ -6,15 +6,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootApplication
-//@EnableJpaRepositories
-public class ParallelRunNotificationMSApplication extends SpringBootServletInitializer {
+public class ParallelRunBatchServiceApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(ParallelRunNotificationMSApplication.class, args);
+    SpringApplication.run(ParallelRunBatchServiceApplication.class, args);
   }
 
 }
+

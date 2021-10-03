@@ -20,7 +20,7 @@ public class Notification {
   private long id;
 
   @Column
-  private String notificationMessage;
+  private String message;
 
   @Column
   private boolean consumed;

@@ -40,8 +40,8 @@ docker run --network host --name postgresMicro -e POSTGRES_PASSWORD=postgres -d 
 ```
 
 
-- docker compose por el momento no funciona.
-- extraer el batch a un proyecto a parte y conectarse con dos BBDD.
+- docker compose por el momento no funciona. PROBAR BIEN EL DEPENDSON
+- YA ESTA LISTO extraer el batch a un proyecto a parte y conectarse con dos BBDD.
 
 ## **Ejemplo 2. Github Scientist**
 

@@ -31,7 +31,7 @@ public class UserNotificationServiceImpl implements UserNotificationService {
     log.info(message);
     //Create notification for Monolith
     Notification notification = new Notification();
-    notification.setNotificationMessage(message);
+    notification.setMessage(message);
     notificationRepository.save(notification);
   }
 
@@ -43,7 +43,7 @@ public class UserNotificationServiceImpl implements UserNotificationService {
     for (Notification n :notificationsMono){
       boolean consumeOneMicro = false;
       for(Notification notification : notificationsMicro) {
-        if(!consumeOneMicro && !notification.isConsumed() && n.getNotificationMessage().equals(notification.getNotificationMessage())){
+        if(!consumeOneMicro && !notification.isConsumed() && n.getMessage().equals(notification.getMessage())){
           notificationsMicro.forEach(notification1 -> {if(notification1.getId()==notification.getId()){notification1.setConsumed(true);}});
           notificationsMono.forEach(notification1 -> {if(notification1.getId()==n.getId()){notification1.setConsumed(true);}});
           consumeOneMicro = true;
