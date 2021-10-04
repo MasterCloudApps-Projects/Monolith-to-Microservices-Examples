@@ -34,31 +34,4 @@ public class UserNotificationServiceImpl implements UserNotificationService {
     notification.setMessage(message);
     notificationRepository.save(notification);
   }
-
-  public Boolean compareAllNotifications() throws ExecutionException, InterruptedException {
-
-    List<Notification> notificationsMono = notificationRepository.getAllNotConsumedNotifications();
-    List<Notification> notificationsMicro = userNotificationService.allNotifications();
-
-    for (Notification n :notificationsMono){
-      boolean consumeOneMicro = false;
-      for(Notification notification : notificationsMicro) {
-        if(!consumeOneMicro && !notification.isConsumed() && n.getMessage().equals(notification.getMessage())){
-          notificationsMicro.forEach(notification1 -> {if(notification1.getId()==notification.getId()){notification1.setConsumed(true);}});
-          notificationsMono.forEach(notification1 -> {if(notification1.getId()==n.getId()){notification1.setConsumed(true);}});
-          consumeOneMicro = true;
-        }
-      };
-    };
-    Predicate<Notification> consumed = Notification::isConsumed;
-    int consumedMono = (int) notificationsMono.stream().filter(consumed).count();
-    int consumedMicro = (int) notificationsMicro.stream().filter(consumed).count();
-
-    return notificationsMicro.size() == consumedMicro && notificationsMono.size() == consumedMono;
-  }
-
-  @Override
-  public List<Notification> allNotifications() {
-    return null;
-  }
 }

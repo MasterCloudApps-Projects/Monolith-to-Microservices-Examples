@@ -1,12 +1,10 @@
-package es.codeurjc.mtm.parallel_run_notification_ms.repository.micro;
+package es.codeurjc.mtm.parallel_run_batch_service.repository.micro;
 
 
-import es.codeurjc.mtm.parallel_run_notification_ms.model.Notification;
+import es.codeurjc.mtm.parallel_run_batch_service.model.Notification;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
 
 public interface MicroRepository extends JpaRepository<Notification, Long> {
 

@@ -36,17 +36,4 @@ public class UserNotificationServiceMSImpl implements UserNotificationService {
     String response = restTemplate.postForObject(url, msg, String.class);
     CompletableFuture.completedFuture(response);
   }
-
-  @Override
-  public Boolean compareAllNotifications() throws ExecutionException, InterruptedException {
-    return false;
-  }
-
-  public List<Notification> allNotifications() {
-    RestTemplate restTemplate = new RestTemplate();
-    String url = "http://" + USER_NOTIFICATION_MS_HOST + ":" + USER_NOTIFICATION_MS_PORT + "/notification";
-    List response = restTemplate.getForObject(url, List.class);
-    ObjectMapper mapper = new ObjectMapper();
-    return mapper.convertValue(response, new TypeReference<List<Notification>>() { });
-  }
 }

@@ -9,7 +9,4 @@ public interface UserNotificationService {
 
   void notify(String message);
 
-  Boolean compareAllNotifications() throws ExecutionException, InterruptedException;
-
-  List<Notification> allNotifications() throws ExecutionException, InterruptedException;
 }

@@ -1,4 +1,4 @@
-package es.codeurjc.mtm.parallel_run_notification_ms.config;
+package es.codeurjc.mtm.parallel_run_batch_service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

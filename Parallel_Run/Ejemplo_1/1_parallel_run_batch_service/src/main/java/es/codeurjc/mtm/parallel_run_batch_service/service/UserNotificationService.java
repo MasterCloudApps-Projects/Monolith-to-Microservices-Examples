@@ -1,8 +1,8 @@
-package es.codeurjc.mtm.parallel_run_notification_ms.service;
+package es.codeurjc.mtm.parallel_run_batch_service.service;
 
-import es.codeurjc.mtm.parallel_run_notification_ms.model.Notification;
-import es.codeurjc.mtm.parallel_run_notification_ms.repository.micro.MicroRepository;
-import es.codeurjc.mtm.parallel_run_notification_ms.repository.mono.MonolithRepository;
+import es.codeurjc.mtm.parallel_run_batch_service.model.Notification;
+import es.codeurjc.mtm.parallel_run_batch_service.repository.micro.MicroRepository;
+import es.codeurjc.mtm.parallel_run_batch_service.repository.mono.MonolithRepository;
 import java.util.List;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;

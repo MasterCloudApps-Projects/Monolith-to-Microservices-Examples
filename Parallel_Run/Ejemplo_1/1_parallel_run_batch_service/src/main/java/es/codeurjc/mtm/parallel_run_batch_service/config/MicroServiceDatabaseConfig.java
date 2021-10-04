@@ -1,4 +1,4 @@
-package es.codeurjc.mtm.parallel_run_notification_ms.config;
+package es.codeurjc.mtm.parallel_run_batch_service.config;
 
 import com.google.common.base.Preconditions;
 import java.util.HashMap;
@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -20,7 +19,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(entityManagerFactoryRef = "microEntityManagerFactory", transactionManagerRef = "microTransactionManager", basePackages = {"es.codeurjc.mtm.parallel_run_notification_ms.repository.micro"})
+@EnableJpaRepositories(entityManagerFactoryRef = "microEntityManagerFactory", transactionManagerRef = "microTransactionManager", basePackages = {
+    "es.codeurjc.mtm.parallel_run_batch_service.repository.micro"})
 
 public class MicroServiceDatabaseConfig {
 
@@ -40,7 +40,7 @@ public class MicroServiceDatabaseConfig {
   public LocalContainerEntityManagerFactoryBean microEntityManagerFactory() {
     LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
     em.setDataSource(microDataSource());
-    em.setPackagesToScan("es.codeurjc.mtm.parallel_run_notification_ms.model");
+    em.setPackagesToScan("es.codeurjc.mtm.parallel_run_batch_service.model");
 
     HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
     em.setJpaVendorAdapter(vendorAdapter);

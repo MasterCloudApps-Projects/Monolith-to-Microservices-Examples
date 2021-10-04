@@ -1,23 +1,22 @@
-package es.codeurjc.mtm.parallel_run_monolith.controller;
+package es.codeurjc.mtm.parallel_run_batch_service.controller;
 
-import es.codeurjc.mtm.parallel_run_monolith.model.Payroll;
-import es.codeurjc.mtm.parallel_run_monolith.service.UserNotificationService;
+import es.codeurjc.mtm.parallel_run_batch_service.service.UserNotificationService;
 import java.util.concurrent.ExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/notification")
-public class NotificationController {
+public class UserNotificationController {
 
-  @Autowired
-  @Qualifier("userNotificationServiceImpl")
   private UserNotificationService userNotificationService;
+
+  public UserNotificationController(
+      UserNotificationService userNotificationService) {
+    this.userNotificationService = userNotificationService;
+  }
 
   @GetMapping({"/compare"})
   public ResponseEntity<Boolean> areSameNotifications()
