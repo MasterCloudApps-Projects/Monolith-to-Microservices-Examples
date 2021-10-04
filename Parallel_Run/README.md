@@ -33,15 +33,21 @@ Añadir base de datos que guarda: Destino y contenido, luego comparamos ambos re
 
 Creamos las BBDD tanto para el monolito como para el Microservicio:
 ```
-docker run --network host --name postgresMono -e POSTGRES_PASSWORD=postgres -d postgres
+docker run --name postgresMono -p 5433:5432 -e POSTGRES_PASSWORD=postgres -d postgres
 ```
 ```
-docker run --network host --name postgresMicro -e POSTGRES_PASSWORD=postgres -d postgres
+docker run --name postgresMicro -p 5434:5432 -e POSTGRES_PASSWORD=postgres -d postgres
 ```
 
+Una vez que tenemos lanzadas las 2 BBDD, lanzamos primero `1_parallel_run_notification_ms` seguidamente `1_parallel_run_monolith` y el batch el ultimo `1_parallel_run_batch_service`
+
+Una vez esta corriendo todo, si queremos comprobar el batch:
+```
+curl -v  http://localhost:8082/notification/compare
+```
+Devolvera true or false en caso de tener las BBDD equitativas, al menos equitativas las llamadas NO Consumidas.
 
 - docker compose por el momento no funciona. PROBAR BIEN EL DEPENDSON
-- YA ESTA LISTO extraer el batch a un proyecto a parte y conectarse con dos BBDD.
 
 ## **Ejemplo 2. Github Scientist**
 
