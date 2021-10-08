@@ -53,7 +53,12 @@ Devolvera true or false en caso de tener las BBDD equitativas, al menos equitati
 
 https://github.com/rawls238/Scientist4J
 
-- Falta subir 
+Lanzamos un ejemplo de esta libreria comparadora, equitativo al Diferencia(falta por subir un ejemplo) el cual hace una llamada a la funcion monolitica y otra a la nueva, creandote unas metricas comparativas que ayudan a ver si te sirve o no la funcionalidad implementada.
+
+Esta actualmente en una clase TEST la cual testea las dos llamadas para traerte 1 notificacion
+
+-Falta implementar Diferencia
+
 
 ## **Ejemplo 3. Canary Releasing**
 
