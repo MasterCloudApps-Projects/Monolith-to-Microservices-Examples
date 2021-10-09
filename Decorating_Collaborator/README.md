@@ -7,7 +7,7 @@ Vamos a proceder a la realización y explicación del patrón ``Decorating Colla
 
 En esta ocasión hemos planteado un nuevo enunciado.
 
-![alt text](3.33_decorating_collaborator.png)
+![alt text](3.32_decorating_collaborator.png)
 
 ### **Paso 1**
 
@@ -17,7 +17,6 @@ Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se res
 > docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up 
 
 > docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
-
 ```
 
 Podemos probar nuestro monolito:
@@ -41,7 +40,6 @@ Podemos probar nuestro microservicio:
 > curl -v -H "Content-Type: application/json" -d '' localhost:8081/loyalty/Juablaz
 ```
 
-
 Podemos probar nuestro ``Gateway``:
 
 ```
@@ -61,7 +59,13 @@ Se crea el usuario en el microservicio nuevo y se le añaden 10 puntos:
 > docker-compose -f Ejemplo_1/3_docker-compose-proxy.yml up -d
 ```
 
+```
 > curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz","prize":250, "description":"Monitor"}' payment.service/order
 
 > curl payment.service/loyalty/Juablaz
+```
 
+Es posible incluso que sea necesario recuperar más información del monolito, en ese caso tendríamos que exponer un endpoint en el monolito y realizar la petición desde el microservicio.
+![alt text](3.33_decorating_collaborator.png)
+
+Esto podría generar una carga adicional, además introduce una dependencia circular, podría ser mejor cambiar el monolito para proporcionar la información requerida cuando se complete nuestra petición de crear un pedido. Sin embargo, esto requeriría cambiar el código del monolito o quizás usar otro patrón, que estudiaremos a continuación `Change Data Capture`.

@@ -62,7 +62,7 @@ Hacer un ejemplito con parallen run y Diferencia:
 - https://www.infoq.com/articles/tap-compare-diferencia/
 
 
-Para decorating collaborator: usar spring gateway (problema el uso reactiva funcional ¿?¿? (no))
+Para decorating collaborator: usar spring gateway (problema el uso reactiva funcional ¿?¿)
 
 para reload en caliente de nginx:
 - Consul
