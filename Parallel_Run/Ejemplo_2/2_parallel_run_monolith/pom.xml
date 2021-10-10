@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>es.codeurjc.mtm</groupId>
-	<artifactId>1_parallel_run_monolith</artifactId>
+	<artifactId>2_parallel_run_monolith</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>1_parallel_run_monolith</name>
+	<name>2_parallel_run_monolith</name>
 	<description>Strangler Fig pattern in Java</description>
 	<properties>
 		<java.version>16</java.version>
@@ -70,6 +70,36 @@
 			<version>1.8.11</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.github.rawls238</groupId>
+			<artifactId>Scientist4JCore</artifactId>
+			<version>0.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.dropwizard.metrics</groupId>
+			<artifactId>metrics-core</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.8.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
@@ -81,10 +111,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>15</source>
-					<target>15</target>
-				</configuration>
+        <configuration>
+          <source>15</source>
+          <target>15</target>
+        </configuration>
       </plugin>
     </plugins>
 	</build>

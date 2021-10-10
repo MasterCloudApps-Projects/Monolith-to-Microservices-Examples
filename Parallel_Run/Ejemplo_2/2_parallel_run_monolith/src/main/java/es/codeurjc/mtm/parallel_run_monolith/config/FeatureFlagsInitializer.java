@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FeatureFlagsInitializer {
 
+  public static String FEATURE_USER_NOTIFICATION_MS = "enableUserNotificationMS";
+
   private FF4j ff4j;
 
   public FeatureFlagsInitializer(FF4j ff4j) {
@@ -15,7 +17,9 @@ public class FeatureFlagsInitializer {
 
   @PostConstruct
   public void initializeFlags() {
-
+    if (!ff4j.exist(FEATURE_USER_NOTIFICATION_MS)) {
+      ff4j.createFeature(FEATURE_USER_NOTIFICATION_MS, true);
+    }
   }
 
 }

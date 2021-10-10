@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>es.codeurjc.mtm</groupId>
-	<artifactId>1_parallel_run_monolith</artifactId>
+	<artifactId>3_parallel_run_monolith</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>1_parallel_run_monolith</name>
+	<name>3_parallel_run_monolith</name>
 	<description>Strangler Fig pattern in Java</description>
 	<properties>
 		<java.version>16</java.version>
