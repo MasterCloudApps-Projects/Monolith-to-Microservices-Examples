@@ -1,7 +1,5 @@
 package es.codeurjc.mtm.parallel_run_monolith.service.impl;
 
-import static es.codeurjc.mtm.parallel_run_monolith.config.FeatureFlagsInitializer.FEATURE_USER_NOTIFICATION_MS;
-
 import es.codeurjc.mtm.parallel_run_monolith.model.Payroll;
 import es.codeurjc.mtm.parallel_run_monolith.service.UserNotificationService;
 import java.util.Collection;
@@ -19,15 +17,12 @@ public class PayrollService {
   private final AtomicLong nextId = new AtomicLong();
 
   private UserNotificationService userNotificationService;
-  private UserNotificationService userNotificationServiceMS;
   private FF4j ff4j;
 
   public PayrollService(
       @Qualifier("userNotificationServiceImpl") UserNotificationService userNotificationService,
-      @Qualifier("userNotificationServiceMSImpl") UserNotificationService userNotificationServiceMS,
       FF4j ff4j) {
     this.userNotificationService = userNotificationService;
-    this.userNotificationServiceMS = userNotificationServiceMS;
     this.ff4j = ff4j;
 
   }
@@ -41,14 +36,9 @@ public class PayrollService {
     payroll.setId(id);
     this.payrolls.put(id, payroll);
 
-    if (ff4j.check(FEATURE_USER_NOTIFICATION_MS)) {
-      userNotificationServiceMS.notify(String.format("Payroll %s shipped to %s of %s", payroll.getId(), payroll.getShipTo(),
-          payroll.getTotal()));
-    } else {
-      userNotificationService.notify(String.format("Payroll %s shipped to %s of %s", payroll.getId(), payroll.getShipTo(),
-          payroll.getTotal()));
-    }
-
+    userNotificationService.notify(
+        String.format("Payroll %s shipped to %s of %s", payroll.getId(), payroll.getShipTo(),
+            payroll.getTotal()));
 
   }
 

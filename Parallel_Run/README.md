@@ -8,46 +8,71 @@ Este patrón, `Parallel Run` en lugar de llamar a la implementación antigua o n
 
 Utiliza la técnica de `Dark Launching`, implementar una nueva funcionalidad pero que sea invisible para los usuarios. `Parallel Run` es una forma de implementar esta técnica, ya que la nueva funcionalidad es invisible para el usuario.
 
-
-Vamos a partir para los diferentes ejemplos de la solución anterior del patrón `Branch by Abstraction`:
-
-## Enunciado.
-Vamos a partir del ejemplo anterior de `Branch By Abstraction` modificando un poco el código para hacer las dos peticiones simultáneas:
-
-```
-> docker-compose -f Enunciado/docker-compose.yml up 
-```
-
-```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
-```
-
-
 ## **Ejemplo 1. Usando Spies**
+
+### **Paso 1**
+Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
+```
+> docker-compose -f Ejemplo_1/1_docker-compose.yml up 
+
+> docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
+```
+
+Probamos que todo funciona correctamente:
+
+```
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+```
+
+### **Paso 2**
+En este paso, tenemos que sacar una versión 2 del monolito, que registre en BBDD la notificación al usuario.
+También, debemos desarrollar nuestro microservicio, con una implementación fake, que no envíe la notificación pero registre que dicha notificación se ha enviado puesto que ambas implementaciones van a convivir y no queremos que se dupliquen las notificaciones.
 
 ![alt text](3.31_parallel_run.png)
 
-Tener una implementación fake en el MS, que no envíe el mail, pero registra "como que se hubiera enviado".
-
-Añadir base de datos que guarda: Destino y contenido, luego comparamos ambos registros, marcamos elementos como "consumidos".
-
-Creamos las BBDD tanto para el monolito como para el Microservicio:
 ```
-docker run --name postgresMono -p 5433:5432 -e POSTGRES_PASSWORD=postgres -d postgres
-```
-```
-docker run --name postgresMicro -p 5434:5432 -e POSTGRES_PASSWORD=postgres -d postgres
+> docker-compose -f Ejemplo_1/2_docker-compose.yml up 
 ```
 
-Una vez que tenemos lanzadas las 2 BBDD, lanzamos primero `1_parallel_run_notification_ms` seguidamente `1_parallel_run_monolith` y el batch el ultimo `1_parallel_run_batch_service`
+Podemos probar nuestra nueva implementación del monolito v2:
 
-Una vez esta corriendo todo, si queremos comprobar el batch:
+```
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8082/payroll
+```
+
+Con todo desplegado, vamos a migrar las peticiones a la nueva implementación.
+
+```
+> docker-compose -f Ejemplo_1/2_docker-compose-proxy.yml up -d
+```
+
+Con esto desplegado, periódicamente se realizaría una comparación de los resultados generados por el monolito y el microservicio en nuestro microservicio batch.
+Podemos ejecutarlo de forma manual:
 ```
 curl -v  http://localhost:8082/notification/compare
 ```
-Devolvera true or false en caso de tener las BBDD equitativas, al menos equitativas las llamadas NO Consumidas.
 
-- docker compose por el momento no funciona. PROBAR BIEN EL DEPENDSON
+Devolvera ``true`` or ``false`` en caso de tener las BBDD equitativas.
+
+### **Paso 3**
+
+Una vez hayamos visto que todo funciona sacaríamos una versión final.
+
+```
+> docker-compose -f Ejemplo_1/3_docker-compose.yml up -d
+```
+
+```
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8084/payroll
+```
+
+```
+> docker-compose -f Ejemplo_1/3_docker-compose-proxy.yml up -d
+```
+
+```
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+```
 
 ## **Ejemplo 2. Github Scientist**
 

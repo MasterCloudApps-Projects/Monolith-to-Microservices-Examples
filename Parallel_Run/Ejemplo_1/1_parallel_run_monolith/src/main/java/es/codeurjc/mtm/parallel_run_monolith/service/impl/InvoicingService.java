@@ -1,7 +1,5 @@
 package es.codeurjc.mtm.parallel_run_monolith.service.impl;
 
-import static es.codeurjc.mtm.parallel_run_monolith.config.FeatureFlagsInitializer.FEATURE_USER_NOTIFICATION_MS;
-
 import es.codeurjc.mtm.parallel_run_monolith.model.Invoicing;
 import es.codeurjc.mtm.parallel_run_monolith.service.UserNotificationService;
 import java.util.Collection;
@@ -9,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 import org.ff4j.FF4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +17,12 @@ public class InvoicingService {
   private final AtomicLong nextId = new AtomicLong();
 
   private UserNotificationService userNotificationService;
-  private UserNotificationService userNotificationServiceMS;
   private FF4j ff4j;
 
   public InvoicingService(
       @Qualifier("userNotificationServiceImpl") UserNotificationService userNotificationService,
-      @Qualifier("userNotificationServiceMSImpl") UserNotificationService userNotificationServiceMS,
       FF4j ff4j) {
     this.userNotificationService = userNotificationService;
-    this.userNotificationServiceMS = userNotificationServiceMS;
     this.ff4j = ff4j;
 
   }
@@ -42,15 +36,10 @@ public class InvoicingService {
     invoicing.setId(id);
     this.invoicings.put(id, invoicing);
 
-    if (ff4j.check(FEATURE_USER_NOTIFICATION_MS)) {
-      userNotificationServiceMS.notify(
-          String.format("Payroll %s billed to %s of %s", invoicing.getId(), invoicing.getBillTo(),
-              invoicing.getTotal()));
-    } else {
-      userNotificationService.notify(
-          String.format("Payroll %s billed to %s of %s", invoicing.getId(), invoicing.getBillTo(),
-              invoicing.getTotal()));
-    }
+    userNotificationService.notify(
+        String.format("Payroll %s billed to %s of %s", invoicing.getId(), invoicing.getBillTo(),
+            invoicing.getTotal()));
+
 
   }
 

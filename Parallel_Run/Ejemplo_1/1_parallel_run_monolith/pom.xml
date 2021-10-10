@@ -70,19 +70,6 @@
 			<version>1.8.11</version>
 		</dependency>
 
-		<!-- JPA and PostgreSQL -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>${postgresql.version}</version>
-		</dependency>
-
-
-
 	</dependencies>
 
 	<build>
@@ -95,8 +82,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>13</source>
-					<target>13</target>
+					<source>15</source>
+					<target>15</target>
 				</configuration>
       </plugin>
     </plugins>

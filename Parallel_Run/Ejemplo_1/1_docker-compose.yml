@@ -1,0 +1,18 @@
+version: '3.0'
+services: 
+
+  1-parallel-run-monolith:
+    image: 1_parallel_run_monolith
+    container_name: '1_parallel_run_monolith'
+    restart: on-failure
+    build: 
+      context: ./1_parallel_run_monolith
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8080:8080
+    networks:
+      - app-network
+    
+networks:
+  app-network:
+    driver: bridge
