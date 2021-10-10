@@ -30,4 +30,4 @@ COPY --from=builder /project/target/*.jar /usr/src/app/
 EXPOSE 8080
 
 # Command executed with docker run
-CMD [ "java", "-jar", "1_parallel_run_notification_ms-0.0.1-SNAPSHOT.jar" ]
+CMD [ "java", "-jar", "1_parallel_run_batch_service-0.0.1-SNAPSHOT.jar" ]

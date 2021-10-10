@@ -1,27 +1,31 @@
-version: '2.9'
+version: '3.0'
 services: 
 
-  postgresMono:
+  postgres-mono:
     image: postgres
-    volumes:
-      - postgres-mono:/var/lib/postgresql/data
     ports:
-      - 5434:5432
+      - "5434:5432"
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    restart: always
+    networks:
+      - app-network
   
-  postgresMicro:
+  postgres-micro:
     image: postgres
-    volumes:
-      - postgres-micro:/var/lib/postgresql/data
     ports:
-      - 5433:5432
+      - "5433:5432"
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    restart: always
+    networks:
+      - app-network
+    depends_on:
+      - postgres-mono
 
   1-parallel-run-monolith:
     image: 1_parallel_run_monolith
@@ -35,7 +39,7 @@ services:
     networks:
       - app-network
     environment:
-      - DATABASE_HOST=postgresMono
+      - DATABASE_HOST=postgres-mono
       - USER_NOTIFICATION_MS_HOST=1-parallel-run-notification-ms
       - USER_NOTIFICATION_MS_PORT=8081
     depends_on: 
@@ -50,16 +54,30 @@ services:
       dockerfile: ./Dockerfile
     ports: 
       - 8081:8081
+    environment:
+      - DATABASE_HOST=postgres-micro
+    depends_on:
+      - postgres-micro
     networks:
       - app-network
+    
+  1-parallel-run-batch-service:
+    image: 1_parallel_run_batch_service
+    container_name: '1_parallel_run_batch_service'
+    restart: on-failure
+    build: 
+      context: ./Ejemplo_1/1_parallel_run_batch_service
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8082:8082
     environment:
-      - DATABASE_HOST=postgresMicro
-
-
-volumes:
-  postgres-mono:
-  postgres-micro:
-
+      - DATABASE_MICRO_HOST=postgres-micro
+      - DATABASE_MONO_HOST=postgres-mono
+    depends_on:
+      - 1-parallel-run-monolith
+    networks:
+      - app-network
+    
 networks:
   app-network:
     driver: bridge
