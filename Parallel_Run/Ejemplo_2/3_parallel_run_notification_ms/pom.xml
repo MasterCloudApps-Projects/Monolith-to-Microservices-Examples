@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>es.codeurjc.mtm</groupId>
-	<artifactId>1_parallel_run_monolith</artifactId>
+	<artifactId>3_parallel_run_notification_ms</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>1_parallel_run_monolith</name>
+	<name>3_parallel_run_notification_ms</name>
 	<description>Strangler Fig pattern in Java</description>
 	<properties>
 		<java.version>16</java.version>
@@ -56,18 +56,10 @@
 			<version>3.0.0</version>
 		</dependency>
 
-
-		<!-- FF4J dependencies -->
 		<dependency>
-			<groupId>org.ff4j</groupId>
-			<artifactId>ff4j-spring-boot-starter</artifactId>
-			<version>1.8.11</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.ff4j</groupId>
-			<artifactId>ff4j-web</artifactId>
-			<version>1.8.11</version>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.0</version>
 		</dependency>
 
 	</dependencies>

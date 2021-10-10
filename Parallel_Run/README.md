@@ -21,12 +21,12 @@ Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario
 Probamos que todo funciona correctamente:
 
 ```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
 ### **Paso 2**
 En este paso, tenemos que sacar una versión 2 del monolito, que registre en BBDD la notificación al usuario.
-También, debemos desarrollar nuestro microservicio, con una implementación fake, que no envíe la notificación pero registre que dicha notificación se ha enviado puesto que ambas implementaciones van a convivir y no queremos que se dupliquen las notificaciones.
+También, debemos desarrollar nuestro microservicio, con una implementación modificada, que no envíe realmente la notificación pero registre que la registre como que se hubiera enviado. Ambas implementaciones van a convivir y no queremos que se dupliquen las notificaciones.
 
 ![alt text](3.31_parallel_run.png)
 
@@ -37,7 +37,7 @@ También, debemos desarrollar nuestro microservicio, con una implementación fak
 Podemos probar nuestra nueva implementación del monolito v2:
 
 ```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8082/payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8082/payroll
 ```
 
 Con todo desplegado, vamos a migrar las peticiones a la nueva implementación.
@@ -46,37 +46,79 @@ Con todo desplegado, vamos a migrar las peticiones a la nueva implementación.
 > docker-compose -f Ejemplo_1/2_docker-compose-proxy.yml up -d
 ```
 
-Con esto desplegado, periódicamente se realizaría una comparación de los resultados generados por el monolito y el microservicio en nuestro microservicio batch.
-Podemos ejecutarlo de forma manual:
+En este momento, se registra en la BBDD desde el microservicio y desde el monolito el envío de notificaciones. Tenemos un microservicio con un batch que periódicamente realiza una comparación de los resultados generados.
+Hemos habilitado una opción para que podamos ejecutarlo de forma manual:
 ```
-curl -v  http://localhost:8082/notification/compare
+> curl -v  http://localhost:8082/notification/compare
 ```
 
 Devolvera ``true`` or ``false`` en caso de tener las BBDD equitativas.
 
 ### **Paso 3**
 
-Una vez hayamos visto que todo funciona sacaríamos una versión final.
+Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
 
 ```
 > docker-compose -f Ejemplo_1/3_docker-compose.yml up -d
 ```
 
 ```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8084/payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8084/payroll
 ```
 
+Migramos las peticiones a la versión final:
 ```
 > docker-compose -f Ejemplo_1/3_docker-compose-proxy.yml up -d
 ```
 
 ```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
 ## **Ejemplo 2. Github Scientist**
-
+Existen librerías que permiten comparar resultados de forma muy sencilla. En nuestro caso, vamos a proceder a realizar un ejemplo con:
 https://github.com/rawls238/Scientist4J
+
+El ejemplo anterior, la comparación se realizaba en background, a través de nuestro batch, sin embargo, puede ser necesario que implementemos esa lógica en tiempo real. Por contra, esta solución añade latencias y puede no ser eficiente utilizarla en nuestra solución.
+
+También podemos hacer una comparación en background, dejando el hilo principal de la aplicación procesando el flujo de las notificaciones del monolito y realizar una comparación con la librería de forma asíncrona en otro hilo, publicando la respuesta en una BBDD.
+
+Para aplicar este ejemplo, debemos tomar parte de la lógica utilizada en el anterior ejemplo del patrón y tener una versión Spy de nuestro microservicio, para evitar duplicar las notificaciones.
+
+Vamos a realizar un ejemplo de comparación en tiempo real de resultados a través de la librería presentada anteriormente:
+
+### **Paso 1**
+Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
+```
+> docker-compose -f Ejemplo_2/1_docker-compose.yml up 
+
+> docker-compose -f Ejemplo_2/1_docker-compose-proxy.yml up -d
+```
+
+Probamos que todo funciona correctamente:
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+```
+
+### **Paso 2**
+La librería tiene un uso sencillo, en caso de querer comparar dos operaciones síncronas:
+
+```java
+Experiment<Integer> e = new Experiment("foo");
+e.run(this::controlFunction, this::candidateFunction);
+```
+
+En caso de ser asíncronas:
+
+```java
+Experiment<Integer> e = new Experiment("foo");
+e.runAsync(this::controlFunction, this::candidateFunction);
+```
+
+En nuestro caso, debemos hacer una pequeña modificación al código del monolito y del microservicio, puesto que nuestras operaciones son `void`. Vamos a retornar un ``Boolean``¿?¿?¿?¿
+
+------- **TODO: REVISAR ESTO:**
 
 Lanzamos un ejemplo de esta libreria comparadora, equitativo al Diferencia(falta por subir un ejemplo) el cual hace una llamada a la funcion monolitica y otra a la nueva, creandote unas metricas comparativas que ayudan a ver si te sirve o no la funcionalidad implementada.
 
@@ -85,8 +127,29 @@ Esta actualmente en una clase TEST la cual testea las dos llamadas para traerte 
 -Falta implementar Diferencia
 
 
-## **Ejemplo 3. Canary Releasing**
+### **Paso 3**
 
+Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
+
+```
+> docker-compose -f Ejemplo_2/3_docker-compose.yml up -d
+```
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8084/payroll
+```
+
+Migramos las peticiones a la versión final:
+```
+> docker-compose -f Ejemplo_2/3_docker-compose-proxy.yml up -d
+```
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+```
+
+
+## **Ejemplo 3. Canary Releasing**
 
 ### **Paso 1**
 Lanzar una versión Canary para un subconjunto de usuarios, por si se produce algún problema sólo un pequeño grupo de usuarios se verán afectados.
@@ -180,3 +243,9 @@ En caso de cualquier problema siempre se puede hacer un rollback y redirigir de 
 ```
 > docker-compose -f  Ejemplo_3/1_docker-compose-proxy.yml up
 ```
+
+
+## **Ejemplo 4. Diferencia**
+Hacer un ejemplito con parallen run y Diferencia:
+- https://lordofthejars.github.io/diferencia-docs-site/diferencia/0.6.0/index.html
+- https://www.infoq.com/articles/tap-compare-diferencia/

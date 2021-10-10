@@ -27,7 +27,7 @@ WORKDIR /usr/src/app/
 COPY --from=builder /project/target/*.jar /usr/src/app/
 
 # Port
-EXPOSE 8080
+EXPOSE 8081
 
 # Command executed with docker run
-CMD [ "java", "-jar", "1_parallel_run_notification_ms-0.0.1-SNAPSHOT.jar" ]
+CMD [ "java", "-jar", "3_parallel_run_notification_ms-0.0.1-SNAPSHOT.jar" ]

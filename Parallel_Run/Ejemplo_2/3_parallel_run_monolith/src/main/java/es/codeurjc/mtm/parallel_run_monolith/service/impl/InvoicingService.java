@@ -16,13 +16,13 @@ public class InvoicingService {
   private final ConcurrentMap<Long, Invoicing> invoicings = new ConcurrentHashMap<>();
   private final AtomicLong nextId = new AtomicLong();
 
-  private UserNotificationService userNotificationService;
+  private UserNotificationService userNotificationServiceMS;
   private FF4j ff4j;
 
   public InvoicingService(
-      @Qualifier("userNotificationServiceImpl") UserNotificationService userNotificationService,
+      @Qualifier("userNotificationServiceMSImpl") UserNotificationService userNotificationServiceMS,
       FF4j ff4j) {
-    this.userNotificationService = userNotificationService;
+    this.userNotificationServiceMS = userNotificationServiceMS;
     this.ff4j = ff4j;
 
   }
@@ -36,7 +36,7 @@ public class InvoicingService {
     invoicing.setId(id);
     this.invoicings.put(id, invoicing);
 
-    userNotificationService.notify(
+    userNotificationServiceMS.notify(
         String.format("Payroll %s billed to %s of %s", invoicing.getId(), invoicing.getBillTo(),
             invoicing.getTotal()));
 
