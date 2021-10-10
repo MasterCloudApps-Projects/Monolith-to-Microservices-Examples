@@ -32,7 +32,7 @@ services:
     container_name: '1_parallel_run_monolith'
     restart: on-failure
     build: 
-      context: ./Ejemplo_1/1_parallel_run_monolith
+      context: ./1_parallel_run_monolith
       dockerfile: ./Dockerfile
     ports: 
       - 8080:8080
@@ -50,7 +50,7 @@ services:
     container_name: '1_parallel_run_notification_ms'
     restart: on-failure
     build: 
-      context: ./Ejemplo_1/1_parallel_run_notification_ms
+      context: ./1_parallel_run_notification_ms
       dockerfile: ./Dockerfile
     ports: 
       - 8081:8081
@@ -66,7 +66,7 @@ services:
     container_name: '1_parallel_run_batch_service'
     restart: on-failure
     build: 
-      context: ./Ejemplo_1/1_parallel_run_batch_service
+      context: ./1_parallel_run_batch_service
       dockerfile: ./Dockerfile
     ports: 
       - 8082:8082
