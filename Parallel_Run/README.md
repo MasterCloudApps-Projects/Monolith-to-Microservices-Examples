@@ -124,6 +124,39 @@ Lanzamos un ejemplo de esta libreria comparadora, equitativo al Diferencia(falta
 
 Esta actualmente en una clase TEST la cual testea las dos llamadas para traerte 1 notificacion
 
+### **Paso 1**
+Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
+```
+> docker-compose -f Ejemplo_1/1_docker-compose.yml up 
+
+> docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
+```
+
+Probamos que todo funciona correctamente:
+
+```
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+```
+### **Paso 3**
+
+Una vez hayamos visto que todo funciona sacaríamos una versión final.
+
+```
+> docker-compose -f Ejemplo_1/3_docker-compose.yml up -d
+```
+
+```
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8084/payroll
+```
+
+```
+> docker-compose -f Ejemplo_1/3_docker-compose-proxy.yml up -d
+```
+
+```
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+```
+
 -Falta implementar Diferencia
 
 
