@@ -52,7 +52,7 @@ Este microservicio, devuelve ``true`` or ``false`` en caso de tener las BBDD equ
 Hemos habilitado una opción para que podamos ejecutarlo de forma manual:
 
 ```
-> curl -v  http://localhost:8082/notification/compare
+> curl -v  http://localhost:8083/notification/compare
 ```
 
 Devuelve ``true`` y loguea:
@@ -68,6 +68,7 @@ Una vez hayamos visto que la nueva implementación en el microservicio genera lo
 > docker-compose -f Ejemplo_1/3_docker-compose.yml up -d
 ```
 
+Probamos que funcione correctamente:
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8084/payroll
 ```

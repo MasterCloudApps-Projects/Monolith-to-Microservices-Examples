@@ -12,7 +12,7 @@
 	<artifactId>2_parallel_run_monolith</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>2_parallel_run_monolith</name>
-	<description>Parallel run pattern in Java</description>
+	<description>Parallel Run pattern in Java</description>
 	<properties>
 		<java.version>16</java.version>
 	</properties>

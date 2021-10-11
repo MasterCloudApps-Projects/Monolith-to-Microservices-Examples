@@ -12,7 +12,7 @@
 	<artifactId>3_parallel_run_notification_ms</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>3_parallel_run_notification_ms</name>
-	<description>Strangler Fig pattern in Java</description>
+	<description>Parallel Run pattern in Java</description>
 	<properties>
 		<java.version>16</java.version>
 	</properties>

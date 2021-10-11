@@ -51,6 +51,64 @@ Probablemente el enfoque más simplista es escribir un programa que de forma per
 El principal problema es averiguar qué datos han cambiado realmente. El diseño del esquema puede complicar mucho esta tarea. 
 
 Podría comenzar a agregar estas marcas de tiempo usted mismo, pero esto podría agregar un trabajo significativo, y un sistema de captura de datos de cambios manejaría este problema de manera mucho más elegante.
+
+https://www.baeldung.com/jpa-optimistic-locking
+
+
+
+### **Paso 1**
+Partimos de nuestra aplicación monolítica que crea fidelizaciones del usuario.
+```
+> docker-compose -f Ejemplo_3/1_docker-compose-monolith.yml up 
+
+> docker-compose -f Ejemplo_3/1_docker-compose-proxy.yml up -d
+```
+
+Probamos que todo funciona correctamente:
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"customerId":456,"loyaltyAccount":"9860-3892"}' payment.service/loyalty
+```
+
+### **Paso 2**
+En este paso, tenemos nuestro microservicio que necesita de la información que insertamos en el monolito.
+Periódicamente se escanea la base de datos para ver qué datos han cambiado y se copien en el destino.
+Utilizamos dos propiedades para identificar los cambios del día:
+- ``creationTimestamp``
+- ``modificationTimestamp``
+
+
+docker run --name postgres-monolith-database -p 5432:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=monolith-db -e POSTGRES_USER=user -d postgres
+
+
+docker run --name postgres-ms-database -p 5433:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=ms-db -e POSTGRES_USER=user -d postgres
+
+
+```
+> docker-compose -f Ejemplo_3/2_docker-compose.yml up 
+```
+
+Con todo desplegado, vamos a ejecutar nuestro batch de forma manual y probemos si están los datos en nuestro microservicio:
+
+Hemos habilitado una opción para que podamos ejecutarlo de forma manual:
+
+```
+> curl -v  http://localhost:8083/loyalty/migration
+```
+
+Veamos si se encuentran los datos:
+```
+> curl -v  http://localhost:8081/loyalty
+```
+
+Se devuelven los datos del día.
+
+### **Paso 3**
+Podemos en este punto plantearnos dejar de utilizar el monolito y usar exclusivamente la funcionalidad del microservicio.
+
+
+
+## **Ejemplo 4. Debezium**
 (DEBEZIUM)
 https://www.paradigmadigital.com/dev/primeros-pasos-con-debezium/
 

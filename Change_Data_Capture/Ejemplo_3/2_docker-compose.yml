@@ -1,0 +1,60 @@
+version: '3.9'
+services: 
+  2-change-data-capture-loyalty-ms:
+    image: 2_change_data_capture_loyalty_ms
+    container_name: '2_change_data_capture_loyalty_ms'
+    restart: on-failure
+    build: 
+      context: ./2_change_data_capture_loyalty_ms
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8081:8080
+    environment:
+      - DATABASE_HOST=postgres-ms-database
+      - DATABASE_PORT=5432
+      - DATABASE_USER=user
+      - DATABASE_PASS=password
+      - DATABASE_DB=ms-db
+    depends_on: 
+      - postgres-ms-database
+    networks:
+      - app-network
+
+  postgres-ms-database:
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=ms-db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    restart: on-failure
+    networks:
+      - app-network
+
+  2-change-data-capture-batch-service:
+    image: 2_change_data_capture_batch_service
+    container_name: '2_change_data_capture_batch_service'
+    restart: on-failure
+    build: 
+      context: ./2_change_data_capture_batch_service
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8083:8083
+    environment:
+      - DATABASE_MS_HOST=postgres-ms-database
+      - DATABASE_MS_PORT=5432
+      - DATABASE_MS_USER=user
+      - DATABASE_MS_PASS=password
+      - DATABASE_MS_DB=ms-db
+      - DATABASE_MONOLITH_HOST=postgres-monolith-database
+      - DATABASE_MONOLITH_PORT=5432
+      - DATABASE_MONOLITH_USER=user
+      - DATABASE_MONOLITH_PASS=password
+      - DATABASE_MONOLITH_DB=monolith-db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
