@@ -18,7 +18,7 @@ public class UserNotificationController {
     this.userNotificationService = userNotificationService;
   }
 
-  @GetMapping({"/compare"})
+  @GetMapping({"/comparation"})
   public ResponseEntity<Boolean> areSameNotifications() {
     Boolean response = userNotificationService.compareAllNotifications();
     return ResponseEntity.ok(response);

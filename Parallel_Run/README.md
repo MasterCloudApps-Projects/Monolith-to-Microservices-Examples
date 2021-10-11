@@ -52,7 +52,7 @@ Este microservicio, devuelve ``true`` or ``false`` en caso de tener las BBDD equ
 Hemos habilitado una opción para que podamos ejecutarlo de forma manual:
 
 ```
-> curl -v  http://localhost:8083/notification/compare
+> curl -v  http://localhost:8083/notification/comparation
 ```
 
 Devuelve ``true`` y loguea:
