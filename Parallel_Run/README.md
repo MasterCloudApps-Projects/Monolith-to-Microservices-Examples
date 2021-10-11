@@ -26,7 +26,7 @@ Probamos que todo funciona correctamente:
 
 ### **Paso 2**
 En este paso, tenemos que sacar una versión 2 del monolito, que registre en BBDD la notificación al usuario.
-También, debemos desarrollar nuestro microservicio, con una implementación modificada, que no envíe realmente la notificación pero registre que la registre como que se hubiera enviado. Ambas implementaciones van a convivir y no queremos que se dupliquen las notificaciones.
+También, debemos desarrollar nuestro microservicio, con una implementación modificada, que no envíe realmente la notificación pero registre que la registre como que se hubiera enviado (``Spy``). Ambas implementaciones van a convivir y no queremos que se dupliquen las notificaciones.
 
 ![alt text](3.31_parallel_run.png)
 
@@ -47,12 +47,18 @@ Con todo desplegado, vamos a migrar las peticiones a la nueva implementación.
 ```
 
 En este momento, se registra en la BBDD desde el microservicio y desde el monolito el envío de notificaciones. Tenemos un microservicio con un batch que periódicamente realiza una comparación de los resultados generados.
+Este microservicio, devuelve ``true`` or ``false`` en caso de tener las BBDD equitativas.
+
 Hemos habilitado una opción para que podamos ejecutarlo de forma manual:
+
 ```
 > curl -v  http://localhost:8082/notification/compare
 ```
 
-Devolvera ``true`` or ``false`` en caso de tener las BBDD equitativas.
+Devuelve ``true`` y loguea:
+```
+> 2_parallel_run_batch_service      | 2021-10-11 09:49:25.334  INFO 1 --- [nio-8083-exec-2] e.c.m.p.service.UserNotificationService  : ConsumitionsCount: 6 for mono size: 6 and micro size: 6
+```
 
 ### **Paso 3**
 
@@ -181,8 +187,22 @@ Migramos las peticiones a la versión final:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
+## **Ejemplo 3. Diferencia**
+Hacer un ejemplito con parallen run y Diferencia:
+- https://lordofthejars.github.io/diferencia-docs-site/diferencia/0.6.0/index.html
+- https://www.infoq.com/articles/tap-compare-diferencia/
 
-## **Ejemplo 3. Canary Releasing**
+### **Paso 1**
+TODO...
+
+### **Paso 2**
+TODO...
+
+### **Paso 3**
+TODO...
+
+
+## **Ejemplo 4. Canary Releasing**
 
 ### **Paso 1**
 Lanzar una versión Canary para un subconjunto de usuarios, por si se produce algún problema sólo un pequeño grupo de usuarios se verán afectados.
@@ -190,9 +210,9 @@ Lanzar una versión Canary para un subconjunto de usuarios, por si se produce al
 Hemos configurado un nginx como `Load Balancer` que nos permite balancear la carga utilizando pesos.
 
 ```
-> docker-compose -f Ejemplo_3/1_docker-compose.yml up 
+> docker-compose -f Ejemplo_4/1_docker-compose.yml up 
 
-> docker-compose -f Ejemplo_3/1_docker-compose-proxy.yml up -d
+> docker-compose -f Ejemplo_4/1_docker-compose-proxy.yml up -d
 ```
 
 La configuración por defecto es la siguiente:
@@ -225,7 +245,7 @@ Todas las peticiones van al monolito.
 Lanzamos una nueva versión de la aplicación.
 
 ```
-> docker-compose -f Ejemplo_3/2_docker-compose.yml up 
+> docker-compose -f Ejemplo_4/2_docker-compose.yml up 
 ```
 
 Podemos probarla utilizando peticiones directas al monolito v2 y al microservicio
@@ -263,7 +283,7 @@ Facilitamos diferentes archivos de configuración que se irían aplicando según
 Arrancamos una nueva configuración del nginx:
 
 ```
-> docker-compose -f Ejemplo_3/3_docker-compose-proxy.yml up 
+> docker-compose -f Ejemplo_4/3_docker-compose-proxy.yml up 
 ```
 
 Podemos realiar varias peticiones para verificar de forma aproximada los pesos:
@@ -274,11 +294,6 @@ curl payment.service/inventory
 
 En caso de cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito inicial.
 ```
-> docker-compose -f  Ejemplo_3/1_docker-compose-proxy.yml up
+> docker-compose -f  Ejemplo_4/1_docker-compose-proxy.yml up
 ```
 
-
-## **Ejemplo 4. Diferencia**
-Hacer un ejemplito con parallen run y Diferencia:
-- https://lordofthejars.github.io/diferencia-docs-site/diferencia/0.6.0/index.html
-- https://www.infoq.com/articles/tap-compare-diferencia/

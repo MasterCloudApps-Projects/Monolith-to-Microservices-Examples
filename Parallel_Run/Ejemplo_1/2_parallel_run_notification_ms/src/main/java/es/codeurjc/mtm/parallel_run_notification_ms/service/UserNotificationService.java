@@ -16,7 +16,7 @@ public class UserNotificationService {
   private NotificationRepository notificationRepository;
 
   public void notify(String message) {
-    log.info(message);
+    //log.info(message); Not logging, Spy version.
     Notification notification = new Notification();
     notification.setMessage(message);
     notificationRepository.save(notification);

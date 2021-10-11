@@ -4,7 +4,6 @@ import es.codeurjc.mtm.parallel_run_batch_service.model.Notification;
 import es.codeurjc.mtm.parallel_run_batch_service.repository.micro.MicroRepository;
 import es.codeurjc.mtm.parallel_run_batch_service.repository.mono.MonolithRepository;
 import java.util.List;
-import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ public class UserNotificationService {
   private MicroRepository microRepository;
 
   @Autowired
-  UserNotificationService(MicroRepository microRepository, MonolithRepository monolithRepository){
+  UserNotificationService(MicroRepository microRepository, MonolithRepository monolithRepository) {
     this.monolithRepository = monolithRepository;
     this.microRepository = microRepository;
   }
@@ -27,21 +26,34 @@ public class UserNotificationService {
     List<Notification> notificationsMono = monolithRepository.getAllNotConsumedNotifications();
     List<Notification> notificationsMicro = microRepository.getAllNotConsumedNotifications();
 
-    for (Notification n :notificationsMono){
-      boolean consumeOneMicro = false;
-      for(Notification notification : notificationsMicro) {
-        if(!consumeOneMicro && !notification.isConsumed() && n.getMessage().equals(notification.getMessage())){
-          notificationsMicro.forEach(notification1 -> {if(notification1.getId()==notification.getId()){notification1.setConsumed(true);}});
-          notificationsMono.forEach(notification1 -> {if(notification1.getId()==n.getId()){notification1.setConsumed(true);}});
-          consumeOneMicro = true;
-        }
-      };
-    };
-    Predicate<Notification> consumed = Notification::isConsumed;
-    int consumedMono = (int) notificationsMono.stream().filter(consumed).count();
-    int consumedMicro = (int) notificationsMicro.stream().filter(consumed).count();
+    int consumitionsCount = 0;
+    for (Notification notificationMono : notificationsMono) {
+      boolean notificationConsumed = false;
 
-    return notificationsMicro.size() == consumedMicro && notificationsMono.size() == consumedMono;
+      for (Notification notificationMicro : notificationsMicro) {
+        if (!notificationConsumed && !notificationMicro.isConsumed() && notificationMono
+            .getMessage()
+            .equals(notificationMicro.getMessage())) {
+          notificationConsumed = true;
+          notificationMicro.setConsumed(true);
+          notificationMono.setConsumed(true);
+          consumitionsCount++;
+        }
+      }
+    }
+
+    monolithRepository.saveAll(notificationsMono);
+    microRepository.saveAll(notificationsMicro);
+
+    log.info("ConsumitionsCount: {} for mono size: {} and micro size: {}", consumitionsCount,  notificationsMono.size(), notificationsMicro.size());
+
+    if (consumitionsCount == notificationsMicro.size() && consumitionsCount == notificationsMono
+        .size()) {
+      return true;
+    }
+
+    return false;
+
   }
 
 }

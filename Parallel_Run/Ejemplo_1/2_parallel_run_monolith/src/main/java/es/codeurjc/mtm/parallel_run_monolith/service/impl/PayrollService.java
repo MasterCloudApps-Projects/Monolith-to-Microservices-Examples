@@ -41,13 +41,12 @@ public class PayrollService {
     payroll.setId(id);
     this.payrolls.put(id, payroll);
 
-    if (ff4j.check(FEATURE_USER_NOTIFICATION_MS)) {
-      userNotificationServiceMS.notify(String.format("Payroll %s shipped to %s of %s", payroll.getId(), payroll.getShipTo(),
-          payroll.getTotal()));
-    } else {
-      userNotificationService.notify(String.format("Payroll %s shipped to %s of %s", payroll.getId(), payroll.getShipTo(),
-          payroll.getTotal()));
-    }
+    userNotificationServiceMS.notify(String.format("Payroll %s shipped to %s of %s", payroll.getId(), payroll.getShipTo(),
+        payroll.getTotal()));
+
+    userNotificationService.notify(String.format("Payroll %s shipped to %s of %s", payroll.getId(), payroll.getShipTo(),
+        payroll.getTotal()));
+
 
 
   }

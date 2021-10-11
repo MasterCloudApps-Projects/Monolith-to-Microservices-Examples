@@ -19,8 +19,7 @@ public class UserNotificationController {
   }
 
   @GetMapping({"/compare"})
-  public ResponseEntity<Boolean> areSameNotifications()
-      throws ExecutionException, InterruptedException {
+  public ResponseEntity<Boolean> areSameNotifications() {
     Boolean response = userNotificationService.compareAllNotifications();
     return ResponseEntity.ok(response);
   }

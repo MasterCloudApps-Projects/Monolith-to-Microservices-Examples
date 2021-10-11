@@ -42,15 +42,13 @@ public class InvoicingService {
     invoicing.setId(id);
     this.invoicings.put(id, invoicing);
 
-    if (ff4j.check(FEATURE_USER_NOTIFICATION_MS)) {
-      userNotificationServiceMS.notify(
-          String.format("Payroll %s billed to %s of %s", invoicing.getId(), invoicing.getBillTo(),
-              invoicing.getTotal()));
-    } else {
-      userNotificationService.notify(
-          String.format("Payroll %s billed to %s of %s", invoicing.getId(), invoicing.getBillTo(),
-              invoicing.getTotal()));
-    }
+    userNotificationServiceMS.notify(
+        String.format("Payroll %s billed to %s of %s", invoicing.getId(), invoicing.getBillTo(),
+            invoicing.getTotal()));
+    userNotificationService.notify(
+        String.format("Payroll %s billed to %s of %s", invoicing.getId(), invoicing.getBillTo(),
+            invoicing.getTotal()));
+  
 
   }
 

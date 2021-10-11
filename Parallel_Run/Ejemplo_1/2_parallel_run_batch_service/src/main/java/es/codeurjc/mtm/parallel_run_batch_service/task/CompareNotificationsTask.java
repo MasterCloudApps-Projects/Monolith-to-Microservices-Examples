@@ -17,6 +17,6 @@ public class CompareNotificationsTask {
 
   @Scheduled(cron = "${tasks.compare-notifications.cron}")
   public void execute() throws ExecutionException, InterruptedException {
-    log.info(userNotificationService.compareAllNotifications().toString());
+    log.info("Result: {}", userNotificationService.compareAllNotifications().toString());
   }
 }

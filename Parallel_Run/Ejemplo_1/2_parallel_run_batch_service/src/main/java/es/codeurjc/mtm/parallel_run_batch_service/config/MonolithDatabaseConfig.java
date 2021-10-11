@@ -1,11 +1,9 @@
 package es.codeurjc.mtm.parallel_run_batch_service.config;
 
+import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.sql.DataSource;
-
-import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +15,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
 
 @Configuration
 @EnableTransactionManagement
@@ -32,13 +29,15 @@ public class MonolithDatabaseConfig {
   public MonolithDatabaseConfig() {
     super();
   }
+
   @Bean
   public DataSource monolithDataSource() {
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
     dataSource.setUrl(Preconditions.checkNotNull(env.getProperty("mono.datasource.url")));
     dataSource.setUsername(Preconditions.checkNotNull(env.getProperty("mono.datasource.username")));
     dataSource.setPassword(Preconditions.checkNotNull(env.getProperty("mono.datasource.password")));
-    dataSource.setDriverClassName(Preconditions.checkNotNull(env.getProperty("mono.datasource.driver-class-name")));
+    dataSource.setDriverClassName(
+        Preconditions.checkNotNull(env.getProperty("mono.datasource.driver-class-name")));
     return dataSource;
   }
 
@@ -60,6 +59,7 @@ public class MonolithDatabaseConfig {
 
     return em;
   }
+
   @Bean
   public PlatformTransactionManager monolithTransactionManager() {
     JpaTransactionManager transactionManager = new JpaTransactionManager();
