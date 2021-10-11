@@ -28,7 +28,9 @@ public class UserNotificationServiceImpl implements UserNotificationService {
   @Override
   public String getNotify(Long id) {
 
-    return "1";//this.notifications.get(id);
+    return this.notifications.get(id);
   }
+
+  
 
 }

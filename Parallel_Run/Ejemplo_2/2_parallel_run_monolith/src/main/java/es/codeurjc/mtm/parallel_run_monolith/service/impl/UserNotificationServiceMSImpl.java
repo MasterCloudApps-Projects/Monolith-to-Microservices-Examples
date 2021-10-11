@@ -36,7 +36,7 @@ public class UserNotificationServiceMSImpl implements UserNotificationService {
     String url = "http://" + USER_NOTIFICATION_MS_HOST + ":" + USER_NOTIFICATION_MS_PORT + "/notification/"+id;
     String response = restTemplate.getForObject(url, String.class);
     CompletableFuture.completedFuture(response);
-    return "1";
+    return response;
   }
 
 
