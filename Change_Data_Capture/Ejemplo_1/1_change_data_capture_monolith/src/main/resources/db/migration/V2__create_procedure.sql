@@ -1,20 +1,15 @@
-CREATE OR REPLACE FUNCTION restful_post(ajson_text text)
- RETURNS text
- LANGUAGE plperlu
- SECURITY DEFINER
-AS $function$
-  use REST::Client;  
-  use Encode qw(encode);
-  my $client = REST::Client->new();    
-  $client->getUseragent()->proxy( 'https', 'http://payment.service/' ); # use for proxy authentication
-  $client->addHeader('Content-Type', 'application/json');          # headers
-  $client->POST('loyalty/printer', encode('UTF-8', $_[0]));        # encoding
-  return $client->responseContent();  
-$function$  
-;
+CREATE OR REPLACE FUNCTION restful_post()
+  RETURNS TRIGGER AS $$
+  BEGIN
+    SELECT content::json->>'form'
+    FROM http_post('http://payment.service/loyalty/printer',
+                 'myvar=myval&foo=bar',
+                 'application/x-www-form-urlencoded');
+  END;
+  $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER loyalty_insertion_trigger AFTER INSERT
+CREATE TRIGGER restful_post_trigger AFTER INSERT
     ON loyalty
     FOR EACH ROW
-    EXECUTE PROCEDURE  restful_post ( 'STRING EXSAMPLE' );
+    EXECUTE PROCEDURE  restful_post();
 

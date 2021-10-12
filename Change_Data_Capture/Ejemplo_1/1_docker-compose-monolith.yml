@@ -12,8 +12,7 @@ services:
     environment:
       - DATABASE_HOST=postgres-database
       - DATABASE_PORT=5432
-      - DATABASE_USER=user
-      - DATABASE_PASS=password
+      - DATABASE_USER=postgres
       - DATABASE_DB=loyalty-db
     depends_on: 
       - postgres-database
@@ -21,7 +20,7 @@ services:
       - app-network
 
   postgres-database:
-    image: garethflowers/postgres-plperl-server
+    image: ycheung/postgresql-http
     ports:
       - "5432:5432"
     restart: always
@@ -29,8 +28,8 @@ services:
       - app-network
     environment: 
       - POSTGRES_DB=loyalty-db
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+
 
 networks:
   app-network:
