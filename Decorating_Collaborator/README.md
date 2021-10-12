@@ -1,13 +1,14 @@
-# Decorating Collaborator
+# **Decorating Collaborator**
 
 Vamos a proceder a la realización y explicación del patrón ``Decorating Collaborator``. Este patrón se basa en la aplicación de un proxy para una vez llegue la respuesta del monolito hacer una operación en un nuevo microservicio. Este microservicio podrá hacer uso o no de información que debe exponer el monolito.
-
 
 ## **Ejemplo 1. Nueva funcionalidad**
 
 En esta ocasión hemos planteado un nuevo enunciado.
+<div align="center">
 
 ![alt text](3.32_decorating_collaborator.png)
+</div>
 
 ### **Paso 1**
 
@@ -65,7 +66,12 @@ Se crea el usuario en el microservicio nuevo y se le añaden 10 puntos:
 > curl payment.service/loyalty/Juablaz
 ```
 
-Es posible incluso que sea necesario recuperar más información del monolito, en ese caso tendríamos que exponer un endpoint en el monolito y realizar la petición desde el microservicio.
+Es posible incluso que sea necesario recuperar más información del monolito, en ese caso tendríamos que exponer un endpoint en el monolito y realizar la 
+petición desde el microservicio.
+
+<div align="center">
+
 ![alt text](3.33_decorating_collaborator.png)
+</div>
 
 Esto podría generar una carga adicional, además introduce una dependencia circular, podría ser mejor cambiar el monolito para proporcionar la información requerida cuando se complete nuestra petición de crear un pedido. Sin embargo, esto requeriría cambiar el código del monolito o quizás usar otro patrón, que estudiaremos a continuación `Change Data Capture`.

@@ -50,8 +50,8 @@ services:
     ports: 
       - 8082:8082
     environment:
-      - PAYROLL_CONSUMER_TOPIC=payroll-v2-topic
-      - INVOICING_CONSUMER_TOPIC=invoicing-v2-topic
+      - PAYROLL_CONSUMER_TOPIC=payroll-all-msg-topic
+      - INVOICING_CONSUMER_TOPIC=invoicing-all-msg-topic
       - PAYROLL_PRODUCER_TOPIC=payroll-ms-topic
       - INVOICING_PRODUCER_TOPIC=invoicing-topic
       - KAFKA_HOST=kafka
@@ -60,23 +60,7 @@ services:
     networks:
       - app-network
 
-  strangler-fig-producer:
-    image: strangler_fig_producer
-    container_name: 'strangler_fig_producer'
-    restart: on-failure
-    build: 
-      context: ./strangler_fig_producer
-      dockerfile: ./Dockerfile
-    ports: 
-      - 9090:9090
-    environment:
-      - PAYROLL_TOPIC=payroll-v2-topic
-      - INVOICING_TOPIC=invoicing-v2-topic
-      - KAFKA_HOST=kafka
-      - KAFKA_PORT=9092
-      - CONSUMER_GROUP_ID=payment-service-group
-    networks:
-      - app-network
+
 
 networks:
   app-network:

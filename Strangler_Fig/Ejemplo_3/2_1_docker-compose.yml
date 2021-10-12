@@ -18,8 +18,6 @@ services:
       - KAFKA_HOST=kafka
       - KAFKA_PORT=9092
       - CONSUMER_GROUP_ID=payment-service-group
-    depends_on: 
-      - kafka
   
   2-strangler-fig-payroll-ms:
     image: 2_strangler_fig_payroll_ms
@@ -32,7 +30,6 @@ services:
       - 8081:8081
     depends_on: 
       - 2-strangler-fig-monolith
-      - kafka
     environment:
       - MONOLITH_HOST=2-strangler-fig-monolith
       - MONOLITH_PORT=8080

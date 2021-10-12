@@ -1,4 +1,11 @@
-# Strangler Fig
+# **Strangler Fig**
+
+<div align="center">
+
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Strangler_Fig/README.md)
+[![es](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Strangler_Fig/README.es.md)
+</div>
+
 
 The ``Strangler Fig`` pattern consists of an incremental and gradual migration of the specific functionalities located within the monolith to independent microservices.
 

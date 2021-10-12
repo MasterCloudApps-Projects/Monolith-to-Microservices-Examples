@@ -1,9 +1,14 @@
-# Strangler Fig
+# **Strangler Fig**
+<div align="center">
+
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Strangler_Fig/README.md)
+[![es](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Strangler_Fig/README.es.md)
+</div>
 
 El patrón ``Strangler Fig`` consiste en la migración de forma incremental y gradual de las funcionalidades específicas situadas dentro del monolito a microservicios independientes.
 
 El patrón se divide en 3 pasos:
-1. Aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
+1. Aplicación monolítica. Las peticiones y funcionalidades se responden dentro del mismo.
 2. Implementación de la funcionalidad en un nuevo microservicio.
 3. Con su nueva implementación lista, migramos las peticiones del monolito al microservicio.
 
@@ -37,14 +42,14 @@ A continuación, se muestra una imagen del estado inicial y final de la aplicaci
 </div>
 
 ### **Paso 1**
-Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
+Tenemos nuestra aplicación monolítica. Las peticiones y funcionalidades se responden dentro del mismo.
 ```
 > docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up 
 
 > docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
 ```
 
-Nuestro proxy, está configurado para dirigir todas las peticiones al monolito existente. 
+Nuestro proxy está configurado para dirigir todas las peticiones al monolito existente. 
 
 ```
 server {
@@ -103,7 +108,7 @@ Probemos a realizar peticiones:
 > curl payment.service/inventory
 ```
 
-Ahora la respuesta contará con un prefijo ``[MS]`` que hemos añadido a los datos de ejemplo dados de alta de forma automática en el microservicio.
+Desde este momento, la respuesta contará con un prefijo ``[MS]`` que hemos añadido a los datos de ejemplo dados de alta de forma automática en el microservicio.
 
 En caso de cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito.
 
@@ -125,10 +130,10 @@ Si deseamos aplicar el patrón sobre ``Payroll``, que utiliza una funcionalidad 
 
 ¿Cómo encaja esto en nuestros 3 pasos?:
 
-1. Nuestro monolito, en caso de no disponer de proxy, debemos añadir uno que permita dirigir las peticiones.
-2. Con el proxy activo, realizamos la extracción de nuestro microservicio. Se podría realizar en varios pasos:
+1. En caso de no disponer de proxy, debemos añadir uno que permita dirigir las peticiones. 
+2. Con el proxy activo, realizamos la extracción a nuestro microservicio. Se podría realizar en varios pasos:
     - Creación el microservicio vacío, sin funcionalidad retornando ``501 Not Implemented``. Se recomienda llevarlo a producción para familiarizarnos con el proceso de despliegue.
-    - Implementación la funcionalidad del microservicio.
+    - Implementación de la funcionalidad del microservicio.
 3. Movemos las peticiones del monolito al microservicio de forma progresiva. Si hay un error podemos redirigir las peticiones de nuevo al monolito.
 
 <div align="center">
@@ -174,7 +179,7 @@ Se loguea la notificación en el monolito nuevo (``v2``), por lo tanto la comuni
 Payroll 3 shipped to Juablaz of 220.0
 ```
 
-Las peticiones a través del proxy ``payment.service`` siguen llegando al monolito anterior pero, hemos probado el correcto funcionamiento del nuevo monolito y del microservicio.
+Las peticiones a través del proxy ``payment.service`` siguen llegando al monolito anterior, pero hemos probado el correcto funcionamiento del nuevo monolito y del microservicio.
 
 
 ### **Paso 3**
@@ -205,7 +210,7 @@ Podemos probar nuestra aplicación:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
-Se loguea la notificación en el monolito v2:
+Se loguea la notificación en el monolito ``v2``:
 ```
 Payroll 3 shipped to Juablaz of 320.0
 ```
@@ -216,7 +221,7 @@ En este punto podemos plantearnos quitar la versión 1 del monolito:
 > docker-compose -f  Ejemplo_2/1_docker-compose_monolith.yml down
 ```
 
-¿Y qué ocurre si hemos tenido algún problema en la nueva versión?
+¿Qué ocurre si hemos tenido algún problema en la nueva versión?
 Podemos rápidamente, cargar la configuración del proxy antigua:
 
 ```
@@ -229,6 +234,7 @@ De esta forma, las peticiones vuelven al monolito antiguo.
 
 ## **Ejemplo 3. Interceptación de mensajes.**
 ____________________________________________________________
+En este ejemplo no hemos añadido un proxy para redirigir las peticiones puesto que el patrón no se basa en interceptar las peticiones HTTP, si no en interceptar y redirigir los mensajes de la cola de mensajería.
 
 ### **Paso 1**
 Tenemos un monolito que recibe mensajes a través de una cola. 
@@ -243,7 +249,7 @@ Está formado por dos topics: `invoicing-v1-topic` y `payroll-v1-topic`.
 ```
 > docker-compose -f  Ejemplo_3/1_docker-compose.yml up
 
-> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up
+> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up -d
 ```
 
 Hagamos una prueba a través de una petición:
@@ -257,7 +263,7 @@ Podemos ver cómo se loguea en nuestro monolito:
 ```
 
 Tenemos dos posibles casuísticas:
-- Podemos cambiar el código monolito.
+- Podemos cambiar el código del monolito.
 - No podemos cambiar el código del monolito.
 
 ## **Podemos cambiar el código del monolito**
@@ -268,9 +274,13 @@ Tenemos dos posibles casuísticas:
 ![alt text](3.18_strangler_fig_pattern.png)
 </div>
 
-Simplemente tenemos que modificar el código del monolito para ignorar las peticiones de ``Payroll``, ya no tendrá configurado el `payroll-v1-topic` del que recibía mensajes.
+Tenemos que modificar el código del monolito para ignorar las peticiones de ``Payroll``. Ya no tendrá configurado el `payroll-v1-topic` del que recibía mensajes. Además, necesitamos exponer el endpoint de ``Notification`` en el monolito para poder enviar notificaciones desde el microservicio. Por tanto, necesitamos una versión ``v2`` del monolito.
 
-La complicación surge si necesitamos realizar un despliegue en caliente, sin parada de servicio. Para ello es necesario que cambiemos los topics de las colas a los que nos conectamos y desde el `` monolito-v2`` y a las que escribimos desde el ``producer`` porque si son las mismas que las del ``monolito-v1`` y ambas implementaciones conviven, se estarían procesando los datos por duplicado (en caso de poner diferente group-id) o balanceado (en caso de poner el mismo group-id).
+La complicación surge si necesitamos realizar un despliegue en caliente, sin parada de servicio. 
+- Para ello necesitamos crear nuevos topics a los que escribimos desde el ``producer`` y a los que nos conectamos desde el ``monolito-v2``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
+
+
+Vamos a optar por la ``Opción 1``, ya que la ``Opción 2`` la realizamos en la casuística en la que NO podemos cambiar el código del monolito.
 
 ------
 NOTA: 
@@ -285,48 +295,49 @@ Se haría:
 ```
 ------
 
-Vamos a ejecutar el ejemplo siguiendo el patrón, primero la implementación y luego migrando las "peticiones":
+Vamos a ejecutar el ejemplo siguiendo el patrón, primero la implementación y luego migrando las "peticiones", en este caso los mensajes de la cola:
 
 ```
-> docker-compose -f  Ejemplo_3/2_docker-compose.yml up
+> docker-compose -f  Ejemplo_3/2_1_docker-compose.yml up
+```
+
+Podemos probar nuestra nueva implementación:
+```
+> curl -v localhost:8082/payroll
 ```
 
 ### **Paso 3**
-Vamos a migrar las "peticiones", en este caso, migrar los topics a los que escribimos:
+Vamos a migrar las "peticiones", en este caso, migrar los mensajes a nuevos topics donde escribir:
 ```
-> docker-compose -f  Ejemplo_3/2_docker-compose-producer.yml up
+> docker-compose -f  Ejemplo_3/3_1_docker-compose-producer.yml up -d
 ```
 
-
+Probemos que funciona correctamente:
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
-
-> curl -v -H "Content-Type: application/json" -d '{"billTo":"Juablaz","total":220}' localhost:9090/messages/send-invoicing
 ```
 
+Se loguea en nuestro monolito ``v2``:
 ```
 > Payroll 3 shipped to Juablaz of 220.0
-
-> Invoicing 3 billed to Juablaz of 220.0
 ```
 
 Para confirmarlo, hagamos una petición al microservicio para ver si tiene el dato:
-> curl localhost:8081/payroll
-
-Contiene nuestro mensaje:
-```
-{"id":3,"shipTo":"Juablaz","total":220.0}
-```
+````
+> curl localhost:8081/payroll/3
+````
 
 En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
 ```
-> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up
+> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up -d
 ```
 
 ## **NO podemos cambiar el código del monolito**
+### **Paso 2**
+
 ![alt text](3.17_strangler_fig_pattern.png)
 
-En este caso no podemos tocar el monolito, por lo que necesitamos que exclusivamente lleguen mensajes de `Invoicing` al monolito porque no podemos quitar el procesado de los que llegan a `Payroll`.
+En este caso no podemos tocar el monolito. Necesitamos que exclusivamente lleguen mensajes de `Invoicing` al monolito porque no podemos quitar el procesado de los que llegan a `Payroll`. Además, no podemos loguear notificaciones desde el microservicio, puesto que tendríamos que exponer un endpoint como hemos hecho en el ejemplo anterior.
 
 Hemos creado el siguiente flujo:
 - Llega una petición POST a `strangler-fig-producer`.
@@ -335,6 +346,10 @@ Hemos creado el siguiente flujo:
     - `payroll-topic` - Monolito
     - `payroll-ms-topic` - Payroll
 - El topic `payroll-topic` se quedaría sin uso.
+
+La complicación surge si necesitamos realizar un despliegue en caliente,  sin parada de servicio como hemos explicado en el anterior ejemplo. 
+- Para ello necesitamos crear nuevos topics a los que escribimos desde el ``producer`` y a los que nos conectamos desde el ``cbr``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
+
 
 ```
 > docker-compose -f  Ejemplo_3/3_docker-compose.yml up
@@ -358,7 +373,7 @@ Hemos creado el siguiente flujo:
 > curl localhost:8080/invoicing/3
 ```
 
-# Enlaces de interes:
+# Enlaces de interés:
 
 > https://github.com/javieraviles/split-the-monolith
 
