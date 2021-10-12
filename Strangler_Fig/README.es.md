@@ -226,3 +226,144 @@ Podemos rápidamente, cargar la configuración del proxy antigua:
 De esta forma, las peticiones vuelven al monolito antiguo.
 
 <br>
+
+## **Ejemplo 3. Interceptación de mensajes.**
+____________________________________________________________
+
+### **Paso 1**
+Tenemos un monolito que recibe mensajes a través de una cola. 
+Para ello, hemos creado también un productor de mensajes `strangler_fig_producer` y hemos configurado un sistema de colas basado en Kafka.
+Está formado por dos topics: `invoicing-v1-topic` y `payroll-v1-topic`.
+
+<div align="center">
+
+![alt text](3.16_strangler_fig_pattern.png)
+</div>
+
+```
+> docker-compose -f  Ejemplo_3/1_docker-compose.yml up
+
+> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up
+```
+
+Hagamos una prueba a través de una petición:
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+```
+
+Podemos ver cómo se loguea en nuestro monolito: 
+```
+> Payroll 3 shipped to Juablaz of 220.0
+```
+
+Tenemos dos posibles casuísticas:
+- Podemos cambiar el código monolito.
+- No podemos cambiar el código del monolito.
+
+## **Podemos cambiar el código del monolito**
+### **Paso 2**
+
+<div align="center">
+
+![alt text](3.18_strangler_fig_pattern.png)
+</div>
+
+Simplemente tenemos que modificar el código del monolito para ignorar las peticiones de ``Payroll``, ya no tendrá configurado el `payroll-v1-topic` del que recibía mensajes.
+
+La complicación surge si necesitamos realizar un despliegue en caliente, sin parada de servicio. Para ello es necesario que cambiemos los topics de las colas a los que nos conectamos y desde el `` monolito-v2`` y a las que escribimos desde el ``producer`` porque si son las mismas que las del ``monolito-v1`` y ambas implementaciones conviven, se estarían procesando los datos por duplicado (en caso de poner diferente group-id) o balanceado (en caso de poner el mismo group-id).
+
+------
+NOTA: 
+Hemos configurado nuestro kafka para que automáticamente cree topics si no los encuentra, `KAFKA_AUTO_CREATE_TOPICS_ENABLE`, si esta configuración no está habilitada sería necesario conectarse al contenedor docker y ejecutar un comando. 
+
+Se haría:
+
+```
+> docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic payroll-v2-topic
+
+> docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic invoicing-v2-topic
+```
+------
+
+Vamos a ejecutar el ejemplo siguiendo el patrón, primero la implementación y luego migrando las "peticiones":
+
+```
+> docker-compose -f  Ejemplo_3/2_docker-compose.yml up
+```
+
+### **Paso 3**
+Vamos a migrar las "peticiones", en este caso, migrar los topics a los que escribimos:
+```
+> docker-compose -f  Ejemplo_3/2_docker-compose-producer.yml up
+```
+
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+
+> curl -v -H "Content-Type: application/json" -d '{"billTo":"Juablaz","total":220}' localhost:9090/messages/send-invoicing
+```
+
+```
+> Payroll 3 shipped to Juablaz of 220.0
+
+> Invoicing 3 billed to Juablaz of 220.0
+```
+
+Para confirmarlo, hagamos una petición al microservicio para ver si tiene el dato:
+> curl localhost:8081/payroll
+
+Contiene nuestro mensaje:
+```
+{"id":3,"shipTo":"Juablaz","total":220.0}
+```
+
+En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
+```
+> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up
+```
+
+## **NO podemos cambiar el código del monolito**
+![alt text](3.17_strangler_fig_pattern.png)
+
+En este caso no podemos tocar el monolito, por lo que necesitamos que exclusivamente lleguen mensajes de `Invoicing` al monolito porque no podemos quitar el procesado de los que llegan a `Payroll`.
+
+Hemos creado el siguiente flujo:
+- Llega una petición POST a `strangler-fig-producer`.
+- Genera un mensaje a la cola de Kafka a los dos posibles topics `invoicing-all-msg-topic`, `payroll-all-msg-topic`
+- Tenemos un microservicio de enrutamiento basado en contenido `strangler-fig-cbr` que consume y redirige los topics:
+    - `payroll-topic` - Monolito
+    - `payroll-ms-topic` - Payroll
+- El topic `payroll-topic` se quedaría sin uso.
+
+```
+> docker-compose -f  Ejemplo_3/3_docker-compose.yml up
+```
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+
+> curl -v -H "Content-Type: application/json" -d '{"billTo":"Juablaz","total":220}' localhost:9090/messages/send-invoicing
+```
+
+```
+> Payroll 3 shipped to Juablaz of 220.0
+
+> Invoicing 3 billed to Juablaz of 220.0
+```
+
+```
+> curl localhost:8081/payroll/3
+
+> curl localhost:8080/invoicing/3
+```
+
+# Enlaces de interes:
+
+> https://github.com/javieraviles/split-the-monolith
+
+> https://www.it-swarm-es.com/es/nginx/docker-nginx-proxy-como-enrutar-el-trafico-un-contenedor-diferente-utilizando-la-ruta-y-no-el-nombre-de-host/828289465/
+
+> https://refactorizando.com/kafka-spring-boot-parte-uno/
+
+> https://github.com/flipkart-incubator/kafka-filtering#:~:text=Kafka%20doesn't%20support%20filtering,deserialized%20%26%20make%20such%20a%20decision.

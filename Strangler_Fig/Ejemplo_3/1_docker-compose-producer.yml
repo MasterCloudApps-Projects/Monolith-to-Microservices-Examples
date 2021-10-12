@@ -17,8 +17,6 @@ services:
       - INVOICING_TOPIC=invoicing-v1-topic
       - KAFKA_HOST=kafka
       - KAFKA_PORT=9092
-    depends_on: 
-      - kafka
 
 networks:
   app-network:
