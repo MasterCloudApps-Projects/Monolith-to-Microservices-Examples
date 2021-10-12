@@ -1,50 +1,51 @@
 # Strangler Fig
 
-El patrón ``Strangler Fig`` consiste en la migración de forma incremental y gradual de las funcionalidades específicas situadas dentro del monolito a microservicios independientes.
+The ``Strangler Fig`` pattern consists of an incremental and gradual migration of the specific functionalities located within the monolith to independent microservices.
 
-El patrón se divide en 3 pasos:
-1. Aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
-2. Implementación de la funcionalidad en un nuevo microservicio.
-3. Con su nueva implementación lista, migramos las peticiones del monolito al microservicio.
+The pattern is divided into 3 steps:
+1. Monolithic application, requests and functionalities are responded within it.
+2. Implementation of the functionality in a new microservice.
+3. With the new implementation ready, we can migrate requests from the monolith to the microservice.
 
 <div align="center">
 
 ![alt text](3.1_strangler_fig_pattern.png)
 </div>
 
-Vamos a aplicar el patrón en diferentes ejemplos con los tres pasos explicados anteriormente.
+We are going to apply the pattern in different examples with the three steps explained above.
 
 <br>
 
-## **Ejemplo 1. Extracción de funcionalidad independiente**
+## **Ejemplo 1. Separated funcionality extraction**
 ____________________________________________________________
 
-Para poder realizar la migración de las peticiones y los despliegues en caliente, debemos configurar un proxy inverso. El host de nuestra aplicación va a ser: `payment.service`. 
+In order to perform the migration of requests and hot deployments, we must configure a reverse proxy. The host of our application will be: `payment.service`.
 
-Para ello, debemos añadir a:
+To do this, we must add:
 - Linux: `/etc/hosts`
 - Windows: `C:/Windows/System32/drivers/etc/hosts`
 
-La siguiente línea: `127.0.0.1 payment.service`
+The following line: `127.0.0.1 payment.service`
 
-Partimos de un monolito que contiene toda la lógica de la aplicación. Surge la necesidad de extraer una funcionalidad independiente, en este caso ``Inventory`` a un microservicio nuevo.
+We start from a monolith that contains all the logic of the application. The need arises to extract an independent functionality, in this case ``Inventory`` to a new microservice.
 
-A continuación, se muestra una imagen del estado inicial y final de la aplicación tras aplicar el patrón.
+Below there is an image of the initial and final state of the application after applying the pattern.
 
 <div align="center">
 
 ![alt text](3.2_strangler_fig_pattern.png)
 </div>
 
-### **Paso 1**
-Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
+### **Step 1**
+We have our monolithic application, requests and functionalities are answered within it.
+
 ```
 > docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up 
 
 > docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
 ```
 
-Nuestro proxy, está configurado para dirigir todas las peticiones al monolito existente. 
+Our proxy is configured to direct all requests to the existing monolith.
 
 ```
 server {
@@ -57,32 +58,32 @@ server {
 }
 ```
 
-Podemos probar nuestro monolito a través de una petición a:
+We can test our monolith through a request to:
 ```
 > curl payment.service/inventory
 ```
 
-### **Paso 2**
-Debemos implementar la funcionalidad en un nuevo microservicio.
+### **Step 2**
+We must implement the functionality in a new microservice.
 ```
 > docker-compose -f Ejemplo_1/2_docker-compose-ms.yml up
 ```
 
-Las peticiones siguen llegando a nuestro monolito, pero podemos probar nuestro microservicio llamándolo directamente:
+Requests keep coming to our monolith, but we can test our microservice by calling it directly:
 ```
 > curl localhost:8081/inventory
 ```
 
-Vemos que las respuestas vienen con el tag ``[MS]`` que hemos añadido en el inicializador de datos.
+We see that the responses come with the tag ``[MS]`` that we have added in the data initializer.
 
-### **Paso 3**
-Con su nueva implementación lista, procedemos a redireccionar las llamadas desde el monolito al nuevo microservicio.
+### **Step 3**
+With your new implementation ready, we proceed to redirect calls from the monolith to the new microservice.
 
 ```
 > docker-compose -f  Ejemplo_1/3_docker-compose-proxy.yml up -d
 ```
 
-La nueva configuración del proxy es:
+The new proxy settings are:
 ```
 server {
   listen 80;
@@ -98,14 +99,14 @@ server {
 }
 ```
 
-Probemos a realizar peticiones:
+Let's try to make a request:
 ```
 > curl payment.service/inventory
 ```
 
-Ahora la respuesta contará con un prefijo ``[MS]`` que hemos añadido a los datos de ejemplo dados de alta de forma automática en el microservicio.
+Now the response will have a prefix ``[MS]`` that we have added to the sample data automatically registered in the microservice.
 
-En caso de cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito.
+In case of any problem, you can always do a rollback and redirect the requests back to the monolith.
 
 ```
 > docker-compose -f  Ejemplo_1/1_docker-compose-proxy.yml up -d
@@ -113,31 +114,32 @@ En caso de cualquier problema siempre se puede hacer un rollback y redirigir de 
 
 <br>
 
-## **Ejemplo 2. Extracción de funcionalidad interna**
+## **Example 2. Internal functionality extraction**
 ____________________________________________________________
 
-Si deseamos aplicar el patrón sobre ``Payroll``, que utiliza una funcionalidad interna en el monolito ``User notification``, debemos exponer dicha funcionalidad interna al exterior a través de un endpoint.
+If we want to apply the pattern on ``Payroll``, which uses an internal functionality in the ``User notification`` monolith, we must expose said internal functionality to the outside through an endpoint.
+
 
 <div align="center">
 
 ![alt text](3.3_strangler_fig_pattern.png)
 </div>
 
-¿Cómo encaja esto en nuestros 3 pasos?:
+¿How does this fit into our 3 steps?:
 
-1. Nuestro monolito, en caso de no disponer de proxy, debemos añadir uno que permita dirigir las peticiones.
-2. Con el proxy activo, realizamos la extracción de nuestro microservicio. Se podría realizar en varios pasos:
-    - Creación el microservicio vacío, sin funcionalidad retornando ``501 Not Implemented``. Se recomienda llevarlo a producción para familiarizarnos con el proceso de despliegue.
-    - Implementación la funcionalidad del microservicio.
-3. Movemos las peticiones del monolito al microservicio de forma progresiva. Si hay un error podemos redirigir las peticiones de nuevo al monolito.
+1. Our monolith, in case of not having a proxy, we must add one that allows directing requests.
+2. With the proxy active, we perform the extraction of our microservice. It could be done in several steps:
+    - Creation of the empty microservice, without functionality returning ``501 Not Implemented ``. It is recommended to take it to production to familiarize ourselves with the deployment process.
+    - Implementation of the microservice functionality.
+3. We move requests from the monolith to the microservice progressively. If there is an error we can redirect the requests back to the monolith.
 
 <div align="center">
 
 ![alt text](3.10_strangler_fig_pattern.png)
 </div>
 
-### **Paso 1**
-Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
+### **Step 1**
+We have our monolithic application, requests and functionalities are answered within it.
 
 ```
 > docker-compose -f Ejemplo_2/1_docker-compose-monolith.yml up 
@@ -145,46 +147,44 @@ Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se res
 > docker-compose -f Ejemplo_2/1_docker-compose-proxy.yml up -d
 ```
 
-Podemos probar nuestro monolito:
+We can test our monolith:
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":120}' payment.service/payroll
 ```
 
-Se loguea en la notificación:
+Log in to the notification:
 ```
 Payroll 3 shipped to Juablaz of 120.0
 ```
 
-### **Paso 2**
-Debemos implementar la funcionalidad en un nuevo microservicio que se comunicará con el monolito. Por tanto, el monolito debe exponer un endpoint para que el microservicio se conecte a través del él ```/notification```.
-Lanzamos una versión del monolito (``v2``) y nuestro nuevo microservicio.
+### **Step 2**
+We must implement the functionality in a new microservice that will communicate with the monolith. Therefore, the monolith must expose an endpoint for the microservice to connect through it ``/notification``.
+We released a version of the monolith (``v2``) and our new microservice.
 
 ```
 > docker-compose -f Ejemplo_2/2_docker-compose.yml up
 ```
 
-Podemos probar nuestro microservicio:
-
+We can test our microservice:
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:8081/payroll
 ```
 
-Se loguea la notificación en el monolito nuevo (``v2``), por lo tanto la comunicación es correcta:
+The notification is logged in the new monolith (``v2``), therefore the communication is correct:
 ```
 Payroll 3 shipped to Juablaz of 220.0
 ```
 
-Las peticiones a través del proxy ``payment.service`` siguen llegando al monolito anterior pero, hemos probado el correcto funcionamiento del nuevo monolito y del microservicio.
+Requests through the proxy ``payment.service`` continue to reach the previous monolith, but we have tested the correct operation of the new monolith and the microservice.
 
-
-### **Paso 3**
-Con la nueva implementación lista, redirigimos las peticiones al monolito de la funcionalidad de `Payroll`.
+### **Step 3**
+With the new implementation ready, we redirected requests to the `Payroll` functionality monolith.
 
 ```
 > docker-compose -f  Ejemplo_2/3_docker-compose-proxy.yml up -d
 ```
 
-La nueva configuración es:
+The new configuration is:
 ```
 server {
   listen 80;
@@ -200,29 +200,29 @@ server {
 }
 ```
 
-Podemos probar nuestra aplicación:
+We can test our application:
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
-Se loguea la notificación en el monolito v2:
+The notification is logged in the monolith ``v2``:
 ```
 Payroll 3 shipped to Juablaz of 320.0
 ```
 
-En este punto podemos plantearnos quitar la versión 1 del monolito:
+At this point we can consider removing version 1 of the monolith:
 
 ```
 > docker-compose -f  Ejemplo_2/1_docker-compose_monolith.yml down
 ```
 
-¿Y qué ocurre si hemos tenido algún problema en la nueva versión?
-Podemos rápidamente, cargar la configuración del proxy antigua:
+And what happens if we have had a problem in the new version?
+We can quickly load the old proxy settings:
 
 ```
 > docker-compose -f Ejemplo_2/1_docker-compose-proxy.yml up -d
 ```
 
-De esta forma, las peticiones vuelven al monolito antiguo.
+In this way, the petitions go back to the old monolith.
 
 <br>
