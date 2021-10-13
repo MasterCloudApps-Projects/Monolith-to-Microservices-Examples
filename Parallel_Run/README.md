@@ -123,49 +123,22 @@ Experiment<Integer> e = new Experiment("foo");
 e.runAsync(this::controlFunction, this::candidateFunction);
 ```
 
-En nuestro caso, debemos hacer una pequeña modificación al código del monolito y del microservicio, puesto que nuestras operaciones son `void`. Vamos a retornar un ``Boolean``¿?¿?¿?¿
-
-------- **TODO: REVISAR ESTO:**
-
-Lanzamos un ejemplo de esta libreria comparadora, equitativo al Diferencia(falta por subir un ejemplo) el cual hace una llamada a la funcion monolitica y otra a la nueva, creandote unas metricas comparativas que ayudan a ver si te sirve o no la funcionalidad implementada.
-
-Esta actualmente en una clase TEST la cual testea las dos llamadas para traerte 1 notificacion
-
-### **Paso 1**
-Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
+En nuestro caso, debemos hacer una pequeña modificación al código del monolito y del microservicio, puesto que nuestras operaciones son `void`. Vamos a retornar un ``String`` almacenado previamente para este ejemplo en un ``ConcurrentMap``. Esto nos permite comparar las llamadas newCode/oldCode de lo que nos ha creado la nueva implementacion con la que ya habia:
 ```
-> docker-compose -f Ejemplo_1/1_docker-compose.yml up 
+Experiment<String> experiment = new ExperimentBuilder<String>().withName("notify").build();
 
-> docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
+      Supplier<String> oldCodePath = () -> userNotificationService.getNotify(id);
+      Supplier<String> newCodePath = () -> userNotificationServiceMS.getNotify(id);
+      String experimentResult = "";
+        try {
+          experimentResult = experiment.run(oldCodePath, newCodePath);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        Boolean result = experimentResult == userNotificationService.getNotify(id);
+        log.info("The ScientistExperiment result with compare oldCode/newCode is "+result);
+        return result;
 ```
-
-Probamos que todo funciona correctamente:
-
-```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
-```
-### **Paso 3**
-
-Una vez hayamos visto que todo funciona sacaríamos una versión final.
-
-```
-> docker-compose -f Ejemplo_1/3_docker-compose.yml up -d
-```
-
-```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8084/payroll
-```
-
-```
-> docker-compose -f Ejemplo_1/3_docker-compose-proxy.yml up -d
-```
-
-```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
-```
-
--Falta implementar Diferencia
-
 
 ### **Paso 3**
 

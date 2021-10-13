@@ -21,14 +21,17 @@ public class PayrollService {
   private UserNotificationService userNotificationService;
   private UserNotificationService userNotificationServiceMS;
   private FF4j ff4j;
+  private ScientistExperimentService scientistExperimentService;
 
   public PayrollService(
       @Qualifier("userNotificationServiceImpl") UserNotificationService userNotificationService,
       @Qualifier("userNotificationServiceMSImpl") UserNotificationService userNotificationServiceMS,
-      FF4j ff4j) {
+      FF4j ff4j,
+      ScientistExperimentService scientistExperimentService) {
     this.userNotificationService = userNotificationService;
     this.userNotificationServiceMS = userNotificationServiceMS;
     this.ff4j = ff4j;
+    this.scientistExperimentService = scientistExperimentService;
 
   }
 
@@ -45,6 +48,7 @@ public class PayrollService {
           payroll.getTotal()));
     userNotificationService.notify(String.format("Payroll %s shipped to %s of %s", payroll.getId(), payroll.getShipTo(),
           payroll.getTotal()));
+    scientistExperimentService.scientistExperiment(payroll.getId());
   }
 
   public Payroll getPayroll(Long id) {
