@@ -24,7 +24,7 @@ services:
     container_name: '2_strangler_fig_payroll_ms'
     restart: on-failure
     build: 
-      context: ./2_strangler_fig_payroll_ms
+      context: ./2_a_strangler_fig_payroll_ms
       dockerfile: ./Dockerfile
     ports: 
       - 8081:8081

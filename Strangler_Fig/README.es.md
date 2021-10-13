@@ -266,7 +266,7 @@ Tenemos dos posibles casuísticas:
 - Podemos cambiar el código del monolito.
 - No podemos cambiar el código del monolito.
 
-## **Podemos cambiar el código del monolito**
+## **a) Podemos cambiar el código del monolito**
 ### **Paso 2**
 
 <div align="center">
@@ -278,9 +278,6 @@ Tenemos que modificar el código del monolito para ignorar las peticiones de ``P
 
 La complicación surge si necesitamos realizar un despliegue en caliente, sin parada de servicio. 
 - Para ello necesitamos crear nuevos topics a los que escribimos desde el ``producer`` y a los que nos conectamos desde el ``monolito-v2``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
-
-
-Vamos a optar por la ``Opción 1``, ya que la ``Opción 2`` la realizamos en la casuística en la que NO podemos cambiar el código del monolito.
 
 ------
 NOTA: 
@@ -298,10 +295,10 @@ Se haría:
 Vamos a ejecutar el ejemplo siguiendo el patrón, primero la implementación y luego migrando las "peticiones", en este caso los mensajes de la cola:
 
 ```
-> docker-compose -f  Ejemplo_3/2_1_docker-compose.yml up
+> docker-compose -f  Ejemplo_3/2_a_docker-compose.yml up
 ```
 
-Podemos probar nuestra nueva implementación:
+Podemos probar nuestra nueva implementación del monolito:
 ```
 > curl -v localhost:8082/payroll
 ```
@@ -309,7 +306,7 @@ Podemos probar nuestra nueva implementación:
 ### **Paso 3**
 Vamos a migrar las "peticiones", en este caso, migrar los mensajes a nuevos topics donde escribir:
 ```
-> docker-compose -f  Ejemplo_3/3_1_docker-compose-producer.yml up -d
+> docker-compose -f  Ejemplo_3/3_a_docker-compose-producer.yml up -d
 ```
 
 Probemos que funciona correctamente:
@@ -322,7 +319,7 @@ Se loguea en nuestro monolito ``v2``:
 > Payroll 3 shipped to Juablaz of 220.0
 ```
 
-Para confirmarlo, hagamos una petición al microservicio para ver si tiene el dato:
+Podemos confirmarlo mediante una petición al microservicio:
 ````
 > curl localhost:8081/payroll/3
 ````
@@ -338,39 +335,44 @@ En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
 ![alt text](3.17_strangler_fig_pattern.png)
 
 En este caso no podemos tocar el monolito. Necesitamos que exclusivamente lleguen mensajes de `Invoicing` al monolito porque no podemos quitar el procesado de los que llegan a `Payroll`. Además, no podemos loguear notificaciones desde el microservicio, puesto que tendríamos que exponer un endpoint como hemos hecho en el ejemplo anterior.
+Vamos a loguear la creación de Payroll en el propio microservicio para simplificar el ejemplo.
 
 Hemos creado el siguiente flujo:
 - Llega una petición POST a `strangler-fig-producer`.
 - Genera un mensaje a la cola de Kafka a los dos posibles topics `invoicing-all-msg-topic`, `payroll-all-msg-topic`
 - Tenemos un microservicio de enrutamiento basado en contenido `strangler-fig-cbr` que consume y redirige los topics:
-    - `payroll-topic` - Monolito
-    - `payroll-ms-topic` - Payroll
-- El topic `payroll-topic` se quedaría sin uso.
+    - `payroll-v1-topic` - Monolito
+    - `payroll-v2-topic` - Payroll
+- El topic `payroll-v1-topic` se quedaría sin uso puesto que vamos a redirigir los mensajes al ``v2-topic``.
 
-La complicación surge si necesitamos realizar un despliegue en caliente,  sin parada de servicio como hemos explicado en el anterior ejemplo. 
-- Para ello necesitamos crear nuevos topics a los que escribimos desde el ``producer`` y a los que nos conectamos desde el ``cbr``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
+Si necesitamos realizar un despliegue en caliente, sin parada de servicio como hemos explicado en el anterior ejemplo necesitamos crear nuevos topics a los que escribimos desde el ``producer`` y a los que nos conectamos desde el ``cbr``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
 
-
+Lanzamos una versión exactamente igual que la anterior del monolito, cambiando los topics a los que se suscribe.
 ```
-> docker-compose -f  Ejemplo_3/3_docker-compose.yml up
+> docker-compose -f  Ejemplo_3/2_b_docker-compose.yml up
 ```
 
+Podemos probar nuestra nueva implementación del microservicio y el cbr:
+```
+> curl -v localhost:8081/payroll
+```
+
+En este momento, las peticiones siguen llegando al topic antiguo, `payroll-v1-topic` y `invoicing-v1-topic`.
+
+### **Paso 3**
+Vamos a migrar las "peticiones", en este caso, migrar los mensajes a nuevos topics donde escribir:
+```
+> docker-compose -f  Ejemplo_3/3_b_docker-compose-producer.yml up -d
+```
+
+Probemos que funciona correctamente:
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
-
-> curl -v -H "Content-Type: application/json" -d '{"billTo":"Juablaz","total":220}' localhost:9090/messages/send-invoicing
 ```
 
+Se loguea en nuestro microservicio: (Recordemos que no se realiza la petición desde el microservicio al monolito para loguear puesto que no podemos cambiar el código del monolito):
 ```
 > Payroll 3 shipped to Juablaz of 220.0
-
-> Invoicing 3 billed to Juablaz of 220.0
-```
-
-```
-> curl localhost:8081/payroll/3
-
-> curl localhost:8080/invoicing/3
 ```
 
 # Enlaces de interés:

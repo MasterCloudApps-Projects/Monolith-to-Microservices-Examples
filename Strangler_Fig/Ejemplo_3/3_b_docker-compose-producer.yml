@@ -1,6 +1,7 @@
 version: '3.9'
 
 services:
+
   strangler-fig-producer:
     image: strangler_fig_producer
     container_name: 'strangler_fig_producer'
