@@ -1,4 +1,9 @@
-# Branch By Abstraction 
+# **Branch By Abstraction** 
+<div align="center">
+
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Branch_By_Abstraction/README.md)
+[![es](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Branch_By_Abstraction/README.es.md)
+</div>
 
 Vamos a proceder a la realización y explicación del patrón ``Branch By Abstraction``, que se basa en permitir que dos implementaciones del mismo código coexistan en la misma versión, sin romper la funcionalidad.
 
@@ -10,8 +15,10 @@ Nos situamos en el caso de que necesitamos migrar un código interio del monolit
 5. Limpiar la abstracción y eliminar la implementación anterior.
 6. (Opcional): Borrar la interfaz.
 
-## Ejemplo 1. Extracción de una funcionalidad dependiente.
+<br>
 
+## **Ejemplo 1. Extracción de una funcionalidad dependiente.**
+___
 ### **Paso 1**
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 ```
@@ -38,7 +45,10 @@ Vamos a aplicar el patrón para extraer la funcionalidad de `UserNotification` c
 
 En este paso, vamos a llegar hasta el [``4``], nuestra aplicación se queda con el siguiente estado en el que podemos cambiar la implementación activa:
 
+<div align="center">
+
 ![alt text](3.25_branch_by_abstraction.png)
+</div>
 
 Vamos a desplegar el ejemplo:
 ```
@@ -51,7 +61,7 @@ Hacemos una petición:
 curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
 ```
 
-Se loguea en el monolito (v2):
+Se loguea en el monolito:
 
 ```
 2_branch_by_abstraction_monolith         | 2021-09-29 13:50:34.660  INFO 1 --- [io-8080-exec-10] e.c.m.b.s.i.UserNotificationServiceImpl  : Payroll 6 shipped to Juablaz of 320.0   
@@ -65,7 +75,7 @@ Repetimos la petición:
 curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
 ```
 
-Se loguea en el monolito:
+Se loguea en el microservicio:
 ```
 2_branch_by_abstraction_notification_ms  | 2021-09-29 13:50:05.941  INFO 1 --- [nio-8081-exec-1] e.c.m.b.service.UserNotificationService  : Payroll 5 shipped to Juablaz of 320.0   
 ```
@@ -81,22 +91,30 @@ Incluso se podría combinar con los pasos aplicados en el ejemplo de ``Strangler
 ### **Paso 3**
 5. Eliminaríamos el flag y la implementación antigua.
 
+<div align="center">
+
 ![alt text](3.27_branch_by_abstraction.png)
+</div>
 
 6. (Opcional): Borrar la interfaz.
 
+<div align="center">
+
 ![alt text](3.28_branch_by_abstraction.png)
+</div>
 
 Vamos a desplegar el ejemplo:
+
 ```
 > docker-compose -f Ejemplo_1/3_docker-compose.yml up 
 ```
 
 Hacemos una petición:
 ```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
 ```
 
+Vemos la respuesta:
 ```
 3_branch_by_abstraction_notification_ms  | 2021-09-24 14:38:13.520  INFO 1 --- [nio-8081-exec-8] e.c.m.b.service.UserNotificationService  : Payroll 4 shipped to Juablaz of 320.0
 ```

@@ -22,9 +22,8 @@ https://hub.docker.com/r/sergiimazurok/mysql-udf-http
 
 
 POSTGRESQL
-https://stackoverflow.com/questions/46540352/calling-restful-web-services-from-postgresql-procedure-function
 
-https://hub.docker.com/r/garethflowers/postgres-plperl-server
+https://hub.docker.com/r/ycheung/postgresql-http
 
 https://docs.spring.io/spring-data/jpa/docs/1.9.4.RELEASE/reference/html/#jpa.stored-procedures
 
@@ -39,6 +38,31 @@ https://docs.spring.io/spring-data/jpa/docs/1.9.4.RELEASE/reference/html/#jpa.st
 ```
 
 curl -v payment.service/loyalty/1
+
+docker run --name my-postgres-plperl-server -p 5432:5432 -e POSTGRES_DB=loyalty-db -e POSTGRES_PASSWORD=password -d ycheung/postgresql-http
+
+docker exec -it 23f7c67c46c0 bash
+
+psql -U postgres
+
+
+\c loyalty-db;
+
+
+docker run --name postgres-monolith-database -p 5432:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=monolith-db -e POSTGRES_USER=user -d postgres
+
+
+docker run --name postgres-ms-database -p 5433:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=ms-db -e POSTGRES_USER=user -d postgres
+
+
+loyalty-db=# select proname,prosrc from pg_proc where proname='restful_post'; 
+
+INSERT INTO loyalty(id, customer_id, loyalty_account) VALUES (1000, 123, 'loyalty-1234');
+
+SELECT content::json->>'form'
+FROM http_post('http://payment.service/loyalty/printer',
+                'myvar=myval&foo=bar',
+                'application/x-www-form-urlencoded');
 
 
 ## **Ejemplo 2. Transaction log pollers**
@@ -76,12 +100,6 @@ Periódicamente se escanea la base de datos para ver qué datos han cambiado y s
 Utilizamos dos propiedades para identificar los cambios del día:
 - ``creationTimestamp``
 - ``modificationTimestamp``
-
-
-docker run --name postgres-monolith-database -p 5432:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=monolith-db -e POSTGRES_USER=user -d postgres
-
-
-docker run --name postgres-ms-database -p 5433:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=ms-db -e POSTGRES_USER=user -d postgres
 
 
 ```
