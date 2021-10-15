@@ -1,5 +1,6 @@
 package es.codeurjc.mtm.parallel_run_monolith.service.impl;
 
+import com.github.rawls238.scientist4j.exceptions.MismatchException;
 import es.codeurjc.mtm.parallel_run_monolith.model.Invoicing;
 import es.codeurjc.mtm.parallel_run_monolith.model.Payroll;
 import javax.annotation.PostConstruct;
@@ -19,7 +20,7 @@ public class DataInitializer {
   }
 
   @PostConstruct
-  public void initializeData() {
+  public void initializeData() throws Exception {
     // Invoicing
     Invoicing invoicing = Invoicing.builder()
         .billTo("user 1")

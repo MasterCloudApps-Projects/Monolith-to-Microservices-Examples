@@ -1,11 +1,9 @@
 package es.codeurjc.mtm.parallel_run_monolith.service.impl;
 
-import es.codeurjc.mtm.parallel_run_monolith.model.Payroll;
+import com.github.rawls238.scientist4j.Observation;
 import es.codeurjc.mtm.parallel_run_monolith.service.UserNotificationService;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;

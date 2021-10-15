@@ -2,6 +2,7 @@ package es.codeurjc.mtm.parallel_run_monolith.service.impl;
 
 import static es.codeurjc.mtm.parallel_run_monolith.config.FeatureFlagsInitializer.FEATURE_USER_NOTIFICATION_MS;
 
+import com.github.rawls238.scientist4j.exceptions.MismatchException;
 import es.codeurjc.mtm.parallel_run_monolith.model.Payroll;
 import es.codeurjc.mtm.parallel_run_monolith.service.UserNotificationService;
 import java.util.Collection;
@@ -39,7 +40,7 @@ public class PayrollService {
     return payrolls.values();
   }
 
-  public void savePayroll(Payroll payroll) {
+  public void savePayroll(Payroll payroll) throws Exception {
     long id = nextId.getAndIncrement();
     payroll.setId(id);
     this.payrolls.put(id, payroll);

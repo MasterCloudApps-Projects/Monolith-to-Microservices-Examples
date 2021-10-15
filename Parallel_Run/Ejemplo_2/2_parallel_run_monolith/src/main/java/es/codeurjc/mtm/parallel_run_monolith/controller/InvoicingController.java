@@ -28,7 +28,7 @@ public class InvoicingController {
   }
 
   @PostMapping({""})
-  public ResponseEntity<Invoicing> createInvoicing(@RequestBody Invoicing invoicing) {
+  public ResponseEntity<Invoicing> createInvoicing(@RequestBody Invoicing invoicing) throws Exception {
     this.invoicingService.saveInvoicing(invoicing);
     URI location = fromCurrentRequest().path("/{id}").buildAndExpand(invoicing.getId()).toUri();
 

@@ -1,0 +1,34 @@
+version: '3.9'
+services: 
+
+  3-parallel-run-monolith:
+    image: 3_parallel_run_monolith
+    container_name: '3_parallel_run_monolith'
+    restart: on-failure
+    build: 
+      context: ./3_parallel_run_monolith
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8084:8080
+    networks:
+      - app-network
+    environment:
+      - USER_NOTIFICATION_MS_HOST=1-parallel-run-notification-ms
+      - USER_NOTIFICATION_MS_PORT=8085
+
+  3-parallel-run-notification-ms:
+    image: 3_parallel_run_notification_ms
+    container_name: '3_parallel_run_notification_ms'
+    restart: on-failure
+    build: 
+      context: ./3_parallel_run_notification_ms
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8085:8085
+    networks:
+      - app-network
+    
+    
+networks:
+  app-network:
+    driver: bridge

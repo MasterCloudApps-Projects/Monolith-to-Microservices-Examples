@@ -125,19 +125,24 @@ e.runAsync(this::controlFunction, this::candidateFunction);
 
 En nuestro caso, debemos hacer una pequeña modificación al código del monolito y del microservicio, puesto que nuestras operaciones son `void`. Vamos a retornar un ``String`` almacenado previamente para este ejemplo en un ``ConcurrentMap``. Esto nos permite comparar las llamadas newCode/oldCode de lo que nos ha creado la nueva implementacion con la que ya habia:
 ```
-Experiment<String> experiment = new ExperimentBuilder<String>().withName("notify").build();
+public Boolean scientistExperiment(Long id) {
+        DropwizardMetricsProvider metricRegistry = new DropwizardMetricsProvider();
+        Experiment<String> experiment = new Experiment<>("notify", metricRegistry);
 
-      Supplier<String> oldCodePath = () -> userNotificationService.getNotify(id);
-      Supplier<String> newCodePath = () -> userNotificationServiceMS.getNotify(id);
-      String experimentResult = "";
+        Callable<String> oldCodePath = () -> userNotificationService.getNotify(id);
+        Callable<String> newCodePath = () -> userNotificationServiceMS.getNotify(id);
         try {
-          experimentResult = experiment.run(oldCodePath, newCodePath);
+            experiment.run(oldCodePath, newCodePath);
         } catch (Exception e) {
             System.out.println(e);
         }
-        Boolean result = experimentResult == userNotificationService.getNotify(id);
-        log.info("The ScientistExperiment result with compare oldCode/newCode is "+result);
-        return result;
+
+        MetricName metricName = MetricName.build("scientist.notify.mismatch");
+        Counter result = metricRegistry.getRegistry().getCounters().get(metricName);
+
+        log.info("The ScientistExperiment result with compare oldCode/newCode is " + result.getCount() + " mismatch");
+        return result.getCount() == 0;
+    }
 ```
 
 ### **Paso 3**

@@ -73,7 +73,12 @@
 		<dependency>
 			<groupId>com.github.rawls238</groupId>
 			<artifactId>Scientist4JCore</artifactId>
-			<version>0.6</version>
+			<version>0.9</version>
+		</dependency>
+		<dependency>
+			<groupId>io.dropwizard.metrics5</groupId>
+			<artifactId>metrics-core</artifactId>
+			<version>5.0.0</version>
 		</dependency>
 	</dependencies>
 

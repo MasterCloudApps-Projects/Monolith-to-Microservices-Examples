@@ -2,6 +2,7 @@ package es.codeurjc.mtm.parallel_run_monolith.controller;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
+import com.github.rawls238.scientist4j.exceptions.MismatchException;
 import es.codeurjc.mtm.parallel_run_monolith.model.Payroll;
 import es.codeurjc.mtm.parallel_run_monolith.service.impl.PayrollService;
 import java.net.URI;
@@ -28,7 +29,7 @@ public class PayrollController {
   }
 
   @PostMapping({""})
-  public ResponseEntity<Payroll> createPayroll(@RequestBody Payroll payroll) {
+  public ResponseEntity<Payroll> createPayroll(@RequestBody Payroll payroll) throws Exception {
     this.payrollService.savePayroll(payroll);
     URI location = fromCurrentRequest().path("/{id}").buildAndExpand(payroll.getId()).toUri();
 
