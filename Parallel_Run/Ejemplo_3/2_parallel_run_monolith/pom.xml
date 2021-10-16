@@ -56,29 +56,6 @@
 			<version>3.0.0</version>
 		</dependency>
 
-
-		<!-- FF4J dependencies -->
-		<dependency>
-			<groupId>org.ff4j</groupId>
-			<artifactId>ff4j-spring-boot-starter</artifactId>
-			<version>1.8.11</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.ff4j</groupId>
-			<artifactId>ff4j-web</artifactId>
-			<version>1.8.11</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.lordofthejars.diferencia</groupId>
-			<artifactId>diferencia-java-core</artifactId>
-			<version>0.6.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -97,5 +74,17 @@
       </plugin>
     </plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>bintray</name>
+			<url>https://jcenter.bintray.com</url>
+		</repository>
+	</repositories>
+
 
 </project>

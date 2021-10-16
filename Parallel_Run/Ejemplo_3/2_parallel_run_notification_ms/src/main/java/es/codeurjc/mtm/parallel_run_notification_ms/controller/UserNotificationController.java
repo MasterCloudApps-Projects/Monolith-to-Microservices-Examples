@@ -2,27 +2,36 @@ package es.codeurjc.mtm.parallel_run_notification_ms.controller;
 
 import es.codeurjc.mtm.parallel_run_notification_ms.service.UserNotificationService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/notification")
 public class UserNotificationController {
 
-  private UserNotificationService userNotificationService;
+    private UserNotificationService userNotificationService;
 
-  public UserNotificationController(
-      UserNotificationService userNotificationService) {
-    this.userNotificationService = userNotificationService;
-  }
+    public UserNotificationController(
+            UserNotificationService userNotificationService) {
+        this.userNotificationService = userNotificationService;
+    }
 
-  @PostMapping({""})
-  public ResponseEntity<String> createInvoicing(@RequestBody String msg) {
-    this.userNotificationService.notify(msg);
+    @PostMapping({""})
+    public ResponseEntity<String> createNotification(@RequestBody String msg) {
+        this.userNotificationService.notify(msg);
 
-    return ResponseEntity.ok().body(msg);
-  }
+        return ResponseEntity.ok().body(msg);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<String> getNotification(
+            @PathVariable long id) {
+        String notify = this.userNotificationService.getNotify(id);
+
+        if (notify != null) {
+            return ResponseEntity.ok(notify);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }
