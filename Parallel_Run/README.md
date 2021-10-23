@@ -189,7 +189,7 @@ Lanzar una versión Canary para un subconjunto de usuarios, por si se produce al
 Hemos configurado un nginx como `Load Balancer` que nos permite balancear la carga utilizando pesos.
 
 ```
-> docker-compose -f Ejemplo_4/1_docker-compose.yml up 
+> docker-compose -f Ejemplo_4/1_docker-compose.yml up --build
 
 > docker-compose -f Ejemplo_4/1_docker-compose-proxy.yml up -d
 ```
@@ -224,7 +224,7 @@ Todas las peticiones van al monolito.
 Lanzamos una nueva versión de la aplicación.
 
 ```
-> docker-compose -f Ejemplo_4/2_docker-compose.yml up 
+> docker-compose -f Ejemplo_4/2_docker-compose.yml up --build
 ```
 
 Podemos probarla utilizando peticiones directas al monolito v2 y al microservicio
@@ -235,6 +235,17 @@ Podemos probarla utilizando peticiones directas al monolito v2 y al microservici
 
 ### **Paso 3**
 Vamos a migrar poco a poco las peticiones.
+
+Pero antes, vamos a ejecutar nuestro generador de peticiones:
+```
+> cd ..\Request Generator\
+```
+
+```
+> node request_generator.js http://payment.service/payroll 1000 payroll.json
+```
+
+Tiempo en segundos que estaremos lanzando peticiones, el json que manda y a qué petición.
 
 ```
 upstream loadbalancer {
@@ -262,7 +273,7 @@ Facilitamos diferentes archivos de configuración que se irían aplicando según
 Arrancamos una nueva configuración del nginx:
 
 ```
-> docker-compose -f Ejemplo_4/3_docker-compose-proxy.yml up 
+> docker-compose -f Ejemplo_4/3_docker-compose-proxy.yml up -d
 ```
 
 Podemos realiar varias peticiones para verificar de forma aproximada los pesos:
@@ -273,6 +284,6 @@ curl payment.service/inventory
 
 En caso de cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito inicial.
 ```
-> docker-compose -f  Ejemplo_4/1_docker-compose-proxy.yml up
+> docker-compose -f  Ejemplo_4/1_docker-compose-proxy.yml up -d
 ```
 

@@ -9,7 +9,7 @@ services:
       - ./3_config/nginx.conf:/etc/nginx/conf.d/default.conf
     networks:
       - app-network
-
+      
 networks:
   app-network:
     driver: bridge

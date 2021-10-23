@@ -5,116 +5,121 @@
 [![es](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Branch_By_Abstraction/README.es.md)
 </div>
 
-Vamos a proceder a la realización y explicación del patrón ``Branch By Abstraction``, que se basa en permitir que dos implementaciones del mismo código coexistan en la misma versión, sin romper la funcionalidad.
+We are going to proceed with the realization and explanation of the `Branch By Abstraction` pattern, which is based on allowing two implementations of the same code to coexist in the same version, without breaking the functionality.
 
-Nos situamos en el caso de que necesitamos migrar un código interio del monolito el cuál recibe peticiones internas de otros servicios. Se aplica en múltiples pasos:
-1. Crear una abstracción para reemplazar la funcionalidad.
-2. Cambiar los clientes de la funcionalidad existente para utilizar la nueva abstracción.
-3. Crear una nueva implementación de la abstracción que realice la petición a nuestro nuevo microservicio.
-4. Cambiar la abstracción para usar nuestra nueva implementación.
-5. Limpiar la abstracción y eliminar la implementación anterior.
-6. (Opcional): Borrar la interfaz.
+We place ourselves in the case that we need to migrate an internal code of the monolith which receives internal requests from other services. It is applied in multiple steps:
+1. Create an abstraction to replace the functionality.
+2. Change existing functionality clients to use the new abstraction.
+3. Create a new implementation of the abstraction that makes the request to our new microservice.
+4. Change the abstraction to use our new implementation.
+5. Clean up the abstraction and remove the old implementation.
+6. (Optional): Delete the interface.
 
 <br>
 
-## **Ejemplo 1. Extracción de una funcionalidad dependiente.**
+## **Example 1. Extraction of a dependent functionality**
 ___
-### **Paso 1**
-Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
+### **Step 1**
+We have our monolithic application, requests and functionalities are answered within it.
 ```
-> docker-compose -f Ejemplo_1/1_docker-compose.yml up 
+> docker-compose -f Ejemplo_1/1_docker-compose.yml up --build
 ```
 
-Podemos probar nuestro monolito:
+We can test our monolith:
 ```
 > curl localhost:8080/inventory
 ```
 
-Detenemos el paso 1:
+We stop step 1:
 ```
 > docker-compose -f Ejemplo_1/1_docker-compose.yml down
 ```
 
-### **Paso 2**
-Vamos a aplicar el patrón para extraer la funcionalidad de `UserNotification` con los pasos explicados anteriormente.
+### **Step 2**
+We are going to apply the pattern to extract the functionality of `UserNotification` with the steps explained above.
 
-1. Creamos la interfaz `UserNotificationService`.
-2. Adaptamos la implementación de `UserNotificationService` (que pasa a llamarse `UserNotificationServiceImpl`) existente para utilizar la interfaz.
-3. Creamos una nueva implementación de la interfaz, `UserNotificationServiceMSImpl`.
-4. Introducimos `ff4j` que nos permite cambiar el uso de una u otra implementación en tiempo de ejecución `http://localhost:8080/ff4j-web-console`.
+1. We create the interface `UserNotificationService`.
+2. We adapted the existing `UserNotificationService` implementation (renamed` UserNotificationServiceImpl`) to use the interface.
+3. We create a new interface implementation, `UserNotificationServiceMSImpl`.
+4. We introduce `ff4j` which allows us to change the use of one or another implementation at runtime` http: // localhost: 8080 / ff4j-web-console`.
 
-En este paso, vamos a llegar hasta el [``4``], nuestra aplicación se queda con el siguiente estado en el que podemos cambiar la implementación activa:
+In this step, we are going to get to [`4`], our application is left with the following state in which we can change the active implementation:
 
 <div align="center">
 
 ![alt text](3.25_branch_by_abstraction.png)
 </div>
 
-Vamos a desplegar el ejemplo:
+We are going to display the example:
 ```
-> docker-compose -f Ejemplo_2/2_docker-compose.yml up 
+> docker-compose -f Ejemplo_1/2_docker-compose.yml up --build
 ```
-Tendremos una versión 2 del monolito y nuestro microservicio. Dentro de esta versión, podemos cambiar a usar o no el microservicio.
+We will have a version 2 of the monolith and our microservice. Within this version, we can change to use or not the microservice.
 
-Hacemos una petición:
+We make a request:
 ```
 curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
 ```
 
-Se loguea en el monolito:
+The monolith log:
 
 ```
 2_branch_by_abstraction_monolith         | 2021-09-29 13:50:34.660  INFO 1 --- [io-8080-exec-10] e.c.m.b.s.i.UserNotificationServiceImpl  : Payroll 6 shipped to Juablaz of 320.0   
 ```
 
-Si entramos en `http://localhost:8080/ff4j-web-console` y cambiamos el flag a habilitado, se realizará a través del microservicio.
+If we enter `http: // localhost: 8080 / ff4j-web-console` and change the flag to enabled, it will be done through the microservice.
 
-Repetimos la petición:
+We repeat the request:
 
 ```
 curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
 ```
 
-Se loguea en el microservicio:
+Log in to the microservice:
 ```
 2_branch_by_abstraction_notification_ms  | 2021-09-29 13:50:05.941  INFO 1 --- [nio-8081-exec-1] e.c.m.b.service.UserNotificationService  : Payroll 5 shipped to Juablaz of 320.0   
 ```
 
-Detenemos el paso 2:
+We stop step 2:
 ```
-> docker-compose -f Ejemplo_2/2_docker-compose.yml down
+> docker-compose -f Ejemplo_1/2_docker-compose.yml down
 ```
 
-Como podemos observar, esta forma de gestionar los cambios y la migración al microservicio nos permite en caso de error activar/ desactivar el flag.
-Incluso se podría combinar con los pasos aplicados en el ejemplo de ``Strangler Fig``, lanzando las dos versiones convivientes y migrando las peticiones de uno a otro.
+As we can see, this way of managing changes and migration to the microservice allows us to activate / deactivate the flag in case of error.
+It could even be combined with the steps applied in the example of `Strangler Fig`, launching the two coexisting versions and migrating the requests from one to the other.
 
-### **Paso 3**
-5. Eliminaríamos el flag y la implementación antigua.
+### **Step 3**
+5. We would remove the flag and the old implementation.
 
 <div align="center">
 
 ![alt text](3.27_branch_by_abstraction.png)
 </div>
 
-6. (Opcional): Borrar la interfaz.
+6. (Optional): Delete the interface.
 
 <div align="center">
 
 ![alt text](3.28_branch_by_abstraction.png)
 </div>
 
-Vamos a desplegar el ejemplo:
+We are going to display the example:
 
 ```
-> docker-compose -f Ejemplo_1/3_docker-compose.yml up 
+> docker-compose -f Ejemplo_1/3_docker-compose.yml up --build
 ```
 
-Hacemos una petición:
+We make a request:
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
 ```
 
-Vemos la respuesta:
+We see the answer:
 ```
-3_branch_by_abstraction_notification_ms  | 2021-09-24 14:38:13.520  INFO 1 --- [nio-8081-exec-8] e.c.m.b.service.UserNotificationService  : Payroll 4 shipped to Juablaz of 320.0
+3_branch_by_abstraction_notification_ms  | 2021-09-24 14:38:13.520  INFO 1 --- [nio-8081-exec-8] e.c.m.b.service.UserNotificationService  : Payroll 3 shipped to Juablaz of 320.0
+```
+
+We stop step 3:
+```
+> docker-compose -f Ejemplo_1/3_docker-compose.yml down
 ```

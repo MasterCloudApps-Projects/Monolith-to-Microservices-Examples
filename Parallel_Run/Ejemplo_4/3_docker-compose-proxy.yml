@@ -7,8 +7,6 @@ services:
       - "80:80"
     volumes:
       - ./nginx/nginx_10_90.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - 1-parallel-run-monolith
     networks:
       - app-network
 

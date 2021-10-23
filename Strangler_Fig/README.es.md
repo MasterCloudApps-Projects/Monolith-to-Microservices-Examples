@@ -44,10 +44,21 @@ A continuación, se muestra una imagen del estado inicial y final de la aplicaci
 ### **Paso 1**
 Tenemos nuestra aplicación monolítica. Las peticiones y funcionalidades se responden dentro del mismo.
 ```
-> docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up 
+> docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up --build --force-recreate
 
 > docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
 ```
+----
+NOTA:
+   
+``--build``: build images before starting containers.
+
+``-d, --detach``: Detached mode: Run containers in the background, print new container names.
+
+``--force-recreate``    Recreate containers even if their configuration
+                        and image haven't changed.
+
+----
 
 Nuestro proxy está configurado para dirigir todas las peticiones al monolito existente. 
 
@@ -70,7 +81,7 @@ Podemos probar nuestro monolito a través de una petición a:
 ### **Paso 2**
 Debemos implementar la funcionalidad en un nuevo microservicio.
 ```
-> docker-compose -f Ejemplo_1/2_docker-compose-ms.yml up
+> docker-compose -f Ejemplo_1/2_docker-compose-ms.yml up --build --force-recreate
 ```
 
 Las peticiones siguen llegando a nuestro monolito, pero podemos probar nuestro microservicio llamándolo directamente:
@@ -132,7 +143,7 @@ Si deseamos aplicar el patrón sobre ``Payroll``, que utiliza una funcionalidad 
 
 1. En caso de no disponer de proxy, debemos añadir uno que permita dirigir las peticiones. 
 2. Con el proxy activo, realizamos la extracción a nuestro microservicio. Se podría realizar en varios pasos:
-    - Creación el microservicio vacío, sin funcionalidad retornando ``501 Not Implemented``. Se recomienda llevarlo a producción para familiarizarnos con el proceso de despliegue.
+    - Creación del microservicio vacío, sin funcionalidad retornando ``501 Not Implemented``. Se recomienda llevarlo a producción para familiarizarnos con el proceso de despliegue.
     - Implementación de la funcionalidad del microservicio.
 3. Movemos las peticiones del monolito al microservicio de forma progresiva. Si hay un error podemos redirigir las peticiones de nuevo al monolito.
 
@@ -145,7 +156,7 @@ Si deseamos aplicar el patrón sobre ``Payroll``, que utiliza una funcionalidad 
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 
 ```
-> docker-compose -f Ejemplo_2/1_docker-compose-monolith.yml up 
+> docker-compose -f Ejemplo_2/1_docker-compose-monolith.yml up --build
 
 > docker-compose -f Ejemplo_2/1_docker-compose-proxy.yml up -d
 ```
@@ -165,7 +176,7 @@ Debemos implementar la funcionalidad en un nuevo microservicio que se comunicar�
 Lanzamos una versión del monolito (``v2``) y nuestro nuevo microservicio.
 
 ```
-> docker-compose -f Ejemplo_2/2_docker-compose.yml up
+> docker-compose -f Ejemplo_2/2_docker-compose.yml up --build
 ```
 
 Podemos probar nuestro microservicio:
@@ -247,9 +258,9 @@ Está formado por dos topics: `invoicing-v1-topic` y `payroll-v1-topic`.
 </div>
 
 ```
-> docker-compose -f  Ejemplo_3/1_docker-compose.yml up
+> docker-compose -f  Ejemplo_3/1_docker-compose.yml up --build
 
-> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up -d
+> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up -d 
 ```
 
 Hagamos una prueba a través de una petición:
@@ -295,7 +306,7 @@ Se haría:
 Vamos a ejecutar el ejemplo siguiendo el patrón, primero la implementación y luego migrando las "peticiones", en este caso los mensajes de la cola:
 
 ```
-> docker-compose -f  Ejemplo_3/2_a_docker-compose.yml up
+> docker-compose -f  Ejemplo_3/2_a_docker-compose.yml up --build
 ```
 
 Podemos probar nuestra nueva implementación del monolito:
@@ -306,7 +317,7 @@ Podemos probar nuestra nueva implementación del monolito:
 ### **Paso 3**
 Vamos a migrar las "peticiones", en este caso, migrar los mensajes a nuevos topics donde escribir:
 ```
-> docker-compose -f  Ejemplo_3/3_a_docker-compose-producer.yml up -d
+> docker-compose -f  Ejemplo_3/3_a_docker-compose-producer.yml up -d --build
 ```
 
 Probemos que funciona correctamente:
@@ -348,8 +359,9 @@ Hemos creado el siguiente flujo:
 Si necesitamos realizar un despliegue en caliente, sin parada de servicio como hemos explicado en el anterior ejemplo necesitamos crear nuevos topics a los que escribimos desde el ``producer`` y a los que nos conectamos desde el ``cbr``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
 
 Lanzamos una versión exactamente igual que la anterior del monolito, cambiando los topics a los que se suscribe.
+
 ```
-> docker-compose -f  Ejemplo_3/2_b_docker-compose.yml up
+> docker-compose -f  Ejemplo_3/2_b_docker-compose.yml up --build
 ```
 
 Podemos probar nuestra nueva implementación del microservicio y el cbr:
@@ -375,6 +387,11 @@ Se loguea en nuestro microservicio: (Recordemos que no se realiza la petición d
 > Payroll 3 shipped to Juablaz of 220.0
 ```
 
+En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
+```
+> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up -d
+```
+
 # Enlaces de interés:
 
 > https://github.com/javieraviles/split-the-monolith
@@ -384,3 +401,9 @@ Se loguea en nuestro microservicio: (Recordemos que no se realiza la petición d
 > https://refactorizando.com/kafka-spring-boot-parte-uno/
 
 > https://github.com/flipkart-incubator/kafka-filtering#:~:text=Kafka%20doesn't%20support%20filtering,deserialized%20%26%20make%20such%20a%20decision.
+
+
+# Comandos de interés:
+Delete all containers using the following command:
+> docker rm -f $(docker ps -a -q)
+

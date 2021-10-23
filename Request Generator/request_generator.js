@@ -1,6 +1,5 @@
 // node request_generator.js http://payment.service/payroll 1000 payroll.json
 
-// Para local es necesario poner 'http', para desa https
 const http = require('http');
 const fs = require('fs');
 var path = require('path');
@@ -9,8 +8,8 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 /**
  *
  * @param {*} url
- * @param {*} payload Objecto JS
- * @returns Objecto JS parseado desde json
+ * @param {*} payload JS Object
+ * @returns JS Object parsed from json
  */
 async function post(url, payload) {
     let promisedData = new Promise((resolve, reject) => {
