@@ -4,6 +4,8 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 
 import es.codeurjc.mtm.parallel_run_monolith.model.Invoicing;
 import es.codeurjc.mtm.parallel_run_monolith.service.impl.InvoicingService;
+
+import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +30,7 @@ public class InvoicingController {
   }
 
   @PostMapping({""})
-  public ResponseEntity<Invoicing> createInvoicing(@RequestBody Invoicing invoicing) {
+  public ResponseEntity<Invoicing> createInvoicing(@RequestBody Invoicing invoicing) throws IOException {
     this.invoicingService.saveInvoicing(invoicing);
     URI location = fromCurrentRequest().path("/{id}").buildAndExpand(invoicing.getId()).toUri();
 

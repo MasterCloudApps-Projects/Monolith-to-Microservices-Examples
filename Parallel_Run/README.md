@@ -175,6 +175,14 @@ Hacer un ejemplito con parallen run y Diferencia:
 TODO...
 
 ### **Paso 2**
+Primero, tendriamos que inicializar los dos contenedores con sus respectivas proxys:
+```
+Monolith: payment.service;
+MicroService: payment-ms.service;
+```
+```
+docker run --rm -ti -p 8080:8080 -p 8083:8081 -p 8084:8082 lordofthejars/diferencia:0.6.0 start -c payment.ms.service -p payment.service
+```
 TODO...
 
 ### **Paso 3**
