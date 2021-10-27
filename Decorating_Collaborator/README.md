@@ -5,19 +5,19 @@
 [![es](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Decorating_Collaborator/README.es.md)
 </div>
 
-Vamos a proceder a la realización y explicación del patrón `Decorating Collaborator`. Este patrón se basa en la aplicación de un proxy para una vez llegue la respuesta del monolito hacer una operación en un nuevo microservicio. Este microservicio podrá hacer uso o no de información que debe exponer el monolito.
+We are going to proceed with the realization and explanation of the `Decorating Collaborator` pattern. This pattern is based on the application of a proxy so that once the response from the monolith arrives, it will perform an operation on a new microservice. This microservice may or may not make use of information that the monolith must expose.
 
-## **Ejemplo 1. Nueva funcionalidad**
+## **Example 1. New functionality**
 
-En esta ocasión hemos planteado un nuevo enunciado.
+This time we have raised a new statement.
 <div align="center">
 
 ![alt text](3.32_decorating_collaborator.png)
 </div>
 
-### **Paso 1**
+### **Step 1**
 
-Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
+We have our monolithic application, requests and functionalities are answered within it.
 
 ```
 > docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up --build
@@ -25,28 +25,27 @@ Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se res
 > docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
 ```
 
-Podemos probar nuestro monolito:
+We can test our monolith:
 ```
 > curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz","prize":250, "description":"Monitor"}' payment.service/order
 ```
 
 
-### **Paso 2**
-Debemos implementar la funcionalidad en un nuevo microservicio que basado en una respuesta correcta de la creación de `Order` deberá añadir puntos a un usuario en el microservicio de `Loyalty`.
+### **Step 2**
+We must implement the functionality in a new microservice that based on a correct response from the creation of `Order` should add points to a user in the` Loyalty` microservice.
 
-Lanzamos una versión del microservicio y un `Gateway` realizado con spring cloud `Gateway`.
+We launched a version of the microservice and a `Gateway` made with spring cloud` Gateway`.
 
 ```
 > docker-compose -f Ejemplo_1/2_docker-compose.yml up --build
 ```
 
-Podemos probar nuestro microservicio:
-
+We can test our microservice:
 ```
 > curl -v -H "Content-Type: application/json" -d '' localhost:8081/loyalty/Juablaz
 ```
 
-Podemos probar nuestro `Gateway`:
+We can test our `Gateway`:
 
 ```
 > curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz","prize":250, "description":"Monitor"}' localhost:8082/order
@@ -54,13 +53,13 @@ Podemos probar nuestro `Gateway`:
 > curl localhost:8082/loyalty/Juablaz
 ```
 
-Se crea el usuario en el microservicio nuevo y se le añaden 10 puntos:
+The user is created in the new microservice and 10 points are added to it:
 ```
 {"id":3,"userName":"Juablaz","points":10.0}
 ```
 
-### **Paso 3**
-Una vez probado el gateway, movamos las peticiones desde nuestro proxy de nginx a nuestro gateway.
+### **Step 3**
+Once the gateway is tested, let's move the requests from our nginx proxy to our gateway.
 
 ```
 > docker-compose -f Ejemplo_1/3_docker-compose-proxy.yml up -d
@@ -72,12 +71,11 @@ Una vez probado el gateway, movamos las peticiones desde nuestro proxy de nginx 
 > curl payment.service/loyalty/Juablaz
 ```
 
-Es posible incluso que sea necesario recuperar más información del monolito, en ese caso tendríamos que exponer un endpoint en el monolito y realizar la 
-petición desde el microservicio.
+It is even possible that it is necessary to retrieve more information from the monolith, in that case we would have to expose an endpoint in the monolith and make the request from the microservice.
 
 <div align="center">
 
 ![alt text](3.33_decorating_collaborator.png)
 </div>
 
-Esto podría generar una carga adicional, además introduce una dependencia circular, podría ser mejor cambiar el monolito para proporcionar la información requerida cuando se complete nuestra petición de crear un pedido. Sin embargo, esto requeriría cambiar el código del monolito o quizás usar otro patrón, que estudiaremos a continuación `Change Data Capture`.
+This could create an additional burden, plus it introduces a circular dependency, it might be better to change the monolith to provide the required information when our request to create an order is completed. However, this would require changing the monolith code or perhaps using another pattern, which we will study next `Change Data Capture`.

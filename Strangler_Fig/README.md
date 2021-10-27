@@ -319,12 +319,12 @@ We are going to migrate the "requests", in this case, migrate the messages to ne
 > docker-compose -f  Ejemplo_3/3_a_docker-compose-producer.yml up -d --build
 ```
 
-Let's test that it works correctly:
+Let's test if it works correctly:
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
 ```
 
-Log in to our monolith `v2`:
+This logs in our monolith `v2`:
 ```
 > Payroll 3 shipped to Juablaz of 220.0
 ```
@@ -344,18 +344,18 @@ In case of error, we can change the data writing to the old monolith:
 
 ![alt text](3.17_strangler_fig_pattern.png)
 
-In this case we cannot touch the monolith. We only need `Invoicing` messages to reach the monolith because we cannot unprocess those that arrive at` Payroll`. Also, we cannot log notifications from the microservice, since we would have to expose an endpoint as we have done in the previous example.
+In this case we cannot touch the monolith. We only need `Invoicing` messages to reach the monolith because we cannot unprocess those that arrive at` Payroll`. We cannot log notifications from the microservice because we would have to expose an endpoint as we have done in the previous example.
 We are going to log the Payroll creation into the microservice itself to simplify the example.
 
 We have created the following flow:
 - A POST request arrives at `strangler-fig-producer`.
-- Generate a message to the Kafka queue to the two possible topics `invoicing-all-msg-topic`,` payroll-all-msg-topic`
+- It generates a message to the Kafka queue to the two possible topics `invoicing-all-msg-topic`,` payroll-all-msg-topic`
 - We have a content-based routing microservice `strangler-fig-cbr` that consumes and redirects topics:
     - `payroll-v1-topic` - Monolith
     - `payroll-v2-topic` - Payroll
 - The `payroll-v1-topic` topic would be unused since we are going to redirect the messages to the` v2-topic`.
 
-If we need to perform a hot deployment, without service stop, as we have explained in the previous example, we need to create new topics to which we write from the `producer` and to which we connect from the` cbr`. We cannot continue writing in the same topic that was used in version 1. In this case we are changing the source of information and it is possible that depending on the situation we cannot change it.
+If we need to perform a hot deployment without service stop, as we have explained in the previous example, we need to create new topics to which we write from the `producer` and to which we connect from the` cbr`. We cannot continue writing in the same topic that was used in version 1. In this case we are changing the source of information and it is possible that depending on the situation we cannot change it.
 
 We launched a version exactly the same as the previous one of the monolith, changing the topics to which it subscribes.
 
@@ -372,7 +372,7 @@ At this time, requests keep coming to the old topic, `payroll-v1-topic` and` inv
 
 
 ### **Step 3**
-We are going to migrate the "requests", in this case, migrate the messages to new topics where to write:
+We are going to migrate the "requests". In this case, we migrate the messages to new topics where to write:
 ```
 > docker-compose -f  Ejemplo_3/3_b_docker-compose-producer.yml up -d
 ```
@@ -382,7 +382,7 @@ Let's test that it works correctly:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
 ```
 
-Log in to our microservice: (Remember that the request is not made from the microservice to the monolith to log in since we cannot change the monolith code):
+Log in to our microservice (Remember that the request is not made from the microservice to the monolith to log in since we cannot change the monolith code):
 ```
 > Payroll 3 shipped to Juablaz of 220.0
 ```

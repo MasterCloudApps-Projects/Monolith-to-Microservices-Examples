@@ -121,7 +121,7 @@ Probemos a realizar peticiones:
 
 Desde este momento, la respuesta contará con un prefijo ``[MS]`` que hemos añadido a los datos de ejemplo dados de alta de forma automática en el microservicio.
 
-En caso de cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito.
+En caso de que se produzca cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito.
 
 ```
 > docker-compose -f  Ejemplo_1/1_docker-compose-proxy.yml up -d
@@ -132,7 +132,7 @@ En caso de cualquier problema siempre se puede hacer un rollback y redirigir de 
 ## **Ejemplo 2. Extracción de funcionalidad interna**
 ____________________________________________________________
 
-Si deseamos aplicar el patrón sobre ``Payroll``, que utiliza una funcionalidad interna en el monolito ``User notification``, debemos exponer dicha funcionalidad interna al exterior a través de un endpoint.
+Si deseamos aplicar el patrón sobre ``Payroll`` que utiliza una funcionalidad interna en el monolito ``User notification``, debemos exponer dicha funcionalidad interna al exterior a través de un endpoint.
 
 <div align="center">
 
@@ -315,7 +315,7 @@ Podemos probar nuestra nueva implementación del monolito:
 ```
 
 ### **Paso 3**
-Vamos a migrar las "peticiones", en este caso, migrar los mensajes a nuevos topics donde escribir:
+Vamos a migrar las "peticiones". En este caso, se trata de migrar los mensajes a nuevos topics donde escribir:
 ```
 > docker-compose -f  Ejemplo_3/3_a_docker-compose-producer.yml up -d --build
 ```
@@ -335,7 +335,7 @@ Podemos confirmarlo mediante una petición al microservicio:
 > curl localhost:8081/payroll/3
 ````
 
-En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
+En caso de error podemos cambiar la escritura de datos al monolito antiguo:
 ```
 > docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up -d
 ```
@@ -356,7 +356,7 @@ Hemos creado el siguiente flujo:
     - `payroll-v2-topic` - Payroll
 - El topic `payroll-v1-topic` se quedaría sin uso puesto que vamos a redirigir los mensajes al ``v2-topic``.
 
-Si necesitamos realizar un despliegue en caliente, sin parada de servicio como hemos explicado en el anterior ejemplo necesitamos crear nuevos topics a los que escribimos desde el ``producer`` y a los que nos conectamos desde el ``cbr``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
+Si necesitamos realizar un despliegue en caliente, sin parada de servicio, como hemos explicado en el anterior ejemplo necesitamos crear nuevos topics a los que escribimos desde el ``producer`` y a los que nos conectamos desde el ``cbr``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
 
 Lanzamos una versión exactamente igual que la anterior del monolito, cambiando los topics a los que se suscribe.
 
@@ -382,7 +382,7 @@ Probemos que funciona correctamente:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
 ```
 
-Se loguea en nuestro microservicio: (Recordemos que no se realiza la petición desde el microservicio al monolito para loguear puesto que no podemos cambiar el código del monolito):
+Se loguea en nuestro microservicio (Recordemos que no se realiza la petición desde el microservicio al monolito para loguear puesto que no podemos cambiar el código del monolito):
 ```
 > Payroll 3 shipped to Juablaz of 220.0
 ```
