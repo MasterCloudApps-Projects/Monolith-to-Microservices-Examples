@@ -167,27 +167,72 @@ Migramos las peticiones a la versión final:
 ```
 
 ## **Ejemplo 3. Diferencia**
-Hacer un ejemplito con parallen run y Diferencia:
-- https://lordofthejars.github.io/diferencia-docs-site/diferencia/0.6.0/index.html
-- https://www.infoq.com/articles/tap-compare-diferencia/
+Este ejemplo es algo diferente. Realmente `Diferencia` esta montado sobre un proxy que actuaria en nuestro caso como comparador externo. 
+
+
+
+
 
 ### **Paso 1**
-TODO...
+Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
+```
+> docker-compose -f Ejemplo_3/1_docker-compose.yml up 
 
+> docker-compose -f Ejemplo_3/1_docker-compose-proxy.yml up -d
+```
+
+Probamos que todo funciona correctamente:
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+```
 ### **Paso 2**
 Primero, tendriamos que inicializar los dos contenedores con sus respectivas proxys:
+
+![alt text](diferencia_simple.png)
+
+
+En el esquema anterior, se puede ver que una petición se multidifunde a dos instancias del Servicio A, siendo una V1 y otra V2. Ambas devuelven una respuesta y luego es comparada por Diferencia. Finalmente, observe que no se devuelve ninguna respuesta sino el resultado (en forma de Código de Estado HTTP).
+
+Dado que Diferencia no devuelve una respuesta real, sino una comparación, significa efectivamente que es necesario utilizar el proxy de Diferencia con fines de prueba (para comprobar la compatibilidad con versiones anteriores) y no como un proxy de producción como Envoy. Esto significa que Diferencia podría utilizarse para realizar pruebas concretas de compatibilidad con versiones anteriores o para utilizar la técnica de Traffic Shadowing/Mirroring.
+
+Para ello, ponemos a correr independientemente tanto nuestro monolito como nuestra nueva implementacion: 
+
+```
+> docker-compose -f Ejemplo_2/3_docker-compose.yml up -d
+```
+En nuestro caso nos queda en dos endpoint distintos:
+
 ```
 Monolith: payment.service;
 MicroService: payment-ms.service;
 ```
+
+Y finalmente ponemos el `Diferencia` apuntando a los dos endpoint anteriores, quedara el mismo como un proxy. Realizaremos una peticion al `Diferencia`, el cual replicara hacia los dos servicios esa request. Entonces, cuando se devuelva la respuesta de cada instancia, `Diferencia` comprobará si ambas respuestas son similares, y si es el caso, entonces las dos implementaciones podrían considerarse compatibles y la implementación de la nueva versión está libre de regresión.
+
 ```
 docker run --rm -ti -p 8080:8080 -p 8083:8081 -p 8084:8082 lordofthejars/diferencia:0.6.0 start -c payment.ms.service -p payment.service
 ```
-TODO...
 
 ### **Paso 3**
-TODO...
+Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
 
+```
+> docker-compose -f Ejemplo_2/3_docker-compose.yml up -d
+```
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8084/payroll
+```
+
+Migramos las peticiones a la versión final:
+```
+> docker-compose -f Ejemplo_2/3_docker-compose-proxy.yml up -d
+```
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+```
 
 ## **Ejemplo 4. Canary Releasing**
 
