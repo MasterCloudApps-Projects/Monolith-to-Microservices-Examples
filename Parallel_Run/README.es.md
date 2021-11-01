@@ -1,15 +1,23 @@
-# Parallel Run
+# **Parallel Run**
+
+<div align="center">
+
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Parallel_Run/README.md)
+[![es](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Parallel_Run/README.es.md)
+</div>
 
 En los patrones anteriormente estudiados `Strangler Fig` y `Branch By Abstraction`, teníamos la posibilidad de que coexistiera la versión antigua y nueva de la funcionalidad, pero sólamente una de ellas se activaba en un momento concreto.
 
 Este patrón, `Parallel Run` en lugar de llamar a la implementación antigua o nueva, llamamos a ambas, lo que nos permite comparar los resultados para asegurarnos de que sean equivalentes.
+<div align="center">
 
 ![alt text](3.30_parallel_run.png)
+</div>
 
 Utiliza la técnica de `Dark Launching`, implementar una nueva funcionalidad pero que sea invisible para los usuarios. `Parallel Run` es una forma de implementar esta técnica, ya que la nueva funcionalidad es invisible para el usuario.
 
 ## **Ejemplo 1. Usando Spies**
-
+____________________________________________________________
 ### **Paso 1**
 Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
 ```
@@ -27,8 +35,10 @@ Probamos que todo funciona correctamente:
 ### **Paso 2**
 En este paso, tenemos que sacar una versión 2 del monolito, que registre en BBDD la notificación al usuario.
 También, debemos desarrollar nuestro microservicio, con una implementación modificada, que no envíe realmente la notificación pero registre que la registre como que se hubiera enviado (``Spy``). Ambas implementaciones van a convivir y no queremos que se dupliquen las notificaciones.
+<div align="center">
 
 ![alt text](3.31_parallel_run.png)
+</div>
 
 ```
 > docker-compose -f Ejemplo_1/2_docker-compose.yml up 
@@ -82,7 +92,10 @@ Migramos las peticiones a la versión final:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
+<br>
+
 ## **Ejemplo 2. Github Scientist**
+____________________________________________________________
 Existen librerías que permiten comparar resultados de forma muy sencilla. En nuestro caso, vamos a proceder a realizar un ejemplo con:
 https://github.com/rawls238/Scientist4J
 
@@ -166,12 +179,11 @@ Migramos las peticiones a la versión final:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
+<br>
+
 ## **Ejemplo 3. Diferencia**
+____________________________________________________________
 Este ejemplo es algo diferente. Realmente `Diferencia` esta montado sobre un proxy que actuaria en nuestro caso como comparador externo. 
-
-
-
-
 
 ### **Paso 1**
 Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
@@ -188,11 +200,13 @@ Probamos que todo funciona correctamente:
 ```
 ### **Paso 2**
 Primero, tendriamos que inicializar los dos contenedores con sus respectivas proxys:
+<div align="center">
 
 ![alt text](diferencia_simple.png)
+</div>
 
 
-En el esquema anterior, se puede ver que una petición se multidifunde a dos instancias del Servicio A, siendo una V1 y otra V2. Ambas devuelven una respuesta y luego es comparada por Diferencia. Finalmente, observe que no se devuelve ninguna respuesta sino el resultado (en forma de Código de Estado HTTP).
+En el esquema anterior, se puede ver que una petición se multidifunde a dos instancias del Servicio A, siendo una ``V1`` y otra ``V2``. Ambas devuelven una respuesta y luego es comparada por Diferencia. Finalmente, observe que no se devuelve ninguna respuesta sino el resultado (en forma de Código de Estado HTTP).
 
 Dado que Diferencia no devuelve una respuesta real, sino una comparación, significa efectivamente que es necesario utilizar el proxy de Diferencia con fines de prueba (para comprobar la compatibilidad con versiones anteriores) y no como un proxy de producción como Envoy. Esto significa que Diferencia podría utilizarse para realizar pruebas concretas de compatibilidad con versiones anteriores o para utilizar la técnica de Traffic Shadowing/Mirroring.
 
@@ -234,8 +248,10 @@ Migramos las peticiones a la versión final:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
-## **Ejemplo 4. Canary Releasing**
+<br>
 
+## **Ejemplo 4. Canary Releasing**
+____________________________________________________________
 ### **Paso 1**
 Lanzar una versión Canary para un subconjunto de usuarios, por si se produce algún problema sólo un pequeño grupo de usuarios se verán afectados.
 

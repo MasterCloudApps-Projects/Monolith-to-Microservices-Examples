@@ -8,7 +8,7 @@
 We are going to proceed with the realization and explanation of the `Decorating Collaborator` pattern. This pattern is based on the application of a proxy. When we make a request, once is responded from the monolith, the proxy will perform an operation on a new microservice. This microservice may or may not make use of information that the monolith must expose.
 
 ## **Example 1. New functionality**
-
+____________________________________________________________
 This time we have developed a new base code.
 <div align="center">
 

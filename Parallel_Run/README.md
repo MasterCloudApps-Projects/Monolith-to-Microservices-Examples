@@ -1,4 +1,11 @@
-# Parallel Run
+# **Parallel Run**
+
+<div align="center">
+
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Parallel_Run/README.md)
+[![es](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Parallel_Run/README.es.md)
+</div>
+
 
 In the previously studied patterns `Strangler Fig` and `Branch By Abstraction`, we had the possibility that the old and new version of the functionality coexisted, but only one of them was activated at a specific time.
 
@@ -9,7 +16,7 @@ This `Parallel Run` pattern, instead of calling either the old or the new implem
 It uses the `Dark Launching` technique, to implement a new feature but make it invisible to the users. `Parallel Run` is a way to implement this technique, since the new feature is invisible to the user.
 
 ## **Example 1. Using Spies**
-
+____________________________________________________________
 ### **Step 1**
 We start from our monolithic application that logs user notifications.
 ```
@@ -82,7 +89,10 @@ We migrate the requests to the final version:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
+<br>
+
 ## **Example 2. Github Scientist**.
+____________________________________________________________
 There are libraries that allow you to compare results in a very simple way. In our case, we will proceed to perform an example with:
 https://github.com/rawls238/Scientist4J
 
@@ -164,7 +174,10 @@ We migrate the requests to the final version:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
+<br>
+
 ## **Example 3. Diferencia**
+____________________________________________________________
 This example is somewhat different. Actually `Diferencia` is mounted on top of a proxy that would act in our case as an external comparator. 
 When building a service-based architecture where each service might be deployed independently, it is important to validate that the new version of the service is still compatible with the old version and this new version is able to produce a response that it is still processable by any consumer.
 
@@ -229,8 +242,10 @@ We migrate the requests to the final version:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
-## **Example 4. Canary Releasing**
+<br>
 
+## **Example 4. Canary Releasing**
+____________________________________________________________
 ### **Step 1**
 Release a Canary version for a subset of users, so that if a problem occurs only a small group of users will be affected.
 
