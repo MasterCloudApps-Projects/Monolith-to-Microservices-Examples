@@ -10,7 +10,7 @@ The ``Strangler Fig`` pattern consists of the incremental and gradual migration 
 The pattern is divided into 3 steps:
 1. Monolithic application. Requests and functionalities are answered within it.
 2. Implementation of the functionality in a new microservice.
-3. With your new implementation ready, we migrated requests from the monolith to the microservice.
+3. With your new implementation ready, we can migrate the requests from the monolith to the microservice.
 
 <div align="center">
 
@@ -32,7 +32,7 @@ To do this, we must add:
 
 The following line: `127.0.0.1 payment.service`
 
-We start from a monolith that contains all the logic of the application. The need arises to extract a separate functionality, in this case `Inventory` to a new microservice.
+We start from a monolith that contains all the logic of the application. The need arises to extract a separate functionality, in this case `Inventory`, to a new microservice.
 
 Below is an image of the initial and final state of the application after applying the pattern.
 
@@ -132,7 +132,7 @@ In case of any problem, you can always do a rollback and redirect the requests b
 ## **Example 2. Internal functionality extraction**
 ____________________________________________________________
 
-If we want to apply the pattern on `Payroll`, which uses an internal functionality in the` User notification` monolith, we must expose that internal functionality to the outside through an endpoint.
+If we want to apply the pattern on `Payroll`, which uses an internal functionality (`User notification`) in the monolith, we must expose that internal functionality to the outside through an endpoint.
 
 <div align="center">
 
@@ -166,13 +166,13 @@ We can test our monolith:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":120}' payment.service/payroll
 ```
 
-Log in to the notification:
+Logs in the notification:
 ```
 Payroll 3 shipped to Juablaz of 120.0
 ```
 
 ### **Step 2**
-We must implement the functionality in a new microservice that will communicate with the monolith. Therefore, the monolith must expose an endpoint for the microservice to connect through it `/ notification`.
+We must implement the functionality in a new microservice that will communicate with the monolith. Therefore, the monolith must expose an endpoint for the microservice to connect through it `/notification`.
 We released a version of the monolith (`v2`) and our new microservice.
 
 ```
@@ -245,7 +245,7 @@ In this way, the petitions go back to the old monolith.
 
 ## **Example 3. Interception of messages**
 ____________________________________________________________
-In this example we have not added a proxy to redirect requests since the pattern is not based on intercepting HTTP requests, but on intercepting and redirecting messages from the messaging queue.
+In this example we have not added a proxy to redirect requests since the pattern is not based on intercepting HTTP requests. It is focused on intercepting and redirecting messages from the messaging queue.
 
 ### **Step 1**
 We have a monolith that receives messages through a queue.

@@ -18,7 +18,8 @@ Nos situamos en el caso de que necesitamos migrar un código interio del monolit
 <br>
 
 ## **Ejemplo 1. Extracción de una funcionalidad dependiente.**
-___
+____________________________________________________________
+
 ### **Paso 1**
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 ```
