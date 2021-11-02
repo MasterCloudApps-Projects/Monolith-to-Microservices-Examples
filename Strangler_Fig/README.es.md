@@ -5,7 +5,7 @@
 [![es](https://img.shields.io/badge/lang-es-yellow.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Strangler_Fig/README.es.md)
 </div>
 
-El patrón ``Strangler Fig`` consiste en la migración de forma incremental y gradual de las funcionalidades específicas situadas dentro del monolito a microservicios independientes.
+El patrón `Strangler Fig` consiste en la migración de forma incremental y gradual de las funcionalidades específicas situadas dentro del monolito a microservicios independientes.
 
 El patrón se divide en 3 pasos:
 1. Aplicación monolítica. Las peticiones y funcionalidades se responden dentro del mismo.
@@ -44,7 +44,7 @@ A continuación, se muestra una imagen del estado inicial y final de la aplicaci
 ### **Paso 1**
 Tenemos nuestra aplicación monolítica. Las peticiones y funcionalidades se responden dentro del mismo.
 ```
-> docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up --build --force-recreate
+> docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up --build --force-recreate 
 
 > docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
 ```
@@ -89,7 +89,7 @@ Las peticiones siguen llegando a nuestro monolito, pero podemos probar nuestro m
 > curl localhost:8081/inventory
 ```
 
-Vemos que las respuestas vienen con el tag ``[MS]`` que hemos añadido en el inicializador de datos.
+Vemos que las respuestas vienen con el tag `[MS]` que hemos añadido en el inicializador de datos.
 
 ### **Paso 3**
 Con su nueva implementación lista, procedemos a redireccionar las llamadas desde el monolito al nuevo microservicio.
@@ -132,7 +132,7 @@ En caso de que se produzca cualquier problema siempre se puede hacer un rollback
 ## **Ejemplo 2. Extracción de funcionalidad interna**
 ____________________________________________________________
 
-Si deseamos aplicar el patrón sobre ``Payroll`` que utiliza una funcionalidad interna en el monolito ``User notification``, debemos exponer dicha funcionalidad interna al exterior a través de un endpoint.
+Si deseamos aplicar el patrón sobre `Payroll` que utiliza una funcionalidad interna en el monolito `User notification`, debemos exponer dicha funcionalidad interna al exterior a través de un endpoint.
 
 <div align="center">
 
@@ -143,7 +143,7 @@ Si deseamos aplicar el patrón sobre ``Payroll`` que utiliza una funcionalidad i
 
 1. En caso de no disponer de proxy, debemos añadir uno que permita dirigir las peticiones. 
 2. Con el proxy activo, realizamos la extracción a nuestro microservicio. Se podría realizar en varios pasos:
-    - Creación del microservicio vacío, sin funcionalidad retornando ``501 Not Implemented``. Se recomienda llevarlo a producción para familiarizarnos con el proceso de despliegue.
+    - Creación del microservicio vacío, sin funcionalidad retornando `501 Not Implemented`. Se recomienda llevarlo a producción para familiarizarnos con el proceso de despliegue.
     - Implementación de la funcionalidad del microservicio.
 3. Movemos las peticiones del monolito al microservicio de forma progresiva. Si hay un error podemos redirigir las peticiones de nuevo al monolito.
 
@@ -156,7 +156,7 @@ Si deseamos aplicar el patrón sobre ``Payroll`` que utiliza una funcionalidad i
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 
 ```
-> docker-compose -f Ejemplo_2/1_docker-compose-monolith.yml up --build
+> docker-compose -f Ejemplo_2/1_docker-compose-monolith.yml up --build --force-recreate
 
 > docker-compose -f Ejemplo_2/1_docker-compose-proxy.yml up -d
 ```
@@ -172,11 +172,11 @@ Payroll 3 shipped to Juablaz of 120.0
 ```
 
 ### **Paso 2**
-Debemos implementar la funcionalidad en un nuevo microservicio que se comunicará con el monolito. Por tanto, el monolito debe exponer un endpoint para que el microservicio se conecte a través del él ```/notification```.
-Lanzamos una versión del monolito (``v2``) y nuestro nuevo microservicio.
+Debemos implementar la funcionalidad en un nuevo microservicio que se comunicará con el monolito. Por tanto, el monolito debe exponer un endpoint para que el microservicio se conecte a través del él `/notification`.
+Lanzamos una versión del monolito (`v2`) y nuestro nuevo microservicio.
 
 ```
-> docker-compose -f Ejemplo_2/2_docker-compose.yml up --build
+> docker-compose -f Ejemplo_2/2_docker-compose.yml up --build --force-recreate
 ```
 
 Podemos probar nuestro microservicio:
@@ -185,12 +185,12 @@ Podemos probar nuestro microservicio:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:8081/payroll
 ```
 
-Se loguea la notificación en el monolito nuevo (``v2``), por lo tanto la comunicación es correcta:
+Se loguea la notificación en el monolito nuevo (`v2`), por lo tanto la comunicación es correcta:
 ```
 Payroll 3 shipped to Juablaz of 220.0
 ```
 
-Las peticiones a través del proxy ``payment.service`` siguen llegando al monolito anterior, pero hemos probado el correcto funcionamiento del nuevo monolito y del microservicio.
+Las peticiones a través del proxy `payment.service` siguen llegando al monolito anterior, pero hemos probado el correcto funcionamiento del nuevo monolito y del microservicio.
 
 
 ### **Paso 3**
@@ -221,7 +221,7 @@ Podemos probar nuestra aplicación:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
-Se loguea la notificación en el monolito ``v2``:
+Se loguea la notificación en la versión 2 del monolito `2_strangler_fig_monolith`:
 ```
 Payroll 3 shipped to Juablaz of 320.0
 ```

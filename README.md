@@ -22,15 +22,6 @@ Patrones de código:
 * [5. Change Data Capture](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Change_Data_Capture/README.md)
 
 
-- 
-
-
-
-
-
-
-
-
 
 
 - Parallel Run: Probar el microservicio a la vez que el monolito, comparar la diferencia.
@@ -90,3 +81,38 @@ PARA LA DEMO:
 - Quizá tener un cliente de test que haga peeticiones periódicas para demostrar no caída de servicio
 
 - Enseñar también rollback en caso de error.
+
+
+## TO-DOS:
+Entrega:
+
+Memoria académica
+
+
+- Portada
+- Resúmen (1 página)
+- Capítulo de Introducción y objetivos
+- Capítulo o capítulos en los que se desarrolle el TFM
+- Capítulo de Conclusiones y trabajos futuros
+    - Hacer más patrones
+    - Utilizar diferentes tecnologías (RabbitMQ, Kubernetes, otros frameworks, diferentes BBDD, (MONGODB))
+- Bibliografía
+
+- Anexos (Opcionales. No incluidos en la longitud de 15 páginas como mínimo)
+El formato de la portada se encuentra publicado junto a esta normativa.
+
+
+Documentación técnica
+(README)
+Enfocarlo mejor a explicar el código más que a desplegar.
+
+
+PPT para la defensa:
+
+
+Licencia:
+Creative Commons
+Attribution Share-Alike
+
+
+DUDAS De change data capture.

@@ -44,7 +44,7 @@ También, debemos desarrollar nuestro microservicio, con una implementación mod
 > docker-compose -f Ejemplo_1/2_docker-compose.yml up 
 ```
 
-Podemos probar nuestra nueva implementación del monolito v2:
+Podemos probar nuestra nueva implementación del monolito `v2`:
 
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8082/payroll
@@ -75,7 +75,7 @@ Devuelve ``true`` y loguea:
 Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
 
 ```
-> docker-compose -f Ejemplo_1/3_docker-compose.yml up -d
+> docker-compose -f Ejemplo_1/3_docker-compose.yml up --build --force-recreate
 ```
 
 Probamos que funcione correctamente:
@@ -137,7 +137,7 @@ e.runAsync(this::controlFunction, this::candidateFunction);
 ```
 
 En nuestro caso, debemos hacer una pequeña modificación al código del monolito y del microservicio, puesto que nuestras operaciones son `void`. Vamos a retornar un ``String`` almacenado previamente para este ejemplo en un ``ConcurrentMap``. Esto nos permite comparar las llamadas newCode/oldCode de lo que nos ha creado la nueva implementacion con la que ya habia:
-```
+```java
 public Boolean scientistExperiment(Long id) {
         DropwizardMetricsProvider metricRegistry = new DropwizardMetricsProvider();
         Experiment<String> experiment = new Experiment<>("notify", metricRegistry);
@@ -158,12 +158,32 @@ public Boolean scientistExperiment(Long id) {
     }
 ```
 
+```
+> docker-compose -f Ejemplo_2/2_docker-compose.yml up 
+```
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8082/payroll
+```
+
+
+Actualizamos a utilizar el proxy:
+
+```
+> docker-compose -f Ejemplo_2/2_docker-compose-proxy.yml up -d
+```
+
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+```
+
+
 ### **Paso 3**
 
 Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
 
 ```
-> docker-compose -f Ejemplo_2/3_docker-compose.yml up -d
+> docker-compose -f Ejemplo_2/3_docker-compose.yml up
 ```
 
 ```

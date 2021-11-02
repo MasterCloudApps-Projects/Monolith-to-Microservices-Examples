@@ -59,7 +59,7 @@ Tendremos una versión 2 del monolito y nuestro microservicio. Dentro de esta ve
 
 Hacemos una petición:
 ```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
 ```
 
 Se loguea en el monolito:
