@@ -127,7 +127,62 @@ Podemos en este punto plantearnos dejar de utilizar el monolito y usar exclusiva
 
 
 ## **Ejemplo 4. Debezium**
-(DEBEZIUM)
+Debezium es una plataforma distribuida open source para Change Data Capture. La [documentación de Debezium](https://debezium.io/documentation/reference/1.6/), esta muy bien estructurada, y posee hasta un tutorial de utilización. Nosotros para este ejemplo vamos a utilizar la siguiente estructura:
+
+- Postgres
+- Kafka
+  - Zookeeper.
+  - Kafka Broker.
+  - Kafka Connect with [Debezium](https://debezium.io/).
+  - kafdrop For UI to Kafka topics.
+
+Primero de todo, hemos creado un script de inicio junto a un docker-compose para ayudar a montar el ejemplo:
+```
+export DEBEZIUM_VERSION=1.4 (or latest)
+
+# Monta los docker utilizando docker-compose. Si es la primera vez, tardara un momento.
+
+docker-compose -f Ejemplo_4/1_docker-compose.yml up --build
+
+# Configura los conectores con la DB. Para simplificarlo, hemos creado un script de inicio. 
+
+./init.sh
+```
+
+Para crear el conector, creamos un JSON con toda la configuracion. La cual, mediante el `./init.sh` iniciaremos la variable que ingresaremos en el docker-compose:
+
+```
+{
+  "name": "pg_loyalty_data-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "postgres",
+    "database.server.id": "184055",
+    "database.server.name": "dbserver2",
+    "database.include": "loyalty_data",
+    "database.dbname": "loyalty_data",
+    "database.history.kafka.bootstrap.servers": "kafka:9092",
+    "database.history.kafka.topic": "schema-changes.loyalty_data",
+    "transforms": "route",
+    "transforms.route.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.route.regex": "([^.]+)\\.([^.]+)\\.([^.]+)",
+    "transforms.route.replacement": "$3"
+  }
+}
+```
+
+Ahora que tenemos la BBDD conectada, debemos realizar un cambio y ver si se refleja en `Debezium`. A futuro, seria conectarlo junto a `Elastic Search` o algun sistema conector para ver reflejados dichos cambios realizados en Postgres.
+
+TODO: Evitar hacer los cambios manuales en la BBDD, meter un script o algo
+
+Hemos utilizado Kafdrop como interfaz de usuario. Podemos ver una lista de mensajes publicados en un tema. Para abrir Kafdrop en local por favor haga clic [aquí](http://localhost:9100/)
+
+TODO: Poner pantallazos y explicacion de la devolucion del mensaje del connector debezium kafka.
+
 https://www.paradigmadigital.com/dev/primeros-pasos-con-debezium/
 
 
