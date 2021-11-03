@@ -44,9 +44,9 @@ Below is an image of the initial and final state of the application after applyi
 ### **Step 1**
 We have our monolith application. Requests and functionalities are answered within it.
 ```
-> docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up --build --force-recreate
+> docker-compose -f Example_1/1_docker-compose-monolith.yml up --build --force-recreate
 
-> docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
+> docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
 ```
 ----
 NOTE:
@@ -81,7 +81,7 @@ We can test our monolith through a request to:
 ### **Step 2**
 We must implement the functionality in a new microservice.
 ```
-> docker-compose -f Ejemplo_1/2_docker-compose-ms.yml up --build --force-recreate
+> docker-compose -f Example_1/2_docker-compose-ms.yml up --build --force-recreate
 ```
 
 Requests keep coming to our monolith, but we can test our microservice by calling it directly:
@@ -95,7 +95,7 @@ We see that the responses come with the tag ``[MS]`` that we have added in the d
 With your new implementation ready, we proceed to redirect calls from the monolith to the new microservice.
 
 ```
-> docker-compose -f  Ejemplo_1/3_docker-compose-proxy.yml up -d
+> docker-compose -f  Example_1/3_docker-compose-proxy.yml up -d
 ```
 
 The new proxy settings are:
@@ -124,7 +124,7 @@ From now on, the response will have a `[MS]` prefix that we have added to the sa
 In case of any problem, you can always do a rollback and redirect the requests back to the monolith.
 
 ```
-> docker-compose -f  Ejemplo_1/1_docker-compose-proxy.yml up -d
+> docker-compose -f  Example_1/1_docker-compose-proxy.yml up -d
 ```
 
 <br>
@@ -156,9 +156,9 @@ How does this fit into our 3 steps?:
 We have our monolith application, requests and functionalities are answered within it.
 
 ```
-> docker-compose -f Ejemplo_2/1_docker-compose-monolith.yml up --build
+> docker-compose -f Example_2/1_docker-compose-monolith.yml up --build
 
-> docker-compose -f Ejemplo_2/1_docker-compose-proxy.yml up -d
+> docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
 ```
 
 We can test our monolith:
@@ -176,7 +176,7 @@ We must implement the functionality in a new microservice that will communicate 
 We released a version of the monolith (`v2`) and our new microservice.
 
 ```
-> docker-compose -f Ejemplo_2/2_docker-compose.yml up --build
+> docker-compose -f Example_2/2_docker-compose.yml up --build
 ```
 
 We can test our microservice:
@@ -197,7 +197,7 @@ Requests through the proxy `payment.service` continue to reach the old monolith,
 With the new implementation ready, we redirected requests to the `Payroll` functionality monolith.
 
 ```
-> docker-compose -f  Ejemplo_2/3_docker-compose-proxy.yml up -d
+> docker-compose -f  Example_2/3_docker-compose-proxy.yml up -d
 ```
 
 The new configuration is:
@@ -226,17 +226,12 @@ The notification is logged in the monolith `v2`:
 Payroll 3 shipped to Juablaz of 320.0
 ```
 
-At this point we can consider removing version 1 of the monolith:
-
-```
-> docker-compose -f  Ejemplo_2/1_docker-compose_monolith.yml down
-```
-
+At this point we can consider removing version 1 of the monolith.
 What happens if we have had a problem in the new version?
 We can quickly load the old proxy settings:
 
 ```
-> docker-compose -f Ejemplo_2/1_docker-compose-proxy.yml up -d
+> docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
 ```
 
 In this way, the petitions go back to the old monolith.
@@ -258,9 +253,9 @@ It consists of two topics: `invoicing-v1-topic` and` payroll-v1-topic`.
 </div>
 
 ```
-> docker-compose -f  Ejemplo_3/1_docker-compose.yml up --build
+> docker-compose -f  Example_3/1_docker-compose.yml up --build
 
-> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up -d 
+> docker-compose -f  Example_3/1_docker-compose-producer.yml up -d 
 ```
 
 Let's do a test through a request:
@@ -305,7 +300,7 @@ It would be done:
 
 We are going to run the example following the pattern, first the implementation and then migrating the "requests", in this case the messages on the queue:
 ```
-> docker-compose -f  Ejemplo_3/2_a_docker-compose.yml up --build
+> docker-compose -f  Example_3/2_a_docker-compose.yml up --build
 ```
 
 We can test our new implementation of the monolith:
@@ -316,7 +311,7 @@ We can test our new implementation of the monolith:
 ### **Step 3**
 We are going to migrate the "requests", in this case, migrate the messages to new topics where to write:
 ```
-> docker-compose -f  Ejemplo_3/3_a_docker-compose-producer.yml up -d --build
+> docker-compose -f  Example_3/3_a_docker-compose-producer.yml up -d --build
 ```
 
 Let's test if it works correctly:
@@ -336,7 +331,7 @@ We can confirm it by requesting the microservice:
 
 In case of error, we can change the data writing to the old monolith:
 ```
-> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up -d
+> docker-compose -f  Example_3/1_docker-compose-producer.yml up -d
 ```
 
 ## **We can't change the code of the monolith**
@@ -360,7 +355,7 @@ If we need to perform a hot deployment without service stop, as we have explaine
 We launched a version exactly the same as the previous one of the monolith, changing the topics to which it subscribes.
 
 ```
-> docker-compose -f  Ejemplo_3/2_b_docker-compose.yml up --build
+> docker-compose -f  Example_3/2_b_docker-compose.yml up --build
 ```
 
 We can test our new implementation of the microservice and cbr:
@@ -374,7 +369,7 @@ At this time, requests keep coming to the old topic, `payroll-v1-topic` and` inv
 ### **Step 3**
 We are going to migrate the "requests". In this case, we migrate the messages to new topics where to write:
 ```
-> docker-compose -f  Ejemplo_3/3_b_docker-compose-producer.yml up -d
+> docker-compose -f  Example_3/3_b_docker-compose-producer.yml up -d
 ```
 
 Let's test that it works correctly:
@@ -389,7 +384,7 @@ Log in to our microservice (Remember that the request is not made from the micro
 
 In case of error, we can change the data writing to the old monolith:
 ```
-> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up -d
+> docker-compose -f  Example_3/1_docker-compose-producer.yml up -d
 ```
 
 # Links of interest:

@@ -3,7 +3,7 @@ version: '3.9'
 services:
   strangler-fig-producer:
     image: strangler_fig_producer
-    container_name: 'strangler_fig_producer'
+    container_name: 'example_3_step_strangler_fig_producer'
     restart: on-failure
     build: 
       context: ./strangler_fig_producer
@@ -13,8 +13,8 @@ services:
     networks:
       - app-network
     environment:
-      - PAYROLL_TOPIC=payroll-v2-topic
-      - INVOICING_TOPIC=invoicing-v2-topic
+      - PAYROLL_TOPIC=payroll-v1-topic
+      - INVOICING_TOPIC=invoicing-v1-topic
       - KAFKA_HOST=kafka
       - KAFKA_PORT=9092
 

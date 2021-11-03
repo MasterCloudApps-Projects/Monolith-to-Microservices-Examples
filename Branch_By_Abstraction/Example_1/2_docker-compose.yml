@@ -3,7 +3,7 @@ services:
 
   2-branch-by-abstraction-monolith:
     image: 2_branch_by_abstraction_monolith
-    container_name: '2_branch_by_abstraction_monolith'
+    container_name: 'example_1_step_2_branch_by_abstraction_monolith'
     restart: on-failure
     build: 
       context: ./2_branch_by_abstraction_monolith
@@ -20,7 +20,7 @@ services:
 
   2-branch-by-abstraction-notification-ms:
     image: 2_branch_by_abstraction_notification_ms
-    container_name: '2_branch_by_abstraction_notification_ms'
+    container_name: 'example_1_step_2_branch_by_abstraction_notification_ms'
     restart: on-failure
     build: 
       context: ./2_branch_by_abstraction_notification_ms

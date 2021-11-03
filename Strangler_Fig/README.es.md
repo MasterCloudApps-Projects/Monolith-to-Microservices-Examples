@@ -44,9 +44,9 @@ A continuación, se muestra una imagen del estado inicial y final de la aplicaci
 ### **Paso 1**
 Tenemos nuestra aplicación monolítica. Las peticiones y funcionalidades se responden dentro del mismo.
 ```
-> docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up --build --force-recreate 
+> docker-compose -f Example_1/1_docker-compose-monolith.yml up  
 
-> docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
+> docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
 ```
 ----
 NOTA:
@@ -81,7 +81,7 @@ Podemos probar nuestro monolito a través de una petición a:
 ### **Paso 2**
 Debemos implementar la funcionalidad en un nuevo microservicio.
 ```
-> docker-compose -f Ejemplo_1/2_docker-compose-ms.yml up --build --force-recreate
+> docker-compose -f Example_1/2_docker-compose-ms.yml up 
 ```
 
 Las peticiones siguen llegando a nuestro monolito, pero podemos probar nuestro microservicio llamándolo directamente:
@@ -95,7 +95,7 @@ Vemos que las respuestas vienen con el tag `[MS]` que hemos añadido en el inici
 Con su nueva implementación lista, procedemos a redireccionar las llamadas desde el monolito al nuevo microservicio.
 
 ```
-> docker-compose -f  Ejemplo_1/3_docker-compose-proxy.yml up -d
+> docker-compose -f  Example_1/3_docker-compose-proxy.yml up -d
 ```
 
 La nueva configuración del proxy es:
@@ -124,7 +124,7 @@ Desde este momento, la respuesta contará con un prefijo ``[MS]`` que hemos aña
 En caso de que se produzca cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito.
 
 ```
-> docker-compose -f  Ejemplo_1/1_docker-compose-proxy.yml up -d
+> docker-compose -f  Example_1/1_docker-compose-proxy.yml up -d
 ```
 
 <br>
@@ -156,9 +156,9 @@ Si deseamos aplicar el patrón sobre `Payroll` que utiliza una funcionalidad int
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 
 ```
-> docker-compose -f Ejemplo_2/1_docker-compose-monolith.yml up --build --force-recreate
+> docker-compose -f Example_2/1_docker-compose-monolith.yml up 
 
-> docker-compose -f Ejemplo_2/1_docker-compose-proxy.yml up -d
+> docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
 ```
 
 Podemos probar nuestro monolito:
@@ -176,7 +176,7 @@ Debemos implementar la funcionalidad en un nuevo microservicio que se comunicar�
 Lanzamos una versión del monolito (`v2`) y nuestro nuevo microservicio.
 
 ```
-> docker-compose -f Ejemplo_2/2_docker-compose.yml up --build --force-recreate
+> docker-compose -f Example_2/2_docker-compose.yml up 
 ```
 
 Podemos probar nuestro microservicio:
@@ -197,7 +197,7 @@ Las peticiones a través del proxy `payment.service` siguen llegando al monolito
 Con la nueva implementación lista, redirigimos las peticiones al monolito de la funcionalidad de `Payroll`.
 
 ```
-> docker-compose -f  Ejemplo_2/3_docker-compose-proxy.yml up -d
+> docker-compose -f  Example_2/3_docker-compose-proxy.yml up -d
 ```
 
 La nueva configuración es:
@@ -226,17 +226,12 @@ Se loguea la notificación en la versión 2 del monolito `2_strangler_fig_monoli
 Payroll 3 shipped to Juablaz of 320.0
 ```
 
-En este punto podemos plantearnos quitar la versión 1 del monolito:
-
-```
-> docker-compose -f  Ejemplo_2/1_docker-compose_monolith.yml down
-```
-
+En este punto podemos plantearnos quitar la versión 1 del monolito.
 ¿Qué ocurre si hemos tenido algún problema en la nueva versión?
 Podemos rápidamente, cargar la configuración del proxy antigua:
 
 ```
-> docker-compose -f Ejemplo_2/1_docker-compose-proxy.yml up -d
+> docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
 ```
 
 De esta forma, las peticiones vuelven al monolito antiguo.
@@ -258,9 +253,9 @@ Está formado por dos topics: `invoicing-v1-topic` y `payroll-v1-topic`.
 </div>
 
 ```
-> docker-compose -f  Ejemplo_3/1_docker-compose.yml up --build
+> docker-compose -f  Example_3/1_docker-compose.yml up --build
 
-> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up -d 
+> docker-compose -f  Example_3/1_docker-compose-producer.yml up -d 
 ```
 
 Hagamos una prueba a través de una petición:
@@ -306,7 +301,7 @@ Se haría:
 Vamos a ejecutar el ejemplo siguiendo el patrón, primero la implementación y luego migrando las "peticiones", en este caso los mensajes de la cola:
 
 ```
-> docker-compose -f  Ejemplo_3/2_a_docker-compose.yml up --build
+> docker-compose -f  Example_3/2_a_docker-compose.yml up --build
 ```
 
 Podemos probar nuestra nueva implementación del monolito:
@@ -317,7 +312,7 @@ Podemos probar nuestra nueva implementación del monolito:
 ### **Paso 3**
 Vamos a migrar las "peticiones". En este caso, se trata de migrar los mensajes a nuevos topics donde escribir:
 ```
-> docker-compose -f  Ejemplo_3/3_a_docker-compose-producer.yml up -d --build
+> docker-compose -f  Example_3/3_a_docker-compose-producer.yml up -d --build
 ```
 
 Probemos que funciona correctamente:
@@ -337,7 +332,7 @@ Podemos confirmarlo mediante una petición al microservicio:
 
 En caso de error podemos cambiar la escritura de datos al monolito antiguo:
 ```
-> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up -d
+> docker-compose -f  Example_3/1_docker-compose-producer.yml up -d
 ```
 
 ## **NO podemos cambiar el código del monolito**
@@ -361,7 +356,7 @@ Si necesitamos realizar un despliegue en caliente, sin parada de servicio, como 
 Lanzamos una versión exactamente igual que la anterior del monolito, cambiando los topics a los que se suscribe.
 
 ```
-> docker-compose -f  Ejemplo_3/2_b_docker-compose.yml up --build
+> docker-compose -f  Example_3/2_b_docker-compose.yml up --build
 ```
 
 Podemos probar nuestra nueva implementación del microservicio y el cbr:
@@ -374,7 +369,7 @@ En este momento, las peticiones siguen llegando al topic antiguo, `payroll-v1-to
 ### **Paso 3**
 Vamos a migrar las "peticiones", en este caso, migrar los mensajes a nuevos topics donde escribir:
 ```
-> docker-compose -f  Ejemplo_3/3_b_docker-compose-producer.yml up -d
+> docker-compose -f  Example_3/3_b_docker-compose-producer.yml up -d
 ```
 
 Probemos que funciona correctamente:
@@ -389,7 +384,7 @@ Se loguea en nuestro microservicio (Recordemos que no se realiza la petición de
 
 En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
 ```
-> docker-compose -f  Ejemplo_3/1_docker-compose-producer.yml up -d
+> docker-compose -f  Example_3/1_docker-compose-producer.yml up -d
 ```
 
 # Enlaces de interés:

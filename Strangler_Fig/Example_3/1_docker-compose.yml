@@ -26,7 +26,7 @@ services:
 
   1-strangler-fig-monolith:
     image: 1_strangler_fig_monolith
-    container_name: '1_strangler_fig_monolith'
+    container_name: 'example_3_step_1_strangler_fig_monolith'
     restart: on-failure
     build: 
       context: ./1_strangler_fig_monolith

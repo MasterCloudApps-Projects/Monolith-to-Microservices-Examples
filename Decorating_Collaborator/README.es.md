@@ -20,9 +20,9 @@ En esta ocasión hemos planteado un nuevo enunciado.
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 
 ```
-> docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up --build
+> docker-compose -f Example_1/1_docker-compose-monolith.yml up 
 
-> docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
+> docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
 ```
 
 Podemos probar nuestro monolito:
@@ -37,7 +37,7 @@ Debemos implementar la funcionalidad en un nuevo microservicio que basado en una
 Lanzamos una versión del microservicio y un `Gateway` realizado con spring cloud `Gateway`.
 
 ```
-> docker-compose -f Ejemplo_1/2_docker-compose.yml up --build
+> docker-compose -f Example_1/2_docker-compose.yml up 
 ```
 
 Podemos probar nuestro microservicio:
@@ -63,7 +63,7 @@ Se crea el usuario en el microservicio nuevo y se le añaden 10 puntos:
 Una vez probado el gateway, movamos las peticiones desde nuestro proxy de nginx a nuestro gateway.
 
 ```
-> docker-compose -f Ejemplo_1/3_docker-compose-proxy.yml up -d
+> docker-compose -f Example_1/3_docker-compose-proxy.yml up -d
 ```
 
 ```

@@ -4,7 +4,7 @@ services:
 
   strangler-fig-producer:
     image: strangler_fig_producer
-    container_name: 'strangler_fig_producer'
+    container_name: 'example_3_step_strangler_fig_producer'
     restart: on-failure
     build: 
       context: ./strangler_fig_producer

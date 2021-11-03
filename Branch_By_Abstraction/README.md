@@ -22,7 +22,7 @@ ___
 ### **Step 1**
 We have our monolithic application, requests and functionalities are answered within it.
 ```
-> docker-compose -f Ejemplo_1/1_docker-compose.yml up --build
+> docker-compose -f Example_1/1_docker-compose.yml up
 ```
 
 We can test our monolith:
@@ -32,7 +32,7 @@ We can test our monolith:
 
 We stop step 1:
 ```
-> docker-compose -f Ejemplo_1/1_docker-compose.yml down
+> docker-compose -f Example_1/1_docker-compose.yml down
 ```
 
 ### **Step 2**
@@ -52,7 +52,7 @@ In this step, we are going to get to [`4`], our application is left with the fol
 
 We are going to display the example:
 ```
-> docker-compose -f Ejemplo_1/2_docker-compose.yml up --build
+> docker-compose -f Example_1/2_docker-compose.yml up
 ```
 We will have a version 2 of the monolith and our microservice. Within this version, we can change to use or not the microservice.
 
@@ -64,7 +64,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 The monolith log:
 
 ```
-2_branch_by_abstraction_monolith         | 2021-09-29 13:50:34.660  INFO 1 --- [io-8080-exec-10] e.c.m.b.s.i.UserNotificationServiceImpl  : Payroll 6 shipped to Juablaz of 320.0   
+example_1_step_2_branch_by_abstraction_monolith         | 2021-09-29 13:50:34.660  INFO 1 --- [io-8080-exec-10] e.c.m.b.s.i.UserNotificationServiceImpl  : Payroll 6 shipped to Juablaz of 320.0   
 ```
 
 If we enter `http: // localhost: 8080 / ff4j-web-console` and change the flag to enabled, it will be done through the microservice.
@@ -77,12 +77,12 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 Log in to the microservice:
 ```
-2_branch_by_abstraction_notification_ms  | 2021-09-29 13:50:05.941  INFO 1 --- [nio-8081-exec-1] e.c.m.b.service.UserNotificationService  : Payroll 5 shipped to Juablaz of 320.0   
+example_1_step_2_branch_by_abstraction_notification_ms  | 2021-09-29 13:50:05.941  INFO 1 --- [nio-8081-exec-1] e.c.m.b.service.UserNotificationService  : Payroll 5 shipped to Juablaz of 320.0   
 ```
 
 We stop step 2:
 ```
-> docker-compose -f Ejemplo_1/2_docker-compose.yml down
+> docker-compose -f Example_1/2_docker-compose.yml down
 ```
 
 As we can see, this way of managing changes and migration to the microservice allows us to activate / deactivate the flag in case of error.
@@ -106,7 +106,7 @@ It could even be combined with the steps applied in the example of `Strangler Fi
 We are going to display the example:
 
 ```
-> docker-compose -f Ejemplo_1/3_docker-compose.yml up --build
+> docker-compose -f Example_1/3_docker-compose.yml up
 ```
 
 We make a request:
@@ -116,10 +116,10 @@ We make a request:
 
 We see the answer:
 ```
-3_branch_by_abstraction_notification_ms  | 2021-09-24 14:38:13.520  INFO 1 --- [nio-8081-exec-8] e.c.m.b.service.UserNotificationService  : Payroll 3 shipped to Juablaz of 320.0
+example_1_step_3_branch_by_abstraction_notification_ms  | 2021-09-24 14:38:13.520  INFO 1 --- [nio-8081-exec-8] e.c.m.b.service.UserNotificationService  : Payroll 3 shipped to Juablaz of 320.0
 ```
 
 We stop step 3:
 ```
-> docker-compose -f Ejemplo_1/3_docker-compose.yml down
+> docker-compose -f Example_1/3_docker-compose.yml down
 ```

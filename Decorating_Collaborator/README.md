@@ -20,9 +20,9 @@ This time we have developed a new base code.
 We have our monolithic application, requests and functionalities are answered within it.
 
 ```
-> docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up --build
+> docker-compose -f Example_1/1_docker-compose-monolith.yml up
 
-> docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
+> docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
 ```
 
 We can test our monolith:
@@ -37,7 +37,7 @@ We must implement the functionality in a new microservice that based on a correc
 We launched a version of the microservice and a `Gateway` made with spring cloud` Gateway`.
 
 ```
-> docker-compose -f Ejemplo_1/2_docker-compose.yml up --build
+> docker-compose -f Example_1/2_docker-compose.yml up
 ```
 
 We can test our microservice:
@@ -62,7 +62,7 @@ The user is created in the new microservice and 10 points are added to it:
 Once the gateway is tested, let's move the requests from our nginx proxy to our gateway.
 
 ```
-> docker-compose -f Ejemplo_1/3_docker-compose-proxy.yml up -d
+> docker-compose -f Example_1/3_docker-compose-proxy.yml up -d
 ```
 
 ```

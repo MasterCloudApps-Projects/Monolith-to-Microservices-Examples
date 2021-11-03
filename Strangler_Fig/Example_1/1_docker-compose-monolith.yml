@@ -2,7 +2,7 @@ version: '3.9'
 services: 
   1-strangler-fig-monolith:
     image: 1_strangler_fig_monolith
-    container_name: '1_strangler_fig_monolith'
+    container_name: 'example_1_step_1_strangler_fig_monolith'
     restart: on-failure
     build: 
       context: ./1_strangler_fig_monolith

@@ -2,7 +2,7 @@ version: '3.9'
 services: 
   2-strangler-fig-inventory-ms:
     image: 2_strangler_fig_inventory_ms
-    container_name: '2_strangler_fig_inventory_ms'
+    container_name: 'example_1_step_2_strangler_fig_inventory_ms'
     restart: on-failure
     build: 
       context: ./2_strangler_fig_inventory_ms

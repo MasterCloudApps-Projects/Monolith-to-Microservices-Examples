@@ -2,7 +2,7 @@ version: '3.9'
 services: 
   2-decorating-collaborator-loyalty-ms:
     image: 2_decorating_collaborator_loyalty_ms
-    container_name: '2_decorating_collaborator_loyalty_ms'
+    container_name: 'example_1_step_2_decorating_collaborator_loyalty_ms'
     restart: on-failure
     build: 
       context: ./2_decorating_collaborator_loyalty_ms
@@ -14,7 +14,7 @@ services:
 
   2-decorating-collaborator-gateway-ms:
     image: 2_decorating_collaborator_gateway_ms
-    container_name: '2_decorating_collaborator_gateway_ms'
+    container_name: 'example_1_step_2_decorating_collaborator_gateway_ms'
     restart: on-failure
     build: 
       context: ./2_decorating_collaborator_gateway_ms
