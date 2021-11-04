@@ -8,6 +8,7 @@ En esta ocasión hemos planteado un nuevo enunciado. Nuestro monolito al realiza
 
 
 Por lo que en este caso, utilizamos el patrón ``Change Data Capture``, detectamos la inserción en la tabla de ``LoyaltyAccount`` y hacemos una petición a nuestro microservicio.
+
 ![alt text](3.35_change_data_capture.png)
 
 
