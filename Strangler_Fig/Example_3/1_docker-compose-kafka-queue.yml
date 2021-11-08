@@ -24,26 +24,6 @@ services:
     networks:
       - app-network
 
-  1-strangler-fig-monolith:
-    image: 1_strangler_fig_monolith
-    container_name: 'example_3_step_1_strangler_fig_monolith'
-    restart: on-failure
-    build: 
-      context: ./1_strangler_fig_monolith
-      dockerfile: ./Dockerfile
-    ports: 
-      - 8080:8080
-    networks:
-      - app-network
-    environment:
-      - PAYROLL_TOPIC=payroll-v1-topic
-      - INVOICING_TOPIC=invoicing-v1-topic
-      - KAFKA_HOST=kafka
-      - KAFKA_PORT=9092
-      - CONSUMER_GROUP_ID=payment-service-group
-    depends_on: 
-      - kafka
-
 
 networks:
   app-network:

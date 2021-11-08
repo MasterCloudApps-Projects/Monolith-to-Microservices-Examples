@@ -41,7 +41,7 @@ We are going to apply the pattern to extract the functionality of `UserNotificat
 1. We create the interface `UserNotificationService`.
 2. We adapt the existing `UserNotificationService` implementation (renamed` UserNotificationServiceImpl`) to use the interface.
 3. We create a new interface implementation, `UserNotificationServiceMSImpl`.
-4. We introduce `ff4j` which allows us to change the use of one or another implementation at runtime` http: // localhost: 8080 / ff4j-web-console`.
+4. We introduce `ff4j` which allows us to change the use of one or another implementation at runtime `http://localhost:8080/ff4j-web-console`.
 
 In this step, we are going to get to [`4`], our application is left with the following state in which we can change the active implementation:
 
@@ -67,7 +67,7 @@ The monolith log:
 example_1_step_2_branch_by_abstraction_monolith         | 2021-09-29 13:50:34.660  INFO 1 --- [io-8080-exec-10] e.c.m.b.s.i.UserNotificationServiceImpl  : Payroll 6 shipped to Juablaz of 320.0   
 ```
 
-If we enter `http: // localhost: 8080 / ff4j-web-console` and change the flag to enabled, it will be done through the microservice.
+If we enter `http://localhost:8080/ff4j-web-console` and change the flag to enabled, it will be done through the microservice.
 
 We repeat the request:
 

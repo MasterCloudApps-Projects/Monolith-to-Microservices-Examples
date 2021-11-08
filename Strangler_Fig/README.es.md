@@ -48,17 +48,7 @@ Tenemos nuestra aplicación monolítica. Las peticiones y funcionalidades se res
 
 > docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
 ```
-----
-NOTA:
-   
-``--build``: build images before starting containers.
-
-``-d, --detach``: Detached mode: Run containers in the background, print new container names.
-
-``--force-recreate``    Recreate containers even if their configuration
-                        and image haven't changed.
-
-----
+[Nota 1](#note1)
 
 Nuestro proxy está configurado para dirigir todas las peticiones al monolito existente. 
 
@@ -253,9 +243,11 @@ Está formado por dos topics: `invoicing-v1-topic` y `payroll-v1-topic`.
 </div>
 
 ```
-> docker-compose -f  Example_3/1_docker-compose.yml up --build
+> docker-compose -f Example_3/1_docker-compose-kafka-queue.yml up -d
 
-> docker-compose -f  Example_3/1_docker-compose-producer.yml up -d 
+> docker-compose -f Example_3/1_docker-compose-monolith.yml up --build
+
+> docker-compose -f Example_3/1_docker-compose-producer.yml up -d 
 ```
 
 Hagamos una prueba a través de una petición:
@@ -268,9 +260,10 @@ Podemos ver cómo se loguea en nuestro monolito:
 > Payroll 3 shipped to Juablaz of 220.0
 ```
 
-Tenemos dos posibles casuísticas:
-- Podemos cambiar el código del monolito.
-- No podemos cambiar el código del monolito.
+Tenemos tres posibles casuísticas:
+- a) Podemos cambiar el código del monolito.
+- b) No podemos cambiar el código del monolito.
+- c) No podemos cambiar la fuente de datos.
 
 ## **a) Podemos cambiar el código del monolito**
 ### **Paso 2**
@@ -282,8 +275,8 @@ Tenemos dos posibles casuísticas:
 
 Tenemos que modificar el código del monolito para ignorar las peticiones de ``Payroll``. Ya no tendrá configurado el `payroll-v1-topic` del que recibía mensajes. Además, necesitamos exponer el endpoint de ``Notification`` en el monolito para poder enviar notificaciones desde el microservicio. Por tanto, necesitamos una versión ``v2`` del monolito.
 
-La complicación surge si necesitamos realizar un despliegue en caliente, sin parada de servicio. 
-- Para ello necesitamos crear nuevos topics a los que escribimos desde el ``producer`` y a los que nos conectamos desde el ``monolito-v2``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
+La complicación surge al seguir el patrón e intentar realizar la migración de las peticiones del monolito al microservicio. En este ejemplo, no tenemos peticiones y no podemos migrarlas a través del uso de un proxy, por lo que se nos plantea la necesidad de actualizar la fuente de datos.
+- Para ello necesitamos crear nuevos topics a los que escribimos desde nuestro ``producer`` y a los que nos conectamos desde el ``monolito-v2``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
 
 ------
 NOTA: 
@@ -310,7 +303,7 @@ Podemos probar nuestra nueva implementación del monolito:
 ```
 
 ### **Paso 3**
-Vamos a migrar las "peticiones". En este caso, se trata de migrar los mensajes a nuevos topics donde escribir:
+Vamos a migrar las "peticiones". En este caso, se trata de migrar los mensajes a nuevos topics donde escribir, actualizar nuestra fuente de datos:
 ```
 > docker-compose -f  Example_3/3_a_docker-compose-producer.yml up -d --build
 ```
@@ -335,12 +328,12 @@ En caso de error podemos cambiar la escritura de datos al monolito antiguo:
 > docker-compose -f  Example_3/1_docker-compose-producer.yml up -d
 ```
 
-## **NO podemos cambiar el código del monolito**
+## **b) NO podemos cambiar el código del monolito**
 ### **Paso 2**
 
 ![alt text](3.17_strangler_fig_pattern.png)
 
-En este caso no podemos tocar el monolito. Necesitamos que exclusivamente lleguen mensajes de `Invoicing` al monolito porque no podemos quitar el procesado de los que llegan a `Payroll`. Además, no podemos loguear notificaciones desde el microservicio, puesto que tendríamos que exponer un endpoint como hemos hecho en el ejemplo anterior.
+En este caso no podemos tocar el monolito. Necesitamos que exclusivamente lleguen mensajes de `Invoicing` al monolito porque no podemos quitar el procesado de los que llegan a `Payroll`. Además, no podemos loguear notificaciones desde el microservicio, puesto que tendríamos que exponer un endpoint como hemos hecho en el ejemplo anterior. 
 Vamos a loguear la creación de Payroll en el propio microservicio para simplificar el ejemplo.
 
 Hemos creado el siguiente flujo:
@@ -353,7 +346,7 @@ Hemos creado el siguiente flujo:
 
 Si necesitamos realizar un despliegue en caliente, sin parada de servicio, como hemos explicado en el anterior ejemplo necesitamos crear nuevos topics a los que escribimos desde el ``producer`` y a los que nos conectamos desde el ``cbr``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
 
-Lanzamos una versión exactamente igual que la anterior del monolito, cambiando los topics a los que se suscribe.
+Lanzamos una versión exactamente igual que la anterior del monolito, **cambiando los topics a los que se suscribe**.
 
 ```
 > docker-compose -f  Example_3/2_b_docker-compose.yml up --build
@@ -366,8 +359,10 @@ Podemos probar nuestra nueva implementación del microservicio y el cbr:
 
 En este momento, las peticiones siguen llegando al topic antiguo, `payroll-v1-topic` y `invoicing-v1-topic`.
 
+
 ### **Paso 3**
-Vamos a migrar las "peticiones", en este caso, migrar los mensajes a nuevos topics donde escribir:
+Vamos a migrar las "peticiones". En este caso, se trata de migrar los mensajes a nuevos topics donde escribir, actualizar nuestra fuente de datos:
+
 ```
 > docker-compose -f  Example_3/3_b_docker-compose-producer.yml up -d
 ```
@@ -387,6 +382,66 @@ En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
 > docker-compose -f  Example_3/1_docker-compose-producer.yml up -d
 ```
 
+## **NO podemos cambiar la fuente de datos**
+### **Paso 1.1**
+
+Tras haber realizado los anteriores ejemplos, nos surge una duda durante la aplicación de este patrón. ¿Qué ocurre si no podemos cambiar la fuente de datos?
+Vamos a partir de una versión ampliada del monolito, que dispone de un flag de ``FF4J`` como los utilizados en el patrón [Branch by Abstraction](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Branch_By_Abstraction/README.es.md).
+
+```
+> docker-compose -f Example_3/1_docker-compose-monolith.yml down
+
+> docker-compose -f Example_3/1_c_docker-compose-monolith.yml up --build
+```
+
+Hagamos una prueba a través de una petición:
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+```
+
+Podemos ver cómo se loguea en nuestro monolito: 
+```
+> Payroll 3 shipped to Juablaz of 220.0
+```
+
+### **Paso 2**
+
+Vamos a ejecutar el microservicio y a deshabilitar la consumición de payroll en el monolito:
+
+```
+> docker-compose -f  Example_3/2_c_docker-compose-ms.yml up --build
+```
+
+Podemos probar nuestra nueva implementación del monolito:
+```
+> curl -v localhost:8082/payroll
+```
+
+Si entramos en `http://localhost:8080/ff4j-web-console` y cambiamos el flag a deshabilitado, dejará de consumir el monolito y sólo se realizará a través del microservicio.
+
+Este paso podríamos modificar el código del monolito para ampliarlo y añadir un `NotificationController` que permita loguear notificaciones a través del monolito, hemos decidido no modificarlo para simplificar el ejemplo.
+
+
+### **Paso 3**
+En este último paso, eliminaríamos el flag y la implementación antigua, reemplazando a la anterior versión del monolito.
+
+```
+> docker-compose -f Example_3/3_docker-compose-monolith.yml down
+
+> docker-compose -f Example_3/3_c_docker-compose-monolith.yml up --build
+```
+
+Hagamos una prueba a través de una petición:
+```
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+```
+
+Podemos ver cómo se loguea en nuestro microservicio: 
+```
+> Payroll 3 shipped to Juablaz of 220.0
+```
+<br>
+
 # Enlaces de interés:
 
 > https://github.com/javieraviles/split-the-monolith
@@ -397,8 +452,22 @@ En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
 
 > https://github.com/flipkart-incubator/kafka-filtering#:~:text=Kafka%20doesn't%20support%20filtering,deserialized%20%26%20make%20such%20a%20decision.
 
+<br>
 
 # Comandos de interés:
 Delete all containers using the following command:
 > docker rm -f $(docker ps -a -q)
 
+<br>
+
+# Notas 
+
+<a id="note1"></a>
+### Nota 1:
+   
+``--build``: build images before starting containers.
+
+``-d, --detach``: Detached mode: Run containers in the background, print new container names.
+
+``--force-recreate``    Recreate containers even if their configuration
+                        and image haven't changed.
