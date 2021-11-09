@@ -122,7 +122,7 @@ En caso de que se produzca cualquier problema siempre se puede hacer un rollback
 ## **Ejemplo 2. Extracción de funcionalidad interna**
 ____________________________________________________________
 
-Si deseamos aplicar el patrón sobre `Payroll` que utiliza una funcionalidad interna en el monolito `User notification`, debemos exponer dicha funcionalidad interna al exterior a través de un endpoint.
+Si deseamos aplicar el patrón sobre `Payroll` que utiliza una funcionalidad interna en el monolito `User Notifications`, debemos exponer dicha funcionalidad interna al exterior a través de un endpoint.
 
 <div align="center">
 
@@ -230,7 +230,7 @@ De esta forma, las peticiones vuelven al monolito antiguo.
 
 ## **Ejemplo 3. Interceptación de mensajes.**
 ____________________________________________________________
-En este ejemplo no hemos añadido un proxy para redirigir las peticiones puesto que el patrón no se basa en interceptar las peticiones HTTP, si no en interceptar y redirigir los mensajes de la cola de mensajería.
+En este ejemplo no hemos añadido un proxy para redirigir las peticiones puesto que el patrón no se basa en interceptar las peticiones HTTP, si no en interceptar y redirigir los mensajes de la cola de mensajería. Hemos implementado el ejemplo utilizando Kafka.
 
 ### **Paso 1**
 Tenemos un monolito que recibe mensajes a través de una cola. 
@@ -273,23 +273,20 @@ Tenemos tres posibles casuísticas:
 ![alt text](3.18_strangler_fig_pattern.png)
 </div>
 
-Tenemos que modificar el código del monolito para ignorar las peticiones de ``Payroll``. Ya no tendrá configurado el `payroll-v1-topic` del que recibía mensajes. Además, necesitamos exponer el endpoint de ``Notification`` en el monolito para poder enviar notificaciones desde el microservicio. Por tanto, necesitamos una versión ``v2`` del monolito.
+Tenemos que modificar el código del monolito para ignorar las peticiones de `Payroll`. Ya no tendrá configurado el `payroll-v1-topic` del que recibía mensajes. Además, necesitamos exponer el endpoint de ``Notification`` en el monolito para poder enviar notificaciones desde el microservicio. Por tanto, necesitamos una versión ``v2`` del monolito.
 
 La complicación surge al seguir el patrón e intentar realizar la migración de las peticiones del monolito al microservicio. En este ejemplo, no tenemos peticiones y no podemos migrarlas a través del uso de un proxy, por lo que se nos plantea la necesidad de actualizar la fuente de datos.
-- Para ello necesitamos crear nuevos topics a los que escribimos desde nuestro ``producer`` y a los que nos conectamos desde el ``monolito-v2``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
+- Para ello necesitamos crear nuevos topics a los que escribimos desde nuestro `Producer` y a los que nos conectamos desde el `Monolith-v2`. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
 
-------
-NOTA: 
-Hemos configurado nuestro kafka para que automáticamente cree topics si no los encuentra, `KAFKA_AUTO_CREATE_TOPICS_ENABLE`, si esta configuración no está habilitada sería necesario conectarse al contenedor docker y ejecutar un comando. 
+Tendremos entonces a nuestro monolito `v1` leyendo datos de:
+- invoicing-v1-topic
+- payroll-v1-topic
 
-Se haría:
+Y a nuestro monolito `v2` lendo datos de:
+- invoicing-v2-topic
+- payroll-v2-topic
 
-```
-> docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic payroll-v2-topic
-
-> docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic invoicing-v2-topic
-```
-------
+[Nota 2](#note2)
 
 Vamos a ejecutar el ejemplo siguiendo el patrón, primero la implementación y luego migrando las "peticiones", en este caso los mensajes de la cola:
 
@@ -303,7 +300,7 @@ Podemos probar nuestra nueva implementación del monolito:
 ```
 
 ### **Paso 3**
-Vamos a migrar las "peticiones". En este caso, se trata de migrar los mensajes a nuevos topics donde escribir, actualizar nuestra fuente de datos:
+Vamos a migrar las "peticiones". En este caso, se trata de migrar los mensajes a nuevos topics donde escribir, actualizar nuestra fuente de datos a `invoicing-v2-topic` y a `payroll-v2-topic`.
 ```
 > docker-compose -f  Example_3/3_a_docker-compose-producer.yml up -d --build
 ```
@@ -313,7 +310,7 @@ Probemos que funciona correctamente:
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
 ```
 
-Se loguea en nuestro monolito ``v2``:
+Se loguea en nuestro monolito `v2`:
 ```
 > Payroll 3 shipped to Juablaz of 220.0
 ```
@@ -323,7 +320,7 @@ Podemos confirmarlo mediante una petición al microservicio:
 > curl localhost:8081/payroll/3
 ````
 
-En caso de error podemos cambiar la escritura de datos al monolito antiguo:
+En caso de error podemos cambiar la generación de datos al topic antiguo:
 ```
 > docker-compose -f  Example_3/1_docker-compose-producer.yml up -d
 ```
@@ -336,17 +333,17 @@ En caso de error podemos cambiar la escritura de datos al monolito antiguo:
 En este caso no podemos tocar el monolito. Necesitamos que exclusivamente lleguen mensajes de `Invoicing` al monolito porque no podemos quitar el procesado de los que llegan a `Payroll`. Además, no podemos loguear notificaciones desde el microservicio, puesto que tendríamos que exponer un endpoint como hemos hecho en el ejemplo anterior. 
 Vamos a loguear la creación de Payroll en el propio microservicio para simplificar el ejemplo.
 
-Hemos creado el siguiente flujo:
+Nuestro flujo sería el siguiente:
 - Llega una petición POST a `strangler-fig-producer`.
 - Genera un mensaje a la cola de Kafka a los dos posibles topics `invoicing-all-msg-topic`, `payroll-all-msg-topic`
 - Tenemos un microservicio de enrutamiento basado en contenido `strangler-fig-cbr` que consume y redirige los topics:
     - `payroll-v1-topic` - Monolito
     - `payroll-v2-topic` - Payroll
-- El topic `payroll-v1-topic` se quedaría sin uso puesto que vamos a redirigir los mensajes al ``v2-topic``.
+- El topic `payroll-v1-topic` se quedaría sin uso puesto que vamos a redirigir los mensajes al `v2-topic`.
 
-Si necesitamos realizar un despliegue en caliente, sin parada de servicio, como hemos explicado en el anterior ejemplo necesitamos crear nuevos topics a los que escribimos desde el ``producer`` y a los que nos conectamos desde el ``cbr``. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
+Para aplicar esto al patrón, como hemos explicado en el anterior ejemplo, necesitamos crear nuevos topics a los que escribimos desde el `producer` y a los que nos conectamos desde el `cbr`. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
 
-Lanzamos una versión exactamente igual que la anterior del monolito, **cambiando los topics a los que se suscribe**.
+Lanzamos una versión exactamente **igual** que la anterior del monolito, **cambiando los topics a los que se suscribe**.
 
 ```
 > docker-compose -f  Example_3/2_b_docker-compose.yml up --build
@@ -386,10 +383,11 @@ En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
 ### **Paso 1.1**
 
 Tras haber realizado los anteriores ejemplos, nos surge una duda durante la aplicación de este patrón. ¿Qué ocurre si no podemos cambiar la fuente de datos?
-Vamos a partir de una versión ampliada del monolito, que dispone de un flag de ``FF4J`` como los utilizados en el patrón [Branch by Abstraction](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Branch_By_Abstraction/README.es.md).
+
+Para ello, partimos de una versión ampliada del monolito, que dispone de un flag de `FF4J` como los utilizados en el patrón [Branch by Abstraction](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Branch_By_Abstraction/README.es.md).
 
 ```
-> docker-compose -f Example_3/1_docker-compose-monolith.yml down
+> docker stop example_3_step_1_strangler_fig_monolith
 
 > docker-compose -f Example_3/1_c_docker-compose-monolith.yml up --build
 ```
@@ -412,9 +410,9 @@ Vamos a ejecutar el microservicio y a deshabilitar la consumición de payroll en
 > docker-compose -f  Example_3/2_c_docker-compose-ms.yml up --build
 ```
 
-Podemos probar nuestra nueva implementación del monolito:
+Podemos probar nuestra implementación del microservicio:
 ```
-> curl -v localhost:8082/payroll
+> curl -v localhost:8081/payroll
 ```
 
 Si entramos en `http://localhost:8080/ff4j-web-console` y cambiamos el flag a deshabilitado, dejará de consumir el monolito y sólo se realizará a través del microservicio.
@@ -426,7 +424,7 @@ Este paso podríamos modificar el código del monolito para ampliarlo y añadir 
 En este último paso, eliminaríamos el flag y la implementación antigua, reemplazando a la anterior versión del monolito.
 
 ```
-> docker-compose -f Example_3/3_docker-compose-monolith.yml down
+> docker stop example_3_step_1_c_strangler_fig_monolith
 
 > docker-compose -f Example_3/3_c_docker-compose-monolith.yml up --build
 ```
@@ -452,6 +450,10 @@ Podemos ver cómo se loguea en nuestro microservicio:
 
 > https://github.com/flipkart-incubator/kafka-filtering#:~:text=Kafka%20doesn't%20support%20filtering,deserialized%20%26%20make%20such%20a%20decision.
 
+> https://blog.cloudera.com/scalability-of-kafka-messaging-using-consumer-groups/
+
+> https://stackoverflow.com/questions/57952538/consuming-from-single-kafka-partition-by-multiple-consumers
+
 <br>
 
 # Comandos de interés:
@@ -471,3 +473,19 @@ Delete all containers using the following command:
 
 ``--force-recreate``    Recreate containers even if their configuration
                         and image haven't changed.
+
+
+------
+
+<a id="note2"></a>
+### Nota 2:
+NOTA: 
+Hemos configurado nuestro kafka para que automáticamente cree topics si no los encuentra, `KAFKA_AUTO_CREATE_TOPICS_ENABLE`, si esta configuración no está habilitada sería necesario conectarse al contenedor docker y ejecutar un comando. 
+
+Se haría:
+
+```
+> docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic payroll-v2-topic
+
+> docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic invoicing-v2-topic
+```
