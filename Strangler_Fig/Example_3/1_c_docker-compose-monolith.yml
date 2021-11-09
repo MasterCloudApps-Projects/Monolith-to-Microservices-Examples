@@ -20,3 +20,6 @@ services:
       - KAFKA_PORT=9092
       - CONSUMER_GROUP_ID=payment-service-group
 
+networks:
+  app-network:
+    driver: bridge

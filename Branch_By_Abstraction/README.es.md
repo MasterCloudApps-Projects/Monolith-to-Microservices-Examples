@@ -7,7 +7,7 @@
 
 Vamos a proceder a la realización y explicación del patrón ``Branch By Abstraction``, que se basa en permitir que dos implementaciones del mismo código coexistan en la misma versión, sin romper la funcionalidad.
 
-Nos situamos en el caso de que necesitamos migrar un código interio del monolito el cuál recibe peticiones internas de otros servicios. Se aplica en múltiples pasos:
+Nos situamos en el caso de que necesitamos migrar un código interior del monolito el cuál recibe peticiones internas de otros servicios. Se aplica en múltiples pasos:
 1. Crear una abstracción para reemplazar la funcionalidad.
 2. Cambiar los clientes de la funcionalidad existente para utilizar la nueva abstracción.
 3. Crear una nueva implementación de la abstracción que realice la petición a nuestro nuevo microservicio.
@@ -17,7 +17,7 @@ Nos situamos en el caso de que necesitamos migrar un código interio del monolit
 
 <br>
 
-## **Ejemplo 1. Extracción de una funcionalidad dependiente.**
+## **Ejemplo 1. Extracción de una funcionalidad dependiente**
 ____________________________________________________________
 
 ### **Paso 1**

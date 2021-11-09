@@ -19,8 +19,7 @@ services:
       - KAFKA_HOST=kafka
       - KAFKA_PORT=9092
       - CONSUMER_GROUP_ID=payment-service-group
-    depends_on: 
-      - kafka
+
 networks:
   app-network:
     driver: bridge

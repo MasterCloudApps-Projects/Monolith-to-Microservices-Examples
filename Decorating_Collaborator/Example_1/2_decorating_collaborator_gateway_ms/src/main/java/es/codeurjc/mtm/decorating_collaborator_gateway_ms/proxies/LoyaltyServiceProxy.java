@@ -24,26 +24,6 @@ public class LoyaltyServiceProxy {
     this.client = client;
   }
 
-  public Mono<LoyaltyInfo> findLoyaltyByUserName(String userName) {
-    Mono<ClientResponse> response = client.post()
-        .uri("http://" + LOYALTY_HOST + ":" + LOYALTY_PORT + "/loyalty/" + userName)
-        .exchange();
-
-    return response.flatMap(resp -> {
-      switch (resp.statusCode()) {
-        case CREATED:
-        case OK:
-          return resp.bodyToMono(
-              LoyaltyInfo.class);
-        case NOT_FOUND:
-          return Mono.error(new EntityNotFoundException());
-        default:
-          return Mono.error(new RuntimeException("Unknown" + resp.statusCode()));
-      }
-    });
-
-  }
-
   public Mono<LoyaltyInfo> createOrUpdate(String userName) {
     Mono<ClientResponse> response = client.post()
         .uri("http://" + LOYALTY_HOST + ":" + LOYALTY_PORT + "/loyalty/" + userName).exchange();

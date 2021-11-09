@@ -75,7 +75,7 @@ Devuelve ``true`` y loguea:
 Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
 
 ```
-> docker-compose -f Ejemplo_1/3_docker-compose.yml up --build --force-recreate
+> docker-compose -f Ejemplo_1/3_docker-compose.yml up --build
 ```
 
 Probamos que funcione correctamente:
@@ -218,6 +218,7 @@ Probamos que todo funciona correctamente:
 ```
 > curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
+
 ### **Paso 2**
 Primero, tendriamos que inicializar los dos contenedores con sus respectivas proxys:
 <div align="center">

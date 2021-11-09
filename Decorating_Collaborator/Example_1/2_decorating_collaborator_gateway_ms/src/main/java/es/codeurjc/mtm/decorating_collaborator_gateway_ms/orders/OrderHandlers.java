@@ -29,8 +29,8 @@ public class OrderHandlers {
 
     return orderInfo
         .zipWhen(orderInfo1 -> loyaltyService.createOrUpdate(orderInfo1.getUserName()))
-        .flatMap(od -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-            .body(fromValue(od.getT1())))
+        .flatMap(orderDetails -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+            .body(fromValue(orderDetails.getT1())))
         .onErrorResume(EntityNotFoundException.class, e -> ServerResponse.notFound().build());
   }
 }

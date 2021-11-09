@@ -7,17 +7,15 @@ services:
     container_name: 'example_3_step_2_strangler_fig_payroll_ms'
     restart: on-failure
     build: 
-      context: ./2_a_strangler_fig_payroll_ms
+      context: ./2_b_strangler_fig_payroll_ms
       dockerfile: ./Dockerfile
     ports: 
       - 8081:8081
     environment:
-      - MONOLITH_HOST=2-strangler-fig-monolith
-      - MONOLITH_PORT=8080
-      - PAYROLL_TOPIC=payroll-v2-topic
+      - PAYROLL_TOPIC=payroll-v1-topic
       - KAFKA_HOST=kafka
       - KAFKA_PORT=9092
-      - CONSUMER_GROUP_ID=payment-service-group
+      - CONSUMER_GROUP_ID=payment-service-group-v2
     networks:
       - app-network
 
