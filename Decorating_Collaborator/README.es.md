@@ -40,23 +40,64 @@ Lanzamos una versión del microservicio y un `Gateway` realizado con spring clou
 > docker-compose -f Example_1/2_docker-compose.yml up 
 ```
 
-Podemos probar nuestro microservicio:
+Definimos un enrutador, de esta forma las peticiones de `Order` irán al monolito y las de `Loyalty` irán al microservicio, podremos acceder a cada uno de ellos a través de un punto común.
+
+```java
+  @Bean
+  public RouteLocator hostRoutes(RouteLocatorBuilder builder) {
+    return builder.routes()
+        .route(r -> r.path("/order/**")
+            .filters(f -> f.rewritePath("/order/(?<segment>.*)", "/order/${segment}"))
+            .uri("http://" + ORDER_HOST + ":" + ORDER_PORT))
+        .route(r -> r.path("/loyalty/**")
+            .filters(f -> f
+                .rewritePath("/loyalty/(?<segment>.*)", "/loyalty/${segment}"))
+            .uri("http://" + LOYALTY_HOST + ":" + LOYALTY_PORT))
+        .build();
+  }
+```
+
+Además, en el caso de tratarse de una petición `POST` al endpoint de `/order` se ejecutará `addLoyaltyDetails`, que permite una vez terminada la petición de creación correcta de una `Order`, realizar una petición al microservicio de `Loyalty`
+
+```java
+  @Bean
+  public RouterFunction<ServerResponse> orderHandlerRouting(OrderHandlers orderHandlers) {
+    return RouterFunctions.route(POST("/order"), orderHandlers::addLoyaltyDetails);
+  }
+```
+
+```java
+  public Mono<ServerResponse> addLoyaltyDetails(ServerRequest serverRequest) {
+
+    Mono<OrderInfo> orderInfoMono = serverRequest.bodyToMono(OrderInfo.class);
+
+    Mono<OrderInfo> orderInfo = orderService.createOrder(orderInfoMono);
+
+    return orderInfo
+        .zipWhen(orderInfo1 -> loyaltyService.createOrUpdate(orderInfo1.getUserName()))
+        .flatMap(orderDetails -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+            .body(fromValue(orderDetails.getT1())))
+        .onErrorResume(EntityNotFoundException.class, e -> ServerResponse.notFound().build());
+  }
+```
+
+Probemos nuestro microservicio:
 
 ```
 > curl -v -H "Content-Type: application/json" -d '' localhost:8081/loyalty/Juablaz
 ```
 
-Podemos probar nuestro `Gateway`:
+Probemos nuestro `Gateway`:
 
 ```
-> curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz","prize":250, "description":"Monitor"}' localhost:8082/order
+> curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz2","prize":250, "description":"Monitor"}' localhost:8082/order
 
-> curl localhost:8082/loyalty/Juablaz
+> curl localhost:8082/loyalty/Juablaz2
 ```
 
 Se crea el usuario en el microservicio nuevo y se le añaden 10 puntos:
 ```
-{"id":3,"userName":"Juablaz","points":10.0}
+{"id":3,"userName":"Juablaz2","points":10.0}
 ```
 
 ### **Paso 3**
