@@ -101,7 +101,7 @@ Se crea el usuario en el microservicio nuevo y se le añaden 10 puntos:
 ```
 
 ### **Paso 3**
-Una vez probado el gateway, movamos las peticiones desde nuestro proxy de nginx a nuestro gateway.
+Una vez probado el gateway, movamos las peticiones desde nuestro proxy de `nginx` a nuestro gateway.
 
 ```
 > docker-compose -f Example_1/3_docker-compose-proxy.yml up -d
