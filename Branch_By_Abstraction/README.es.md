@@ -33,7 +33,7 @@ Podemos probar nuestro monolito:
 
 Detenemos el paso 1:
 ```
-> docker-compose -f Example_1/1_docker-compose.yml down
+> docker stop example_1_step_1_branch_by_abstraction_monolith
 ```
 
 ### **Paso 2**
@@ -83,7 +83,7 @@ example_1_step_2_branch_by_abstraction_notification_ms  | 2021-09-29 13:50:05.94
 
 Detenemos el paso 2:
 ```
-> docker-compose -f Example_1/2_docker-compose.yml down
+> docker stop example_1_step_2_branch_by_abstraction_monolith
 ```
 
 Como podemos observar, esta forma de gestionar los cambios y la migración al microservicio nos permite en caso de error activar/ desactivar el flag.
