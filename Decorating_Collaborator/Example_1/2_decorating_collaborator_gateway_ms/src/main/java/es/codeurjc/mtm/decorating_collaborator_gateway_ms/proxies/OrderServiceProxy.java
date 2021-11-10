@@ -24,23 +24,6 @@ public class OrderServiceProxy {
     this.client = client;
   }
 
-  public Mono<OrderInfo> findOrderById(String orderId) {
-
-    Mono<ClientResponse> response = client.get()
-        .uri("http://" + ORDER_HOST + ":" + ORDER_PORT + "/order/{orderId}", orderId).exchange();
-
-    return response.flatMap(resp -> {
-      switch (resp.statusCode()) {
-        case OK:
-          return resp.bodyToMono(OrderInfo.class);
-        case NOT_FOUND:
-          return Mono.error(new EntityNotFoundException());
-        default:
-          return Mono.error(new RuntimeException("Unknown" + resp.statusCode()));
-      }
-    });
-  }
-
   public Mono<OrderInfo> createOrder(Mono<OrderInfo> orderInfoMono) {
 
     Mono<ClientResponse> response = client.post()

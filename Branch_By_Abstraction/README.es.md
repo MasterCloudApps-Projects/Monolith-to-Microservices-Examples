@@ -7,7 +7,7 @@
 
 Vamos a proceder a la realización y explicación del patrón ``Branch By Abstraction``, que se basa en permitir que dos implementaciones del mismo código coexistan en la misma versión, sin romper la funcionalidad.
 
-Nos situamos en el caso de que necesitamos migrar un código interio del monolito el cuál recibe peticiones internas de otros servicios. Se aplica en múltiples pasos:
+Nos situamos en el caso de que necesitamos migrar un código interior del monolito el cuál recibe peticiones internas de otros servicios. Se aplica en múltiples pasos:
 1. Crear una abstracción para reemplazar la funcionalidad.
 2. Cambiar los clientes de la funcionalidad existente para utilizar la nueva abstracción.
 3. Crear una nueva implementación de la abstracción que realice la petición a nuestro nuevo microservicio.
@@ -17,7 +17,7 @@ Nos situamos en el caso de que necesitamos migrar un código interio del monolit
 
 <br>
 
-## **Ejemplo 1. Extracción de una funcionalidad dependiente.**
+## **Ejemplo 1. Extracción de una funcionalidad dependiente**
 ____________________________________________________________
 
 ### **Paso 1**
@@ -33,7 +33,7 @@ Podemos probar nuestro monolito:
 
 Detenemos el paso 1:
 ```
-> docker-compose -f Example_1/1_docker-compose.yml down
+> docker stop example_1_step_1_branch_by_abstraction_monolith
 ```
 
 ### **Paso 2**
@@ -59,7 +59,7 @@ Tendremos una versión 2 del monolito y nuestro microservicio. Dentro de esta ve
 
 Hacemos una petición:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":320}' localhost:8080/payroll
 ```
 
 Se loguea en el monolito:
@@ -73,7 +73,7 @@ Si entramos en `http://localhost:8080/ff4j-web-console` y cambiamos el flag a ha
 Repetimos la petición:
 
 ```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":320}' localhost:8080/payroll
 ```
 
 Se loguea en el microservicio:
@@ -83,11 +83,11 @@ example_1_step_2_branch_by_abstraction_notification_ms  | 2021-09-29 13:50:05.94
 
 Detenemos el paso 2:
 ```
-> docker-compose -f Example_1/2_docker-compose.yml down
+> docker stop example_1_step_2_branch_by_abstraction_monolith
 ```
 
 Como podemos observar, esta forma de gestionar los cambios y la migración al microservicio nos permite en caso de error activar/ desactivar el flag.
-Incluso se podría combinar con los pasos aplicados en el ejemplo de ``Strangler Fig``, lanzando las dos versiones convivientes y migrando las peticiones de uno a otro.
+Incluso se podría combinar con los pasos aplicados en el ejemplo de `Strangler Fig`, lanzando las dos versiones convivientes y migrando las peticiones de uno a otro.
 
 ### **Paso 3**
 5. Eliminaríamos el flag y la implementación antigua.

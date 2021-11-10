@@ -116,3 +116,10 @@ Attribution Share-Alike
 
 
 DUDAS De change data capture.
+
+
+REU: 04/11/2021
+Resumen de la reu:
+- Presentación enfocada a ciertos patrones, aunque pasemos por todos hacer ejecución de algunos más impresionantes.
+- Grabar videos de cada ejemplo
+- Ejemplo con colas con una versión del monolito que active/desactive la consumición de payroll con un flag

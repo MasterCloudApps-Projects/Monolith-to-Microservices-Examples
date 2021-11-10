@@ -33,8 +33,6 @@ services:
     ports: 
       - 8081:8081
     environment:
-      - MONOLITH_HOST=2-strangler-fig-monolith
-      - MONOLITH_PORT=8080
       - PAYROLL_TOPIC=payroll-v2-topic
       - KAFKA_HOST=kafka
       - KAFKA_PORT=9092

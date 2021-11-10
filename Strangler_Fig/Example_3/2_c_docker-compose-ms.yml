@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+    
+  2-strangler-fig-payroll-ms:
+    image: 2_strangler_fig_payroll_ms
+    container_name: 'example_3_step_2_strangler_fig_payroll_ms'
+    restart: on-failure
+    build: 
+      context: ./2_b_strangler_fig_payroll_ms
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8081:8081
+    environment:
+      - PAYROLL_TOPIC=payroll-v1-topic
+      - KAFKA_HOST=kafka
+      - KAFKA_PORT=9092
+      - CONSUMER_GROUP_ID=payment-service-group-v2
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

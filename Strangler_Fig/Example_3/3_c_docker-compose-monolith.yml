@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+
+  3-c-strangler-fig-monolith:
+    image: 3_c_strangler_fig_monolith
+    container_name: 'example_3_step_3_c_strangler_fig_monolith'
+    restart: on-failure
+    build: 
+      context: ./3_c_strangler_fig_monolith
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8080:8080
+    networks:
+      - app-network
+    environment:
+      - PAYROLL_TOPIC=payroll-v1-topic
+      - INVOICING_TOPIC=invoicing-v1-topic
+      - KAFKA_HOST=kafka
+      - KAFKA_PORT=9092
+      - CONSUMER_GROUP_ID=payment-service-group
+
+networks:
+  app-network:
+    driver: bridge
