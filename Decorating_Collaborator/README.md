@@ -43,42 +43,42 @@ We launch a version of the microservice and a `Gateway` made with spring cloud `
 We define a router, this way the `Order` requests will go to the monolith and the `Loyalty` requests will go to the microservice, we will be able to access each of them through a common point.
 
 ```java
-  @Bean
-  public RouteLocator hostRoutes(RouteLocatorBuilder builder) {
-    return builder.routes()
-        .route(r -> r.path("/order/**")
-            .filters(f -> f.rewritePath("/order/(?<segment>.*)", "/order/${segment}"))
-            .uri("http://" + ORDER_HOST + ":" + ORDER_PORT))
-        .route(r -> r.path("/loyalty/**")
-            .filters(f -> f
-                .rewritePath("/loyalty/(?<segment>.*)", "/loyalty/${segment}")))
-            .uri("http://" + LOYALTY_HOST + ":" + LOYALTY_PORT))
-        .build();
-  }
+@Bean
+public RouteLocator hostRoutes(RouteLocatorBuilder builder) {
+  return builder.routes()
+      .route(r -> r.path("/order/**")
+          .filters(f -> f.rewritePath("/order/(?<segment>.*)", "/order/${segment}"))
+          .uri("http://" + ORDER_HOST + ":" + ORDER_PORT))
+      .route(r -> r.path("/loyalty/**")
+          .filters(f -> f
+              .rewritePath("/loyalty/(?<segment>.*)", "/loyalty/${segment}")))
+          .uri("http://" + LOYALTY_HOST + ":" + LOYALTY_PORT))
+      .build();
+}
 ```
 
 In addition, in the case of a `POST` request to the `/order` endpoint, `addLoyaltyDetails` will be executed, which allows a request to be made to the `Loyalty` microservice once the request for the successful creation of an `Order` has been completed.
 
 ```java
-  @Bean
-  public RouterFunction<ServerResponse> orderHandlerRouting(OrderHandlers orderHandlers) {
-    return RouterFunctions.route(POST("/order"), orderHandlers::addLoyaltyDetails);
-  }
+@Bean
+public RouterFunction<ServerResponse> orderHandlerRouting(OrderHandlers orderHandlers) {
+  return RouterFunctions.route(POST("/order"), orderHandlers::addLoyaltyDetails);
+}
 ```
 
 ```java
-  public Mono<ServerResponse> addLoyaltyDetails(ServerRequest serverRequest) {
+public Mono<ServerResponse> addLoyaltyDetails(ServerRequest serverRequest) {
 
-    Mono<OrderInfo> orderInfoMono = serverRequest.bodyToMono(OrderInfo.class);
+  Mono<OrderInfo> orderInfoMono = serverRequest.bodyToMono(OrderInfo.class);
 
-    Mono<OrderInfo> orderInfo = orderService.createOrder(orderInfoMono);
+  Mono<OrderInfo> orderInfo = orderService.createOrder(orderInfoMono);
 
-    return orderInfo
-        .zipWhen(orderInfo1 -> loyaltyService.createOrUpdate(orderInfo1.getUserName())))
-        .flatMap(orderDetails -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-            .body(fromValue(orderDetails.getT1())))
-        .onErrorResume(EntityNotFoundException.class, e -> ServerResponse.notFound().build()));
-  }
+  return orderInfo
+      .zipWhen(orderInfo1 -> loyaltyService.createOrUpdate(orderInfo1.getUserName())))
+      .flatMap(orderDetails -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+          .body(fromValue(orderDetails.getT1())))
+      .onErrorResume(EntityNotFoundException.class, e -> ServerResponse.notFound().build()));
+}
 ```
 
 Let's test our microservice:
