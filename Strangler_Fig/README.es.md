@@ -172,7 +172,7 @@ Lanzamos una versión del monolito (`v2`) y nuestro nuevo microservicio.
 Podemos probar nuestro microservicio:
 
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:8081/payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":220}' localhost:8081/payroll
 ```
 
 Se loguea la notificación en el monolito nuevo (`v2`), por lo tanto la comunicación es correcta:
@@ -187,7 +187,7 @@ Las peticiones a través del proxy `payment.service` siguen llegando al monolito
 Con la nueva implementación lista, redirigimos las peticiones al monolito de la funcionalidad de `Payroll`.
 
 ```
-> docker-compose -f  Example_2/3_docker-compose-proxy.yml up -d
+> docker-compose -f Example_2/3_docker-compose-proxy.yml up -d
 ```
 
 La nueva configuración es:
@@ -252,7 +252,7 @@ Está formado por dos topics: `invoicing-v1-topic` y `payroll-v1-topic`.
 
 Hagamos una prueba a través de una petición:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":220}' localhost:9090/messages/send-payroll
 ```
 
 Podemos ver cómo se loguea en nuestro monolito: 
@@ -273,7 +273,7 @@ Tenemos tres posibles casuísticas:
 ![alt text](3.18_strangler_fig_pattern.png)
 </div>
 
-Tenemos que modificar el código del monolito para ignorar las peticiones de `Payroll`. Ya no tendrá configurado el `payroll-v1-topic` del que recibía mensajes. Además, necesitamos exponer el endpoint de ``Notification`` en el monolito para poder enviar notificaciones desde el microservicio. Por tanto, necesitamos una versión ``v2`` del monolito.
+Tenemos que modificar el código del monolito para ignorar las peticiones de `Payroll`. Ya no tendrá configurado el `payroll-v1-topic` del que recibía mensajes. Además, necesitamos exponer el endpoint de `Notification` en el monolito para poder enviar notificaciones desde el microservicio. Por tanto, necesitamos una versión ``v2`` del monolito.
 
 La complicación surge al seguir el patrón e intentar realizar la migración de las peticiones del monolito al microservicio. En este ejemplo, no tenemos peticiones y no podemos migrarlas a través del uso de un proxy, por lo que se nos plantea la necesidad de actualizar la fuente de datos.
 - Para ello necesitamos crear nuevos topics a los que escribimos desde nuestro `Producer` y a los que nos conectamos desde el `Monolith-v2`. No podemos seguir escribiendo en el mismo topic que se utilizaba en la versión 1. En este caso estamos cambiando la fuente de información y es posible que dependiendo de la situación no podamos cambiarla.
@@ -286,9 +286,11 @@ Y a nuestro monolito `v2` lendo datos de:
 - invoicing-v2-topic
 - payroll-v2-topic
 
+En la migración pasaremos de escribir en los topics `v1` a los topics `v2`.
+
 [Nota 2](#note2)
 
-Vamos a ejecutar el ejemplo siguiendo el patrón, primero la implementación y luego migrando las "peticiones", en este caso los mensajes de la cola:
+Vamos a ejecutar el ejemplo siguiendo el patrón, primero la implementación y luego migrando los mensajes de la cola:
 
 ```
 > docker-compose -f  Example_3/2_a_docker-compose.yml up --build
@@ -300,14 +302,14 @@ Podemos probar nuestra nueva implementación del monolito:
 ```
 
 ### **Paso 3**
-Vamos a migrar las "peticiones". En este caso, se trata de migrar los mensajes a nuevos topics donde escribir, actualizar nuestra fuente de datos a `invoicing-v2-topic` y a `payroll-v2-topic`.
+Vamos a migrar los mensajes a nuevos topics donde escribir. Cambiaremos nuestra fuente de datos a `invoicing-v2-topic` y a `payroll-v2-topic`.
 ```
-> docker-compose -f  Example_3/3_a_docker-compose-producer.yml up -d --build
+> docker-compose -f Example_3/3_a_docker-compose-producer.yml up -d --build
 ```
 
 Probemos que funciona correctamente:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":220}' localhost:9090/messages/send-payroll
 ```
 
 Se loguea en nuestro monolito `v2`:
@@ -316,9 +318,9 @@ Se loguea en nuestro monolito `v2`:
 ```
 
 Podemos confirmarlo mediante una petición al microservicio:
-````
+```
 > curl localhost:8081/payroll/3
-````
+```
 
 En caso de error podemos cambiar la generación de datos al topic antiguo:
 ```
@@ -346,7 +348,7 @@ Para aplicar esto al patrón, como hemos explicado en el anterior ejemplo, neces
 Lanzamos una versión exactamente **igual** que la anterior del monolito, **cambiando los topics a los que se suscribe**.
 
 ```
-> docker-compose -f  Example_3/2_b_docker-compose.yml up --build
+> docker-compose -f Example_3/2_b_docker-compose.yml up --build
 ```
 
 Podemos probar nuestra nueva implementación del microservicio y el cbr:
@@ -361,12 +363,12 @@ En este momento, las peticiones siguen llegando al topic antiguo, `payroll-v1-to
 Vamos a migrar las "peticiones". En este caso, se trata de migrar los mensajes a nuevos topics donde escribir, actualizar nuestra fuente de datos:
 
 ```
-> docker-compose -f  Example_3/3_b_docker-compose-producer.yml up -d
+> docker-compose -f Example_3/3_b_docker-compose-producer.yml up -d
 ```
 
 Probemos que funciona correctamente:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":220}' localhost:9090/messages/send-payroll
 ```
 
 Se loguea en nuestro microservicio (Recordemos que no se realiza la petición desde el microservicio al monolito para loguear puesto que no podemos cambiar el código del monolito):
@@ -376,7 +378,7 @@ Se loguea en nuestro microservicio (Recordemos que no se realiza la petición de
 
 En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
 ```
-> docker-compose -f  Example_3/1_docker-compose-producer.yml up -d
+> docker-compose -f Example_3/1_docker-compose-producer.yml up -d
 ```
 
 ## **NO podemos cambiar la fuente de datos**
@@ -457,8 +459,14 @@ Podemos ver cómo se loguea en nuestro microservicio:
 <br>
 
 # Comandos de interés:
-Delete all containers using the following command:
-> docker rm -f $(docker ps -a -q)
+Delete containers:
+> docker rm -f $(docker ps -a -q).
+
+Delete volumes:
+> docker volume rm -f $(docker volume ls -q)
+
+Delete images:
+> docker rmi -f $(docker images -a -q)
 
 <br>
 
