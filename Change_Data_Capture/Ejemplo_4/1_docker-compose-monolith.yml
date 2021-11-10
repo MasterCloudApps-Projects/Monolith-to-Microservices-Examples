@@ -1,0 +1,36 @@
+version: '3.9'
+services: 
+  1-change-data-capture-monolith:
+    image: 1_change_data_capture_monolith
+    container_name: '1_change_data_capture_monolith'
+    restart: on-failure
+    build: 
+      context: ./1_change_data_capture_monolith
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8080:8080
+    environment:
+      - DATABASE_HOST=postgres-database
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_DB=loyalty-db
+    depends_on: 
+      - postgres-database
+    networks:
+      - app-network
+
+  postgres-database:
+    image: ycheung/postgresql-http
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - app-network
+    environment: 
+      - POSTGRES_DB=loyalty-db
+      - POSTGRES_USER=postgres
+
+
+networks:
+  app-network:
+    driver: bridge
