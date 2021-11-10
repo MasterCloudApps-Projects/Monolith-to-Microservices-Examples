@@ -59,7 +59,7 @@ Tendremos una versión 2 del monolito y nuestro microservicio. Dentro de esta ve
 
 Hacemos una petición:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
+> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":320}' localhost:8080/payroll
 ```
 
 Se loguea en el monolito:
@@ -73,7 +73,7 @@ Si entramos en `http://localhost:8080/ff4j-web-console` y cambiamos el flag a ha
 Repetimos la petición:
 
 ```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":320}' localhost:8080/payroll
 ```
 
 Se loguea en el microservicio:
@@ -87,7 +87,7 @@ Detenemos el paso 2:
 ```
 
 Como podemos observar, esta forma de gestionar los cambios y la migración al microservicio nos permite en caso de error activar/ desactivar el flag.
-Incluso se podría combinar con los pasos aplicados en el ejemplo de ``Strangler Fig``, lanzando las dos versiones convivientes y migrando las peticiones de uno a otro.
+Incluso se podría combinar con los pasos aplicados en el ejemplo de `Strangler Fig`, lanzando las dos versiones convivientes y migrando las peticiones de uno a otro.
 
 ### **Paso 3**
 5. Eliminaríamos el flag y la implementación antigua.
