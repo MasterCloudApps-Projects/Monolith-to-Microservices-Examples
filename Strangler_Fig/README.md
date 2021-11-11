@@ -246,9 +246,11 @@ It consists of two topics: `invoicing-v1-topic` and `payroll-v1-topic`.
 
 ```
 docker-compose -f Example_3/1_docker-compose-kafka-queue.yml up -d
-
+```
+```
 docker-compose -f Example_3/1_docker-compose-monolith.yml up --build
-
+```
+```
 docker-compose -f Example_3/1_docker-compose-producer.yml up -d 
 ```
 
