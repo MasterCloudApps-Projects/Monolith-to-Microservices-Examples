@@ -148,7 +148,8 @@ We have our monolithic application, requests and functionalities are answered wi
 
 ```
 docker-compose -f Example_2/1_docker-compose-monolith.yml up 
-
+```
+```
 docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
 ```
 

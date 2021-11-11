@@ -148,7 +148,8 @@ Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se res
 
 ```
 docker-compose -f Example_2/1_docker-compose-monolith.yml up 
-
+```
+```
 docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
 ```
 
