@@ -385,7 +385,7 @@ En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
 docker-compose -f Example_3/1_docker-compose-producer.yml up -d
 ```
 
-## **NO podemos cambiar la fuente de datos**
+## **c) NO podemos cambiar la fuente de datos**
 ### **Paso 1.1**
 
 Tras haber realizado los anteriores ejemplos, nos surge una duda durante la aplicación de este patrón. ¿Qué ocurre si no podemos cambiar la fuente de datos?
