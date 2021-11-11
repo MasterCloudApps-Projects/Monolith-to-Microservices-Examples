@@ -147,7 +147,7 @@ docker-compose -f Ejemplo_4/1_docker-compose.yml up --build
 
 # Configura los conectores con la DB. Para simplificarlo, hemos creado un script de inicio. 
 
-./init.sh
+sh .Ejemplo_4/init.sh
 ```
 
 Para crear el conector, creamos un JSON con toda la configuracion. La cual, mediante el `./init.sh` iniciaremos la variable que ingresaremos en el docker-compose:
@@ -178,7 +178,12 @@ Para crear el conector, creamos un JSON con toda la configuracion. La cual, medi
 
 Ahora que tenemos la BBDD conectada, debemos realizar un cambio y ver si se refleja en `Debezium`. A futuro, seria conectarlo junto a `Elastic Search` o algun sistema conector para ver reflejados dichos cambios realizados en Postgres.
 
-TODO: Evitar hacer los cambios manuales en la BBDD, meter un script o algo
+```
+curl -v -H "Content-Type: application/json" -d '{"customerId":456,"loyaltyAccount":"9860-3892"}' localhost:8080/loyalty
+```
+TODO:No me ha funcionado el PROXY? Tiene que estar separado?
+
+Una vez en el KAFDROP nos metemos al topic `Loyalty` y ahi nos apareceran todos los mensajes referentes a los cambios en nuestra BBDD.
 
 Hemos utilizado Kafdrop como interfaz de usuario. Podemos ver una lista de mensajes publicados en un tema. Para abrir Kafdrop en local por favor haga clic [aquí](http://localhost:9100/)
 
