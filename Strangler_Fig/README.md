@@ -341,7 +341,7 @@ We will log the creation of Payroll in the microservice itself to simplify the e
 
 Our flow would be as follows:
 - A POST request arrives to `strangler-fig-producer`.
-- It generates a message to the Kafka queue to the two possible topics `invoicing-all-msg-topic`, `payroll-all-msg-topic`, `payroll-all-msg-topic`.
+- It generates a message to the Kafka queue to the two possible topics `invoicing-all-msg-topic`, `payroll-all-msg-topic`
 - We have a content-based routing microservice `strangler-fig-cbr` that consumes and redirects the topics:
     - `payroll-v1-topic` - Monolith
     - `payroll-v2-topic` - Payroll
