@@ -394,7 +394,8 @@ For this, we start from an extended version of the monolith, which has a `FF4J` 
 
 ```
 docker stop example_3_step_1_strangler_fig_monolith
-
+```
+```
 docker-compose -f Example_3/1_c_docker-compose-monolith.yml up --build
 ```
 
@@ -426,12 +427,13 @@ If we enter `http://localhost:8080/ff4j-web-console` and change the flag to disa
 This step we could modify the monolith code to extend it and add a `NotificationController` that allows to log notifications through the monolith, we have decided not to modify it to simplify the example.
 
 
-### Step 3** **Step 3**
+### Step 3**
 In this last step, we would remove the flag and the old implementation, replacing the previous version of the monolith.
 
 ```
 docker stop example_3_step_1_c_strangler_fig_monolith
-
+```
+```
 docker-compose -f Example_3/3_c_docker-compose-monolith.yml up --build
 ```
 
@@ -496,6 +498,7 @@ It would do:
 
 ```
 docker exec -it $(docker ps -aqf "name=example_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic payroll-v2-topic
-
+```
+```
 docker exec -it $(docker ps -aqf "name=example_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic invoicing-v2-topic
 ```

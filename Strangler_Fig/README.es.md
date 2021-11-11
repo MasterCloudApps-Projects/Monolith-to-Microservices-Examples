@@ -394,7 +394,8 @@ Para ello, partimos de una versión ampliada del monolito, que dispone de un fla
 
 ```
 docker stop example_3_step_1_strangler_fig_monolith
-
+```
+```
 docker-compose -f Example_3/1_c_docker-compose-monolith.yml up --build
 ```
 
@@ -431,7 +432,8 @@ En este último paso, eliminaríamos el flag y la implementación antigua, reemp
 
 ```
 docker stop example_3_step_1_c_strangler_fig_monolith
-
+```
+```
 docker-compose -f Example_3/3_c_docker-compose-monolith.yml up --build
 ```
 
@@ -498,6 +500,7 @@ Se haría:
 
 ```
 docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic payroll-v2-topic
-
+```
+```
 docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic invoicing-v2-topic
 ```
