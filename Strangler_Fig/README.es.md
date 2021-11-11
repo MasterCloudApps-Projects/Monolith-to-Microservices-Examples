@@ -302,7 +302,7 @@ docker-compose -f  Example_3/2_a_docker-compose.yml up --build
 
 Podemos probar nuestra nueva implementación del monolito:
 ```
-curl -v localhost:8082/payroll
+curl -v localhost:8082/invoicing
 ```
 
 ### **Paso 3**
