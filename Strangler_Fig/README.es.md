@@ -23,6 +23,10 @@ Vamos a aplicar el patrón en diferentes ejemplos con los tres pasos explicados 
 
 ## **Ejemplo 1. Extracción de funcionalidad independiente**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/FRCl4wJHx-M/0.jpg)](https://www.youtube.com/watch?v=FRCl4wJHx-M)
+</div>
 
 Para poder realizar la migración de las peticiones y los despliegues en caliente, debemos configurar un proxy inverso. El host de nuestra aplicación va a ser: `payment.service`. 
 
@@ -122,6 +126,10 @@ docker-compose -f  Example_1/1_docker-compose-proxy.yml up -d
 
 ## **Ejemplo 2. Extracción de funcionalidad interna**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/hp2e3b-gTMg/0.jpg)](https://www.youtube.com/watch?v=hp2e3b-gTMg)
+</div>
 
 Si deseamos aplicar el patrón sobre `Payroll` que utiliza una funcionalidad interna en el monolito `User Notifications`, debemos exponer dicha funcionalidad interna al exterior a través de un endpoint.
 
@@ -232,6 +240,11 @@ De esta forma, las peticiones vuelven al monolito antiguo.
 
 ## **Ejemplo 3. Interceptación de mensajes.**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/6ArWIM2jJlI/0.jpg)](https://www.youtube.com/watch?v=6ArWIM2jJlI)
+</div>
+
 En este ejemplo no hemos añadido un proxy para redirigir las peticiones puesto que el patrón no se basa en interceptar las peticiones HTTP, si no en interceptar y redirigir los mensajes de la cola de mensajería. Hemos implementado el ejemplo utilizando Kafka.
 
 ### **Paso 1**
@@ -270,6 +283,11 @@ Tenemos tres posibles casuísticas:
 - c) No podemos cambiar la fuente de datos.
 
 ## **a) Podemos cambiar el código del monolito**
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/ZOlTZme9_D4/0.jpg)](https://www.youtube.com/watch?v=ZOlTZme9_D4)
+</div>
+
 ### **Paso 2**
 
 <div align="center">
@@ -332,6 +350,11 @@ docker-compose -f  Example_3/1_docker-compose-producer.yml up -d
 ```
 
 ## **b) NO podemos cambiar el código del monolito**
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/tXzw0gCGwgE/0.jpg)](https://www.youtube.com/watch?v=tXzw0gCGwgE)
+</div>
+
 ### **Paso 2**
 
 ![alt text](3.17_strangler_fig_pattern.png)
@@ -386,6 +409,11 @@ docker-compose -f Example_3/1_docker-compose-producer.yml up -d
 ```
 
 ## **c) NO podemos cambiar la fuente de datos**
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/6hWz_6aTFlo/0.jpg)](https://www.youtube.com/watch?v=6hWz_6aTFlo)
+</div>
+
 ### **Paso 1.1**
 
 Tras haber realizado los anteriores ejemplos, nos surge una duda durante la aplicación de este patrón. ¿Qué ocurre si no podemos cambiar la fuente de datos?

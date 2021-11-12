@@ -23,6 +23,10 @@ Let's apply the pattern in different examples with the three steps explained abo
 
 ## **Example 1. Extraction of independent functionality**.
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/FRCl4wJHx-M/0.jpg)](https://www.youtube.com/watch?v=FRCl4wJHx-M)
+</div>
 
 In order to perform the migration of requests and hot deployments, we need to set up a reverse proxy. The host of our application is going to be: `payment.service`. 
 
@@ -122,6 +126,10 @@ docker-compose -f  Example_1/1_docker-compose-proxy.yml up -d
 
 ## **Example 2. Extracting internal functionality**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/hp2e3b-gTMg/0.jpg)](https://www.youtube.com/watch?v=hp2e3b-gTMg)
+</div>
 
 If we wish is to apply the pattern on `Payroll` that uses internal functionality in the `User Notifications` monolith, we must expose that internal functionality to the outside via an endpoint.
 
@@ -232,6 +240,11 @@ This way, the requests go back to the old monolith.
 
 ## **Example 3. Message interception**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/6ArWIM2jJlI/0.jpg)](https://www.youtube.com/watch?v=6ArWIM2jJlI)
+</div>
+
 In this example we have not added a proxy to redirect the requests since the pattern is not based on intercepting HTTP requests, but on intercepting and redirecting messages from the messaging queue. We have implemented the example using Kafka.
 
 ### Step 1
@@ -270,6 +283,11 @@ We have three possible cases:
 - c) We cannot change the data source.
 
 ## **a) We can change the code of the monolith**.
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/ZOlTZme9_D4/0.jpg)](https://www.youtube.com/watch?v=ZOlTZme9_D4)
+</div>
+
 ### **Step 2**
 
 <div align="center">
@@ -332,6 +350,11 @@ docker-compose -f  Example_3/1_docker-compose-producer.yml up -d
 ```
 
 ## **b) We can NOT change the monolith code**.
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/tXzw0gCGwgE/0.jpg)](https://www.youtube.com/watch?v=tXzw0gCGwgE)
+</div>
+
 ### **Step 2**
 
 ![alt text](3.17_strangler_fig_pattern.png)
@@ -386,6 +409,11 @@ docker-compose -f Example_3/1_docker-compose-producer.yml up -d
 ```
 
 ##  **c) We can NOT change the data source**.
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/6hWz_6aTFlo/0.jpg)](https://www.youtube.com/watch?v=6hWz_6aTFlo)
+</div>
+
 ### **Step 1.1**
 
 After having performed the previous examples, a question arises during the application of this pattern: What happens if we cannot change the data source?
@@ -474,7 +502,7 @@ docker rmi -f $(docker images -a -q)
 
 <br>
 
-# notes 
+# Notes 
 
 <a id="note1"></a>
 ### Note 1:
