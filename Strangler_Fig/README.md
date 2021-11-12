@@ -455,7 +455,7 @@ If we enter `http://localhost:8080/ff4j-web-console` and change the flag to disa
 This step we could modify the monolith code to extend it and add a `NotificationController` that allows to log notifications through the monolith, we have decided not to modify it to simplify the example.
 
 
-### Step 3**
+### **Step 3**
 In this last step, we would remove the flag and the old implementation, replacing the previous version of the monolith.
 
 ```
