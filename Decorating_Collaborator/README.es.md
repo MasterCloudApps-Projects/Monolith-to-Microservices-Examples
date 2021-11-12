@@ -21,14 +21,15 @@ En esta ocasión hemos planteado un nuevo enunciado.
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 
 ```
-> docker-compose -f Example_1/1_docker-compose-monolith.yml up
-
-> docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_1/1_docker-compose-monolith.yml up
+```
+```
+docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
 ```
 
 Podemos probar nuestro monolito:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz", "prize":250, "description":"Monitor"}' payment.service/order
+curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz", "prize":250, "description":"Monitor"}' payment.service/order
 ```
 
 ### **Paso 2**
@@ -37,7 +38,7 @@ Debemos implementar la funcionalidad en un nuevo microservicio que basado en una
 Lanzamos una versión del microservicio y un `Gateway` realizado con spring cloud `Gateway`.
 
 ```
-> docker-compose -f Example_1/2_docker-compose.yml up 
+docker-compose -f Example_1/2_docker-compose.yml up 
 ```
 
 Definimos un enrutador, de esta forma las peticiones de `Order` irán al monolito y las de `Loyalty` irán al microservicio, podremos acceder a cada uno de ellos a través de un punto común.
@@ -84,15 +85,16 @@ public Mono<ServerResponse> addLoyaltyDetails(ServerRequest serverRequest) {
 Probemos nuestro microservicio:
 
 ```
-> curl -v -H "Content-Type: application/json" -d '' localhost:8081/loyalty/Juablaz
+curl -v -H "Content-Type: application/json" -d '' localhost:8081/loyalty/Juablaz
 ```
 
 Probemos nuestro `Gateway`:
 
 ```
-> curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz2","prize":250, "description":"Monitor"}' localhost:8082/order
-
-> curl localhost:8082/loyalty/Juablaz2
+curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz2","prize":250, "description":"Monitor"}' localhost:8082/order
+```
+```
+curl localhost:8082/loyalty/Juablaz2
 ```
 
 Se crea el usuario en el microservicio nuevo y se le añaden 10 puntos:
@@ -104,13 +106,14 @@ Se crea el usuario en el microservicio nuevo y se le añaden 10 puntos:
 Una vez probado el gateway, movamos las peticiones desde nuestro proxy de `nginx` a nuestro gateway.
 
 ```
-> docker-compose -f Example_1/3_docker-compose-proxy.yml up -d
+docker-compose -f Example_1/3_docker-compose-proxy.yml up -d
 ```
 
 ```
-> curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz", "prize":250, "description":"Monitor"}' payment.service/order
-
-> curl payment.service/loyalty/Juablaz
+curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz", "prize":250, "description":"Monitor"}' payment.service/order
+```
+```
+curl payment.service/loyalty/Juablaz
 ```
 
 Es posible incluso que sea necesario recuperar más información del monolito, en ese caso tendríamos que exponer un endpoint en el monolito y realizar la 
