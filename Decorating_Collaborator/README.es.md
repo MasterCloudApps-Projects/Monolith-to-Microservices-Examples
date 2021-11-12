@@ -103,15 +103,15 @@ curl -v -H "Content-Type: application/json" -d '' localhost:8081/loyalty/Juablaz
 Probemos nuestro `Gateway`:
 
 ```
-curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz2","prize":250, "description":"Monitor"}' localhost:8082/order
+curl -v -H "Content-Type: application/json" -d '{"userName":"JuablazTest","prize":250, "description":"Monitor"}' localhost:8082/order
 ```
 ```
-curl localhost:8082/loyalty/Juablaz2
+curl localhost:8082/loyalty/JuablazTest
 ```
 
 Se crea el usuario en el microservicio nuevo y se le añaden 10 puntos:
 ```
-{"id":3,"userName":"Juablaz2","points":10.0}
+{"id":3,"userName":"JuablazTest","points":10.0}
 ```
 
 ### **Paso 3**
