@@ -94,12 +94,6 @@ public Mono<ServerResponse> addLoyaltyDetails(ServerRequest serverRequest) {
 }
 ```
 
-Probemos nuestro microservicio:
-
-```
-curl -v -H "Content-Type: application/json" -d '' localhost:8081/loyalty/Juablaz
-```
-
 Probemos nuestro `Gateway`:
 
 ```
@@ -108,6 +102,13 @@ curl -v -H "Content-Type: application/json" -d '{"userName":"JuablazTest","prize
 ```
 curl localhost:8082/loyalty/JuablazTest
 ```
+
+Probemos nuestro microservicio:
+
+```
+curl localhost:8081/loyalty/JuablazTest
+```
+
 
 Se crea el usuario en el microservicio nuevo y se le añaden 10 puntos:
 ```
