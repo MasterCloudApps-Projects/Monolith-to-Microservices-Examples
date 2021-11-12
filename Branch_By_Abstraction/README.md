@@ -23,17 +23,17 @@ ____________________________________________________________
 ### **Step 1**
 We have our monolithic application, requests and functionalities are answered within it.
 ```
-> docker-compose -f Example_1/1_docker-compose.yml up
+docker-compose -f Example_1/1_docker-compose.yml up
 ```
 
 We can test our monolith:
 ```
-> curl localhost:8080/inventory
+curl localhost:8080/inventory
 ```
 
 We stop step 1:
 ```
-> docker stop example_1_step_1_branch_by_abstraction_monolith
+docker stop example_1_step_1_branch_by_abstraction_monolith
 ```
 
 ### **Step 2**
@@ -53,13 +53,13 @@ In this step, let's go all the way to [`4`], our application is left with the fo
 
 Let's deploy the example:
 ```
-> docker-compose -f Example_1/2_docker-compose.yml up
+docker-compose -f Example_1/2_docker-compose.yml up
 ```
 We will have a version 2 of the monolith and our microservice. Within this version, we can switch to use or not use the microservice.
 
 We make a request:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":320}' localhost:8080/payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":320}' localhost:8080/payroll
 ```
 
 Logs into the monolith:
@@ -83,7 +83,7 @@ example_1_step_2_branch_by_abstraction_notification_ms  | 2021-09-29 13:50:05.94
 
 We stop step 2:
 ```
-> docker stop example_1_step_2_branch_by_abstraction_monolith
+docker stop example_1_step_2_branch_by_abstraction_monolith
 ```
 
 As we can see, this way of managing changes and migration to the microservice allows us in case of error to enable/disable the flag.
@@ -107,12 +107,12 @@ It could even be combined with the steps applied in the `Strangler Fig` example,
 Let's deploy the example:
 
 ```
-> docker-compose -f Example_1/3_docker-compose.yml up
+docker-compose -f Example_1/3_docker-compose.yml up
 ```
 
 We make a request:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":320}' localhost:8080/payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":320}' localhost:8080/payroll
 ```
 
 We see the response:
