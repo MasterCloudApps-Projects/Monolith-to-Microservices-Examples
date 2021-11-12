@@ -19,6 +19,10 @@ Nos situamos en el caso de que necesitamos migrar un código interior del monoli
 
 ## **Ejemplo 1. Extracción de una funcionalidad dependiente**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/XcbroWk0JNM/0.jpg)](https://www.youtube.com/watch?v=XcbroWk0JNM)
+</div>
 
 ### **Paso 1**
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.

@@ -17,8 +17,14 @@ We are in the case that we need to migrate a code inside the monolith which rece
 
 <br>
 
+
+
 ## **Example 1. Extraction of a dependent functionality**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/XcbroWk0JNM/0.jpg)](https://www.youtube.com/watch?v=XcbroWk0JNM)
+</div>
 
 ### **Step 1**
 We have our monolithic application, requests and functionalities are answered within it.
