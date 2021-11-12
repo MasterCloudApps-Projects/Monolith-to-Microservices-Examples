@@ -9,6 +9,10 @@ We are going to proceed to the realization and explanation of the `Decorating Co
 
 ## **Example 1. New functionality**
 ____
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/EX93LwF6zBs/0.jpg)](https://www.youtube.com/watch?v=EX93LwF6zBs)
+</div>
 
 This time we have raised a new statement.
 <div align="center">

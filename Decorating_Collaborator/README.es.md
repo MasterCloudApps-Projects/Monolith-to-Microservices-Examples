@@ -9,6 +9,10 @@ Vamos a proceder a la realización y explicación del patrón `Decorating Collab
 
 ## **Ejemplo 1. Nueva funcionalidad**
 ____
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/EX93LwF6zBs/0.jpg)](https://www.youtube.com/watch?v=EX93LwF6zBs)
+</div>
 
 En esta ocasión hemos planteado un nuevo enunciado.
 <div align="center">
