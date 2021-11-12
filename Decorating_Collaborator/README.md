@@ -27,6 +27,18 @@ docker-compose -f Example_1/1_docker-compose-monolith.yml up
 docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
 ```
 
+Proxy configuration:
+```
+server {
+  listen 80;
+  server_name payment.service;
+
+  location ~ ^/ {
+    proxy_pass http://1-decorating-collaborator-monolith:8080;
+  }
+}
+```
+
 We can test our monolith:
 ```
 curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz", "prize":250, "description":"Monitor"}' payment.service/order
@@ -107,6 +119,18 @@ Once the gateway is tested, let's move the requests from our `nginx` proxy to ou
 
 ```
 docker-compose -f Example_1/3_docker-compose-proxy.yml up -d
+```
+
+New proxy configuration:
+```
+server {
+  listen 80;
+  server_name payment.service;
+
+  location ~ ^/ {
+    proxy_pass http://2-decorating-collaborator-gateway-ms:8082;
+  }
+}
 ```
 
 ```
