@@ -306,7 +306,7 @@ Tendremos entonces a nuestro monolito `v1` leyendo datos de:
 
 Y a nuestro monolito `v2` lendo datos de:
 - invoicing-v2-topic
-- payroll-v2-topic
+- payroll-v2-topic (sólo el ms)
 
 En la migración pasaremos de escribir en los topics `v1` a los topics `v2`.
 

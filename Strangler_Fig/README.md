@@ -306,7 +306,7 @@ We will then have our `v1` monolith reading data from:
 
 And our `v2` monolith reading data from:
 - invoicing-v2-topic
-- payroll-v2-topic
+- payroll-v2-topic (just the ms)
 
 In the migration we will switch from writing in the `v1` topics to the `v2` topics.
 
