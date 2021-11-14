@@ -9,12 +9,12 @@ services:
       context: ./2_parallel_run_monolith
       dockerfile: ./Dockerfile
     ports: 
-      - 8082:8080
+      - 8083:8083
     networks:
       - app-network
     environment:
       - USER_NOTIFICATION_MS_HOST=2-parallel-run-notification-ms
-      - USER_NOTIFICATION_MS_PORT=8081
+      - USER_NOTIFICATION_MS_PORT=8084
     depends_on: 
       - 2-parallel-run-notification-ms
 
@@ -26,7 +26,7 @@ services:
       context: ./2_parallel_run_notification_ms
       dockerfile: ./Dockerfile
     ports: 
-      - 8081:8081
+      - 8084:8084
     networks:
       - app-network
     

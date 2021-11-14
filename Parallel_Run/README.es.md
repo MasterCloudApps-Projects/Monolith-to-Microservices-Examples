@@ -234,7 +234,7 @@ Dado que Diferencia no devuelve una respuesta real, sino una comparación, signi
 Para ello, ponemos a correr independientemente tanto nuestro monolito como nuestra nueva implementacion: 
 
 ```
-> docker-compose -f Ejemplo_2/3_docker-compose.yml up -d
+> docker-compose -f Ejemplo_3/2_docker-compose.yml up --build
 ```
 En nuestro caso nos queda en dos endpoint distintos:
 
@@ -246,8 +246,12 @@ MicroService: payment-ms.service;
 Y finalmente ponemos el `Diferencia` apuntando a los dos endpoint anteriores, quedara el mismo como un proxy. Realizaremos una peticion al `Diferencia`, el cual replicara hacia los dos servicios esa request. Entonces, cuando se devuelva la respuesta de cada instancia, `Diferencia` comprobará si ambas respuestas son similares, y si es el caso, entonces las dos implementaciones podrían considerarse compatibles y la implementación de la nueva versión está libre de regresión.
 
 ```
-docker run --rm -ti -p 8080:8080 -p 8083:8081 -p 8084:8082 lordofthejars/diferencia:0.6.0 start -c payment.ms.service -p payment.service
+docker run --rm -ti -p 8080:8080 -p 8081:8081 -p 8082:8082 lordofthejars/diferencia:0.6.0 start -c localhost:8083 -p localhost:8084
 ```
+
+TODO: Las URLs no salen fuera del docker `Diferencia` He rpibado mil maneras.... vamos no consigo conectarlo de dentro afuera ideas? Documentacion.....
+
+https://lordofthejars.github.io/diferencia-docs-site/diferencia/0.6.0/index.html
 
 ### **Paso 3**
 Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
