@@ -48,7 +48,7 @@ Let's apply the pattern to extract the functionality of `UserNotification` with 
 1. We create the `UserNotificationService` interface.
 2. We adapt the existing `UserNotificationService` implementation (renamed `UserNotificationServiceImpl`) to use the interface.
 3. We create a new implementation of the interface, `UserNotificationServiceMSImpl`.
-4. We introduce `ff4j` which allows us to switch the use of one or the other implementation at runtime `http://localhost:8080/ff4j-web-console`.
+4. We change with `ff4j` the use of one or the other implementation at runtime `http://localhost:8080/ff4j-web-console`.
 
 In this step, let's go all the way to [`4`], our application is left with the following state where we can change the active implementation:
 
