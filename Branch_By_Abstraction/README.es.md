@@ -46,7 +46,7 @@ Vamos a aplicar el patrón para extraer la funcionalidad de `UserNotification` c
 1. Creamos la interfaz `UserNotificationService`.
 2. Adaptamos la implementación de `UserNotificationService` (que pasa a llamarse `UserNotificationServiceImpl`) existente para utilizar la interfaz.
 3. Creamos una nueva implementación de la interfaz, `UserNotificationServiceMSImpl`.
-4. Introducimos `ff4j` que nos permite cambiar el uso de una u otra implementación en tiempo de ejecución `http://localhost:8080/ff4j-web-console`.
+4. Cambiamos a través de `ff4j` de una a otra implementación en tiempo de ejecución `http://localhost:8080/ff4j-web-console`.
 
 En este paso, vamos a llegar hasta el [``4``], nuestra aplicación se queda con el siguiente estado en el que podemos cambiar la implementación activa:
 
