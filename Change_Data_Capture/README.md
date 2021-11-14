@@ -128,6 +128,7 @@ Podemos en este punto plantearnos dejar de utilizar el monolito y usar exclusiva
 
 
 ## **Ejemplo 4. Debezium**
+
 Debezium es una plataforma distribuida open source para Change Data Capture. La [documentación de Debezium](https://debezium.io/documentation/reference/1.6/), esta muy bien estructurada, y posee hasta un tutorial de utilización. Nosotros para este ejemplo vamos a utilizar la siguiente estructura:
 
 - Postgres
@@ -138,21 +139,21 @@ Debezium es una plataforma distribuida open source para Change Data Capture. La 
   - kafdrop For UI to Kafka topics.
 
 Primero de todo, hemos creado un script de inicio junto a un docker-compose para ayudar a montar el ejemplo:
-```
+```bash
 export DEBEZIUM_VERSION=1.4 (or latest)
 
 # Monta los docker utilizando docker-compose. Si es la primera vez, tardara un momento.
 
-docker-compose -f Ejemplo_4/1_docker-compose.yml up --build
+docker-compose -f Ejemplo_4/1_docker-compose.yaml up --build
 
 # Configura los conectores con la DB. Para simplificarlo, hemos creado un script de inicio. 
 
-sh .Ejemplo_4/init.sh
+sh Ejemplo_4/init.sh
 ```
 
 Para crear el conector, creamos un JSON con toda la configuracion. La cual, mediante el `./init.sh` iniciaremos la variable que ingresaremos en el docker-compose:
 
-```
+```json
 {
   "name": "pg_loyalty_data-connector",
   "config": {
@@ -181,14 +182,71 @@ Ahora que tenemos la BBDD conectada, debemos realizar un cambio y ver si se refl
 ```
 curl -v -H "Content-Type: application/json" -d '{"customerId":456,"loyaltyAccount":"9860-3892"}' localhost:8080/loyalty
 ```
-TODO:No me ha funcionado el PROXY? Tiene que estar separado?
 
 Una vez en el KAFDROP nos metemos al topic `Loyalty` y ahi nos apareceran todos los mensajes referentes a los cambios en nuestra BBDD.
 
 Hemos utilizado Kafdrop como interfaz de usuario. Podemos ver una lista de mensajes publicados en un tema. Para abrir Kafdrop en local por favor haga clic [aquí](http://localhost:9100/)
 
-TODO: Poner pantallazos y explicacion de la devolucion del mensaje del connector debezium kafka.
+![alt text](KafdropUI.png)
 
-https://www.paradigmadigital.com/dev/primeros-pasos-con-debezium/
+La captura de pantalla anterior, muestra la interfaz grafica de Kafdrop. Una vista muy intuitiva en la que se ven todos los ALCs y lo que nos interesa en nuestro caso, los TOPICS.
 
+![alt text](MensajeCola.png)
+
+Una vez tenemos la estrustura del esquema, esta dividido en dos partes principales:
+```json
+{
+  "schema": {},
+  "payload": {}
+}
+
+```
+El objeto schema contiene toda la información sobre la estructura del cambio, desde el esquema (campos y tipos) de la fila afectada antes y después del cambio, hasta la estructura de otro tipo de información que puede ser útil, como la operación de cambio, el conector o la fila modificada.
+```json
+{
+  "schema": {
+    "type":"struct",
+    "fields": [
+      {
+        "type": "schema",
+        "fields": [
+          {
+            "type": "string",
+            "optional": false,
+            "field": "field1"
+          }
+          (...)
+        ],
+        "optional": true,
+        "name": "dbserver.table1.database1.Value",
+        "field": "before"
+      },
+      (...)
+    ],    
+    (...)
+  }
+}
+```
+El objeto payload contiene toda la información sobre los valores del cambio. Este objeto es el que más se suele explotar en los casos de uso que consumen esta información, ya que contiene toda la información de los valores de la fila anteriores al cambio, los posteriores al cambio, la operación que se ha realizado y la información complementaria tanto del conector como del propio cambio.
+
+![alt text](CreacionColaMensajes.png)
+
+Como veis, al ser un `op: c` osea un `Create` el objeto de antes es `null` y el de despues el objeto creado.
+```json
+"payload": {
+  "before": null,
+  "after": {
+    "field1": "test",
+    "field2": 0.1
+  },
+  "source": {},
+  "op": "c",
+  "ts_ms": 1618681673399,
+  "transaction": null
+}
+
+```
+Un objeto complementa al otro y viceversa, lo que proporciona un gran detalle del cambio que se ha producido.
+
+https://www.paradigmadigital.com/dev/vistazo-debezium-herramienta-change-data-capture/
 
