@@ -9,6 +9,10 @@ We are going to proceed to the realization and explanation of the `Decorating Co
 
 ## **Example 1. New functionality**
 ____
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/EX93LwF6zBs/0.jpg)](https://www.youtube.com/watch?v=EX93LwF6zBs)
+</div>
 
 This time we have raised a new statement.
 <div align="center">
@@ -21,14 +25,27 @@ This time we have raised a new statement.
 We have our monolithic application, requests and functionalities are answered within it.
 
 ```
-> docker-compose -f Example_1/1_docker-compose-monolith.yml up
+docker-compose -f Example_1/1_docker-compose-monolith.yml up
+```
+```
+docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
+```
 
-> docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
+Proxy configuration:
+```
+server {
+  listen 80;
+  server_name payment.service;
+
+  location ~ ^/ {
+    proxy_pass http://1-decorating-collaborator-monolith:8080;
+  }
+}
 ```
 
 We can test our monolith:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz", "prize":250, "description":"Monitor"}' payment.service/order
+curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz", "prize":250, "description":"Monitor"}' payment.service/order
 ```
 
 ### **Step 2**
@@ -37,7 +54,7 @@ We must implement the functionality in a new microservice that based on a succes
 We launch a version of the microservice and a `Gateway` made with spring cloud `Gateway`.
 
 ```
-> docker-compose -f Example_1/2_docker-compose.yml up 
+docker-compose -f Example_1/2_docker-compose.yml up 
 ```
 
 We define a router, this way the `Order` requests will go to the monolith and the `Loyalty` requests will go to the microservice, we will be able to access each of them through a common point.
@@ -81,36 +98,50 @@ public Mono<ServerResponse> addLoyaltyDetails(ServerRequest serverRequest) {
 }
 ```
 
-Let's test our microservice:
-
-```
-> curl -v -H "Content-Type: application/json" -d '' localhost:8081/loyalty/Juablaz
-```
-
 Let's test our `Gateway`:
 
 ```
-> curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz2","prize":250, "description":"Monitor"}' localhost:8082/order
+curl -v -H "Content-Type: application/json" -d '{"userName":"JuablazTest","prize":250, "description":"Monitor"}' localhost:8082/order
+```
+```
+curl localhost:8082/loyalty/JuablazTest
+```
 
-> curl localhost:8082/loyalty/Juablaz2
+Let's test our microservice:
+
+```
+curl localhost:8081/loyalty/JuablazTest
 ```
 
 The user is created in the new microservice and 10 points are added to it:
 ```
-{"id":3,"userName":"Juablaz2","points":10.0}
+{"id":3,"userName":"JuablazTest","points":10.0}
 ```
 
 ### **Step 3**
 Once the gateway is tested, let's move the requests from our `nginx` proxy to our gateway.
 
 ```
-> docker-compose -f Example_1/3_docker-compose-proxy.yml up -d
+docker-compose -f Example_1/3_docker-compose-proxy.yml up -d
+```
+
+New proxy configuration:
+```
+server {
+  listen 80;
+  server_name payment.service;
+
+  location ~ ^/ {
+    proxy_pass http://2-decorating-collaborator-gateway-ms:8082;
+  }
+}
 ```
 
 ```
-> curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz", "prize":250, "description":"Monitor"}' payment.service/order
-
-> curl payment.service/loyalty/Juablaz
+curl -v -H "Content-Type: application/json" -d '{"userName":"Juablaz", "prize":250, "description":"Monitor"}' payment.service/order
+```
+```
+curl payment.service/loyalty/Juablaz
 ```
 
 It is even possible that it is necessary to retrieve more information from the monolith, in that case we would have to expose an endpoint in the monolith and make the 

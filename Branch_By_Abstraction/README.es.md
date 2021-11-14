@@ -19,21 +19,25 @@ Nos situamos en el caso de que necesitamos migrar un código interior del monoli
 
 ## **Ejemplo 1. Extracción de una funcionalidad dependiente**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/XcbroWk0JNM/0.jpg)](https://www.youtube.com/watch?v=XcbroWk0JNM)
+</div>
 
 ### **Paso 1**
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 ```
-> docker-compose -f Example_1/1_docker-compose.yml up
+docker-compose -f Example_1/1_docker-compose.yml up
 ```
 
 Podemos probar nuestro monolito:
 ```
-> curl localhost:8080/inventory
+curl localhost:8080/inventory
 ```
 
 Detenemos el paso 1:
 ```
-> docker stop example_1_step_1_branch_by_abstraction_monolith
+docker stop example_1_step_1_branch_by_abstraction_monolith
 ```
 
 ### **Paso 2**
@@ -53,13 +57,13 @@ En este paso, vamos a llegar hasta el [``4``], nuestra aplicación se queda con 
 
 Vamos a desplegar el ejemplo:
 ```
-> docker-compose -f Example_1/2_docker-compose.yml up
+docker-compose -f Example_1/2_docker-compose.yml up
 ```
 Tendremos una versión 2 del monolito y nuestro microservicio. Dentro de esta versión, podemos cambiar a usar o no el microservicio.
 
 Hacemos una petición:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":320}' localhost:8080/payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":320}' localhost:8080/payroll
 ```
 
 Se loguea en el monolito:
@@ -83,7 +87,7 @@ example_1_step_2_branch_by_abstraction_notification_ms  | 2021-09-29 13:50:05.94
 
 Detenemos el paso 2:
 ```
-> docker stop example_1_step_2_branch_by_abstraction_monolith
+docker stop example_1_step_2_branch_by_abstraction_monolith
 ```
 
 Como podemos observar, esta forma de gestionar los cambios y la migración al microservicio nos permite en caso de error activar/ desactivar el flag.
@@ -107,12 +111,12 @@ Incluso se podría combinar con los pasos aplicados en el ejemplo de `Strangler 
 Vamos a desplegar el ejemplo:
 
 ```
-> docker-compose -f Example_1/3_docker-compose.yml up
+docker-compose -f Example_1/3_docker-compose.yml up
 ```
 
 Hacemos una petición:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8080/payroll
 ```
 
 Vemos la respuesta:

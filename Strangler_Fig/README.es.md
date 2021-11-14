@@ -23,6 +23,10 @@ Vamos a aplicar el patrón en diferentes ejemplos con los tres pasos explicados 
 
 ## **Ejemplo 1. Extracción de funcionalidad independiente**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/FRCl4wJHx-M/0.jpg)](https://www.youtube.com/watch?v=FRCl4wJHx-M)
+</div>
 
 Para poder realizar la migración de las peticiones y los despliegues en caliente, debemos configurar un proxy inverso. El host de nuestra aplicación va a ser: `payment.service`. 
 
@@ -44,9 +48,10 @@ A continuación, se muestra una imagen del estado inicial y final de la aplicaci
 ### **Paso 1**
 Tenemos nuestra aplicación monolítica. Las peticiones y funcionalidades se responden dentro del mismo.
 ```
-> docker-compose -f Example_1/1_docker-compose-monolith.yml up  
-
-> docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_1/1_docker-compose-monolith.yml up  
+```
+```
+docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
 ```
 [Nota 1](#note1)
 
@@ -65,18 +70,18 @@ server {
 
 Podemos probar nuestro monolito a través de una petición a:
 ```
-> curl payment.service/inventory
+curl payment.service/inventory
 ```
 
 ### **Paso 2**
 Debemos implementar la funcionalidad en un nuevo microservicio.
 ```
-> docker-compose -f Example_1/2_docker-compose-ms.yml up 
+docker-compose -f Example_1/2_docker-compose-ms.yml up 
 ```
 
 Las peticiones siguen llegando a nuestro monolito, pero podemos probar nuestro microservicio llamándolo directamente:
 ```
-> curl localhost:8081/inventory
+curl localhost:8081/inventory
 ```
 
 Vemos que las respuestas vienen con el tag `[MS]` que hemos añadido en el inicializador de datos.
@@ -85,7 +90,7 @@ Vemos que las respuestas vienen con el tag `[MS]` que hemos añadido en el inici
 Con su nueva implementación lista, procedemos a redireccionar las llamadas desde el monolito al nuevo microservicio.
 
 ```
-> docker-compose -f  Example_1/3_docker-compose-proxy.yml up -d
+docker-compose -f  Example_1/3_docker-compose-proxy.yml up -d
 ```
 
 La nueva configuración del proxy es:
@@ -106,7 +111,7 @@ server {
 
 Probemos a realizar peticiones:
 ```
-> curl payment.service/inventory
+curl payment.service/inventory
 ```
 
 Desde este momento, la respuesta contará con un prefijo ``[MS]`` que hemos añadido a los datos de ejemplo dados de alta de forma automática en el microservicio.
@@ -114,13 +119,17 @@ Desde este momento, la respuesta contará con un prefijo ``[MS]`` que hemos aña
 En caso de que se produzca cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito.
 
 ```
-> docker-compose -f  Example_1/1_docker-compose-proxy.yml up -d
+docker-compose -f  Example_1/1_docker-compose-proxy.yml up -d
 ```
 
 <br>
 
 ## **Ejemplo 2. Extracción de funcionalidad interna**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/hp2e3b-gTMg/0.jpg)](https://www.youtube.com/watch?v=hp2e3b-gTMg)
+</div>
 
 Si deseamos aplicar el patrón sobre `Payroll` que utiliza una funcionalidad interna en el monolito `User Notifications`, debemos exponer dicha funcionalidad interna al exterior a través de un endpoint.
 
@@ -146,14 +155,15 @@ Si deseamos aplicar el patrón sobre `Payroll` que utiliza una funcionalidad int
 Tenemos nuestra aplicación monolítica, las peticiones y funcionalidades se responden dentro del mismo.
 
 ```
-> docker-compose -f Example_2/1_docker-compose-monolith.yml up 
-
-> docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/1_docker-compose-monolith.yml up 
+```
+```
+docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
 ```
 
 Podemos probar nuestro monolito:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":120}' payment.service/payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":120}' payment.service/payroll
 ```
 
 Se loguea en la notificación:
@@ -166,13 +176,13 @@ Debemos implementar la funcionalidad en un nuevo microservicio que se comunicar�
 Lanzamos una versión del monolito (`v2`) y nuestro nuevo microservicio.
 
 ```
-> docker-compose -f Example_2/2_docker-compose.yml up 
+docker-compose -f Example_2/2_docker-compose.yml up 
 ```
 
 Podemos probar nuestro microservicio:
 
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":220}' localhost:8081/payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":220}' localhost:8081/payroll
 ```
 
 Se loguea la notificación en el monolito nuevo (`v2`), por lo tanto la comunicación es correcta:
@@ -187,7 +197,7 @@ Las peticiones a través del proxy `payment.service` siguen llegando al monolito
 Con la nueva implementación lista, redirigimos las peticiones al monolito de la funcionalidad de `Payroll`.
 
 ```
-> docker-compose -f Example_2/3_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/3_docker-compose-proxy.yml up -d
 ```
 
 La nueva configuración es:
@@ -208,7 +218,7 @@ server {
 
 Podemos probar nuestra aplicación:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
 ```
 
 Se loguea la notificación en la versión 2 del monolito `2_strangler_fig_monolith`:
@@ -221,7 +231,7 @@ En este punto podemos plantearnos quitar la versión 1 del monolito.
 Podemos rápidamente, cargar la configuración del proxy antigua:
 
 ```
-> docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
 ```
 
 De esta forma, las peticiones vuelven al monolito antiguo.
@@ -230,6 +240,11 @@ De esta forma, las peticiones vuelven al monolito antiguo.
 
 ## **Ejemplo 3. Interceptación de mensajes.**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/6ArWIM2jJlI/0.jpg)](https://www.youtube.com/watch?v=6ArWIM2jJlI)
+</div>
+
 En este ejemplo no hemos añadido un proxy para redirigir las peticiones puesto que el patrón no se basa en interceptar las peticiones HTTP, si no en interceptar y redirigir los mensajes de la cola de mensajería. Hemos implementado el ejemplo utilizando Kafka.
 
 ### **Paso 1**
@@ -243,21 +258,23 @@ Está formado por dos topics: `invoicing-v1-topic` y `payroll-v1-topic`.
 </div>
 
 ```
-> docker-compose -f Example_3/1_docker-compose-kafka-queue.yml up -d
-
-> docker-compose -f Example_3/1_docker-compose-monolith.yml up --build
-
-> docker-compose -f Example_3/1_docker-compose-producer.yml up -d 
+docker-compose -f Example_3/1_docker-compose-kafka-queue.yml up -d
+```
+```
+docker-compose -f Example_3/1_docker-compose-monolith.yml up --build
+```
+```
+docker-compose -f Example_3/1_docker-compose-producer.yml up -d 
 ```
 
 Hagamos una prueba a través de una petición:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":220}' localhost:9090/messages/send-payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":220}' localhost:9090/messages/send-payroll
 ```
 
 Podemos ver cómo se loguea en nuestro monolito: 
 ```
-> Payroll 3 shipped to Juablaz of 220.0
+Payroll 3 shipped to Juablaz of 220.0
 ```
 
 Tenemos tres posibles casuísticas:
@@ -266,6 +283,11 @@ Tenemos tres posibles casuísticas:
 - c) No podemos cambiar la fuente de datos.
 
 ## **a) Podemos cambiar el código del monolito**
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/ZOlTZme9_D4/0.jpg)](https://www.youtube.com/watch?v=ZOlTZme9_D4)
+</div>
+
 ### **Paso 2**
 
 <div align="center">
@@ -284,7 +306,7 @@ Tendremos entonces a nuestro monolito `v1` leyendo datos de:
 
 Y a nuestro monolito `v2` lendo datos de:
 - invoicing-v2-topic
-- payroll-v2-topic
+- payroll-v2-topic (sólo el ms)
 
 En la migración pasaremos de escribir en los topics `v1` a los topics `v2`.
 
@@ -293,41 +315,46 @@ En la migración pasaremos de escribir en los topics `v1` a los topics `v2`.
 Vamos a ejecutar el ejemplo siguiendo el patrón, primero la implementación y luego migrando los mensajes de la cola:
 
 ```
-> docker-compose -f  Example_3/2_a_docker-compose.yml up --build
+docker-compose -f  Example_3/2_a_docker-compose.yml up --build
 ```
 
 Podemos probar nuestra nueva implementación del monolito:
 ```
-> curl -v localhost:8082/payroll
+curl -v localhost:8082/invoicing
 ```
 
 ### **Paso 3**
 Vamos a migrar los mensajes a nuevos topics donde escribir. Cambiaremos nuestra fuente de datos a `invoicing-v2-topic` y a `payroll-v2-topic`.
 ```
-> docker-compose -f Example_3/3_a_docker-compose-producer.yml up -d --build
+docker-compose -f Example_3/3_a_docker-compose-producer.yml up -d --build
 ```
 
 Probemos que funciona correctamente:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":220}' localhost:9090/messages/send-payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":220}' localhost:9090/messages/send-payroll
 ```
 
 Se loguea en nuestro monolito `v2`:
 ```
-> Payroll 3 shipped to Juablaz of 220.0
+Payroll 3 shipped to Juablaz of 220.0
 ```
 
 Podemos confirmarlo mediante una petición al microservicio:
 ```
-> curl localhost:8081/payroll/3
+curl localhost:8081/payroll/3
 ```
 
 En caso de error podemos cambiar la generación de datos al topic antiguo:
 ```
-> docker-compose -f  Example_3/1_docker-compose-producer.yml up -d
+docker-compose -f  Example_3/1_docker-compose-producer.yml up -d
 ```
 
 ## **b) NO podemos cambiar el código del monolito**
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/tXzw0gCGwgE/0.jpg)](https://www.youtube.com/watch?v=tXzw0gCGwgE)
+</div>
+
 ### **Paso 2**
 
 ![alt text](3.17_strangler_fig_pattern.png)
@@ -348,12 +375,12 @@ Para aplicar esto al patrón, como hemos explicado en el anterior ejemplo, neces
 Lanzamos una versión exactamente **igual** que la anterior del monolito, **cambiando los topics a los que se suscribe**.
 
 ```
-> docker-compose -f Example_3/2_b_docker-compose.yml up --build
+docker-compose -f Example_3/2_b_docker-compose.yml up --build
 ```
 
 Podemos probar nuestra nueva implementación del microservicio y el cbr:
 ```
-> curl -v localhost:8081/payroll
+curl -v localhost:8081/payroll
 ```
 
 En este momento, las peticiones siguen llegando al topic antiguo, `payroll-v1-topic` y `invoicing-v1-topic`.
@@ -363,25 +390,30 @@ En este momento, las peticiones siguen llegando al topic antiguo, `payroll-v1-to
 Vamos a migrar las "peticiones". En este caso, se trata de migrar los mensajes a nuevos topics donde escribir, actualizar nuestra fuente de datos:
 
 ```
-> docker-compose -f Example_3/3_b_docker-compose-producer.yml up -d
+docker-compose -f Example_3/3_b_docker-compose-producer.yml up -d
 ```
 
 Probemos que funciona correctamente:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":220}' localhost:9090/messages/send-payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz", "total":220}' localhost:9090/messages/send-payroll
 ```
 
 Se loguea en nuestro microservicio (Recordemos que no se realiza la petición desde el microservicio al monolito para loguear puesto que no podemos cambiar el código del monolito):
 ```
-> Payroll 3 shipped to Juablaz of 220.0
+Payroll 3 shipped to Juablaz of 220.0
 ```
 
 En caso de error, podemos cambiar la escritura de datos al monolito antiguo:
 ```
-> docker-compose -f Example_3/1_docker-compose-producer.yml up -d
+docker-compose -f Example_3/1_docker-compose-producer.yml up -d
 ```
 
-## **NO podemos cambiar la fuente de datos**
+## **c) NO podemos cambiar la fuente de datos**
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/6hWz_6aTFlo/0.jpg)](https://www.youtube.com/watch?v=6hWz_6aTFlo)
+</div>
+
 ### **Paso 1.1**
 
 Tras haber realizado los anteriores ejemplos, nos surge una duda durante la aplicación de este patrón. ¿Qué ocurre si no podemos cambiar la fuente de datos?
@@ -389,19 +421,20 @@ Tras haber realizado los anteriores ejemplos, nos surge una duda durante la apli
 Para ello, partimos de una versión ampliada del monolito, que dispone de un flag de `FF4J` como los utilizados en el patrón [Branch by Abstraction](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Branch_By_Abstraction/README.es.md).
 
 ```
-> docker stop example_3_step_1_strangler_fig_monolith
-
-> docker-compose -f Example_3/1_c_docker-compose-monolith.yml up --build
+docker stop example_3_step_1_strangler_fig_monolith
+```
+```
+docker-compose -f Example_3/1_c_docker-compose-monolith.yml up --build
 ```
 
 Hagamos una prueba a través de una petición:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
 ```
 
 Podemos ver cómo se loguea en nuestro monolito: 
 ```
-> Payroll 3 shipped to Juablaz of 220.0
+Payroll 3 shipped to Juablaz of 220.0
 ```
 
 ### **Paso 2**
@@ -409,12 +442,12 @@ Podemos ver cómo se loguea en nuestro monolito:
 Vamos a ejecutar el microservicio y a deshabilitar la consumición de payroll en el monolito:
 
 ```
-> docker-compose -f  Example_3/2_c_docker-compose-ms.yml up --build
+docker-compose -f  Example_3/2_c_docker-compose-ms.yml up --build
 ```
 
 Podemos probar nuestra implementación del microservicio:
 ```
-> curl -v localhost:8081/payroll
+curl -v localhost:8081/payroll
 ```
 
 Si entramos en `http://localhost:8080/ff4j-web-console` y cambiamos el flag a deshabilitado, dejará de consumir el monolito y sólo se realizará a través del microservicio.
@@ -426,47 +459,48 @@ Este paso podríamos modificar el código del monolito para ampliarlo y añadir 
 En este último paso, eliminaríamos el flag y la implementación antigua, reemplazando a la anterior versión del monolito.
 
 ```
-> docker stop example_3_step_1_c_strangler_fig_monolith
-
-> docker-compose -f Example_3/3_c_docker-compose-monolith.yml up --build
+docker stop example_3_step_1_c_strangler_fig_monolith
+```
+```
+docker-compose -f Example_3/3_c_docker-compose-monolith.yml up --build
 ```
 
 Hagamos una prueba a través de una petición:
 ```
-> curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":220}' localhost:9090/messages/send-payroll
 ```
 
 Podemos ver cómo se loguea en nuestro microservicio: 
 ```
-> Payroll 3 shipped to Juablaz of 220.0
+Payroll 3 shipped to Juablaz of 220.0
 ```
 <br>
 
 # Enlaces de interés:
 
-> https://github.com/javieraviles/split-the-monolith
+https://github.com/javieraviles/split-the-monolith
 
-> https://www.it-swarm-es.com/es/nginx/docker-nginx-proxy-como-enrutar-el-trafico-un-contenedor-diferente-utilizando-la-ruta-y-no-el-nombre-de-host/828289465/
+https://www.it-swarm-es.com/es/nginx/docker-nginx-proxy-como-enrutar-el-trafico-un-contenedor-diferente-utilizando-la-ruta-y-no-el-nombre-de-host/828289465/
 
-> https://refactorizando.com/kafka-spring-boot-parte-uno/
+https://refactorizando.com/kafka-spring-boot-parte-uno/
 
-> https://github.com/flipkart-incubator/kafka-filtering#:~:text=Kafka%20doesn't%20support%20filtering,deserialized%20%26%20make%20such%20a%20decision.
+https://github.com/flipkart-incubator/kafka-filtering#:~:text=Kafka%20doesn't%20support%20filtering,deserialized%20%26%20make%20such%20a%20decision.
 
-> https://blog.cloudera.com/scalability-of-kafka-messaging-using-consumer-groups/
+https://blog.cloudera.com/scalability-of-kafka-messaging-using-consumer-groups/
 
-> https://stackoverflow.com/questions/57952538/consuming-from-single-kafka-partition-by-multiple-consumers
+https://stackoverflow.com/questions/57952538/consuming-from-single-kafka-partition-by-multiple-consumers
 
 <br>
 
 # Comandos de interés:
 Delete containers:
-> docker rm -f $(docker ps -a -q).
+docker rm -f $(docker ps -a -q).
 
 Delete volumes:
-> docker volume rm -f $(docker volume ls -q)
+docker volume rm -f $(docker volume ls -q)
 
 Delete images:
-> docker rmi -f $(docker images -a -q)
+docker rmi -f $(docker images -a -q)
 
 <br>
 
@@ -493,7 +527,8 @@ Hemos configurado nuestro kafka para que automáticamente cree topics si no los 
 Se haría:
 
 ```
-> docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic payroll-v2-topic
-
-> docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic invoicing-v2-topic
+docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic payroll-v2-topic
+```
+```
+docker exec -it $(docker ps -aqf "name=ejemplo_3_kafka_1") bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic invoicing-v2-topic
 ```
