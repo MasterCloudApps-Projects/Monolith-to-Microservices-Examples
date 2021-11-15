@@ -342,7 +342,16 @@ We provided different configuration files that would be applied as we saw that t
 We start a new nginx configuration:
 
 ```
-docker-compose -f Ejemplo_4/3_docker-compose-proxy.yml up -d
+docker-compose -f Ejemplo_4/3_docker-compose-proxy-10-90.yml up -d
+```
+```
+docker-compose -f Ejemplo_4/3_docker-compose-proxy-50-50.yml up -d
+```
+```
+docker-compose -f Ejemplo_4/3_docker-compose-proxy-90-10.yml up -d
+```
+```
+docker-compose -f Ejemplo_4/3_docker-compose-proxy-100-0.yml up -d
 ```
 
 We can make several requests to verify approximate weights:

@@ -373,7 +373,16 @@ Facilitamos diferentes archivos de configuración que se irían aplicando según
 Arrancamos una nueva configuración del nginx:
 
 ```
-docker-compose -f Ejemplo_4/3_docker-compose-proxy.yml up -d
+docker-compose -f Ejemplo_4/3_docker-compose-proxy-10-90.yml up -d
+```
+```
+docker-compose -f Ejemplo_4/3_docker-compose-proxy-50-50.yml up -d
+```
+```
+docker-compose -f Ejemplo_4/3_docker-compose-proxy-90-10.yml up -d
+```
+```
+docker-compose -f Ejemplo_4/3_docker-compose-proxy-100-0.yml up -d
 ```
 
 Podemos realiar varias peticiones para verificar de forma aproximada los pesos:
