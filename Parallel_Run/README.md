@@ -11,7 +11,10 @@ In the previously studied patterns `Strangler Fig` and `Branch By Abstraction`, 
 
 This `Parallel Run` pattern, instead of calling either the old or the new implementation, we call both, which allows us to compare the results to make sure they are equivalent.
 
+<div align="center">
+
 ![alt text](3.30_parallel_run.png)
+</div>
 
 It uses the `Dark Launching` technique, to implement a new feature but make it invisible to the users. `Parallel Run` is a way to implement this technique, since the new feature is invisible to the user.
 
@@ -36,7 +39,10 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 In this step, we have to produce a version 2 of the monolith, which registers in the DB the notification to the user.
 Also, we must develop our microservice, with a modified implementation, that does not actually send the notification but records it as having been sent (``Spy``). Both implementations will coexist and we do not want duplicate notifications.
 
+<div align="center">
+
 ![alt text](3.31_parallel_run.png)
+</div>
 
 ```
 docker-compose -f Example_1/2_docker-compose.yml up 
@@ -200,8 +206,10 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 ### **Step 2**
 First, we would have to initialize the two containers with their respective proxies:
 
-![alt text](diferencia_simple.png)
+<div align="center">
 
+![alt text](diferencia_simple.png)
+</div>
 
 In the above schema, it can be seen that a request is multicast to two instances of Service A, one being V1 and the other V2. Both return a response and then it is compared by Difference. Finally, note that no response is returned but the result (in the form of HTTP Status Code).
 
