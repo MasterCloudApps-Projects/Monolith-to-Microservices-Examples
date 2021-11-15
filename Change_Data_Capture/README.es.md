@@ -175,6 +175,7 @@ El principal problema es averiguar qué datos han cambiado realmente. El diseño
 Hemos agregado marcas de tiempo nosotros, haciendo un trabajo bastante significativo cuando a través de un sistema de captura de datos de cambios como el anterior podríamos manejar esto de manera mucho más elegante.
 
 Hemos utilizado: https://www.baeldung.com/jpa-optimistic-locking 
+
 Hemos creado una clase abstracta, todas las entidades deben extender de ella.
 
 ```java

@@ -175,6 +175,7 @@ The main problem is to find out what data has actually changed. Schema design ca
 For this example, we added timestamps, but this added significant work and a change data capture system as previous one would handle this problem much more easy.
 
 We have also used: https://www.baeldung.com/jpa-optimistic-locking 
+
 We have an abstract class, and every entity must extend this one.
 
 ```java
