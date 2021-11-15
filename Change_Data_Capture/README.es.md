@@ -46,11 +46,11 @@ export DEBEZIUM_VERSION=1.4 (or latest)
 
 # Monta los docker utilizando docker-compose. Si es la primera vez, tardara un momento.
 
-docker-compose -f Ejemplo_4/1_docker-compose.yaml up --build
+docker-compose -f Example_1/1_docker-compose.yaml up --build
 
 # Configura los conectores con la DB. Para simplificarlo, hemos creado un script de inicio. 
 
-sh Ejemplo_4/init.sh
+sh Example_1/init.sh
 ```
 
 Para crear el conector, creamos un JSON con toda la configuracion. La cual, mediante el `./init.sh` iniciaremos la variable que ingresaremos en el docker-compose:
@@ -176,10 +176,10 @@ https://www.baeldung.com/jpa-optimistic-locking
 ### **Paso 1**
 Partimos de nuestra aplicación monolítica que crea fidelizaciones del usuario.
 ```
-docker-compose -f Ejemplo_3/1_docker-compose-monolith.yml up 
+docker-compose -f Example_2/1_docker-compose-monolith.yml up 
 ```
 ```
-docker-compose -f Ejemplo_3/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
 ```
 
 Probamos que todo funciona correctamente:
@@ -197,7 +197,7 @@ Utilizamos dos propiedades para identificar los cambios del día:
 
 
 ```
-docker-compose -f Ejemplo_3/2_docker-compose.yml up 
+docker-compose -f Example_2/2_docker-compose.yml up 
 ```
 
 Con todo desplegado, vamos a ejecutar nuestro batch de forma manual y probemos si están los datos en nuestro microservicio:
@@ -222,13 +222,14 @@ Podemos en este punto plantearnos dejar de utilizar el monolito y usar exclusiva
 
 ## **Ejemplo 3. Triggers de BBDD**
 
-Will be available in future versions...
+Disponible en futuras versiones...
 
+
+<!-- 
 <div align="center">
 
 ![alt text](3.36_change_data_capture.png)
 </div>
-
 MYSQL
 https://stackoverflow.com/questions/40470267/calling-a-rest-api-from-a-trigger-or-stored-procedure-in-mysql
 
@@ -243,9 +244,9 @@ https://hub.docker.com/r/ycheung/postgresql-http
 https://docs.spring.io/spring-data/jpa/docs/1.9.4.RELEASE/reference/html/#jpa.stored-procedures
 
 ```
-docker-compose -f Ejemplo_1/1_docker-compose-monolith.yml up 
+docker-compose -f Example_1/1_docker-compose-monolith.yml up 
 
-docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
 ```
 
 ```
