@@ -245,7 +245,7 @@ curl -v http://localhost:8081/loyalty
 
 The day's data is returned.
 
-### Step 3** **Step 3**
+### **Step 3**
 We can at this point consider dropping the monolith and using the microservice functionality exclusively.
 
 <br>
