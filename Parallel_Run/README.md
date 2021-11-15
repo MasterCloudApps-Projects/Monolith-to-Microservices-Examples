@@ -254,6 +254,8 @@ Release a Canary version for a subset of users, so that if a problem occurs only
 
 We have configured an nginx `Load Balancer` which allows us to load balance using weights.
 
+Let's remember that we are extracting the functionality of `User notification`.
+
 ```
 docker-compose -f Ejemplo_4/1_docker-compose-monolith.yml up --build
 ```
