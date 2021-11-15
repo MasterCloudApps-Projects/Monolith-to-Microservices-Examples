@@ -21,10 +21,10 @@ ____________________________________________________________
 ### **Paso 1**
 Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
 ```
-docker-compose -f Ejemplo_1/1_docker-compose.yml up 
+docker-compose -f Example_1/1_docker-compose.yml up 
 ```
 ```
-docker-compose -f Ejemplo_1/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
 ```
 
 Probamos que todo funciona correctamente:
@@ -42,7 +42,7 @@ También, debemos desarrollar nuestro microservicio, con una implementación mod
 </div>
 
 ```
-docker-compose -f Ejemplo_1/2_docker-compose.yml up 
+docker-compose -f Example_1/2_docker-compose.yml up 
 ```
 
 Podemos probar nuestra nueva implementación del monolito `v2`:
@@ -54,7 +54,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 Con todo desplegado, vamos a migrar las peticiones a la nueva implementación.
 
 ```
-docker-compose -f Ejemplo_1/2_docker-compose-proxy.yml up -d
+docker-compose -f Example_1/2_docker-compose-proxy.yml up -d
 ```
 
 En este momento, se registra en la BBDD desde el microservicio y desde el monolito el envío de notificaciones. Tenemos un microservicio con un batch que periódicamente realiza una comparación de los resultados generados.
@@ -76,7 +76,7 @@ Devuelve ``true`` y loguea:
 Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
 
 ```
-docker-compose -f Ejemplo_1/3_docker-compose.yml up --build
+docker-compose -f Example_1/3_docker-compose.yml up --build
 ```
 
 Probamos que funcione correctamente:
@@ -86,7 +86,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 Migramos las peticiones a la versión final:
 ```
-docker-compose -f Ejemplo_1/3_docker-compose-proxy.yml up -d
+docker-compose -f Example_1/3_docker-compose-proxy.yml up -d
 ```
 
 ```
@@ -111,10 +111,10 @@ Vamos a realizar un ejemplo de comparación en tiempo real de resultados a trav�
 ### **Paso 1**
 Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
 ```
-docker-compose -f Ejemplo_2/1_docker-compose.yml up 
+docker-compose -f Example_2/1_docker-compose.yml up 
 ```
 ```
-docker-compose -f Ejemplo_2/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
 ```
 
 Probamos que todo funciona correctamente:
@@ -161,7 +161,7 @@ public Boolean scientistExperiment(Long id) {
 ```
 
 ```
-docker-compose -f Ejemplo_2/2_docker-compose.yml up 
+docker-compose -f Example_2/2_docker-compose.yml up 
 ```
 
 ```
@@ -172,7 +172,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 Actualizamos a utilizar el proxy:
 
 ```
-docker-compose -f Ejemplo_2/2_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/2_docker-compose-proxy.yml up -d
 ```
 
 ```
@@ -185,7 +185,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
 
 ```
-docker-compose -f Ejemplo_2/3_docker-compose.yml up
+docker-compose -f Example_2/3_docker-compose.yml up
 ```
 
 ```
@@ -194,7 +194,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 Migramos las peticiones a la versión final:
 ```
-docker-compose -f Ejemplo_2/3_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/3_docker-compose-proxy.yml up -d
 ```
 
 ```
@@ -210,10 +210,10 @@ Este ejemplo es algo diferente. Realmente `Diferencia` esta montado sobre un pro
 ### **Paso 1**
 Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
 ```
-docker-compose -f Ejemplo_3/1_docker-compose.yml up 
+docker-compose -f Example_3/1_docker-compose.yml up 
 ```
 ```
-docker-compose -f Ejemplo_3/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_3/1_docker-compose-proxy.yml up -d
 ```
 
 Probamos que todo funciona correctamente:
@@ -237,7 +237,7 @@ Dado que Diferencia no devuelve una respuesta real, sino una comparación, signi
 Para ello, ponemos a correr independientemente tanto nuestro monolito como nuestra nueva implementacion: 
 
 ```
-docker-compose -f Ejemplo_3/2_docker-compose.yml up --build
+docker-compose -f Example_3/2_docker-compose.yml up --build
 ```
 En nuestro caso nos queda en dos endpoint distintos:
 
@@ -260,7 +260,7 @@ https://lordofthejars.github.io/diferencia-docs-site/diferencia/0.6.0/index.html
 Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
 
 ```
-docker-compose -f Ejemplo_2/3_docker-compose.yml up -d
+docker-compose -f Example_2/3_docker-compose.yml up -d
 ```
 
 ```
@@ -269,7 +269,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 Migramos las peticiones a la versión final:
 ```
-docker-compose -f Ejemplo_2/3_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/3_docker-compose-proxy.yml up -d
 ```
 
 ```
@@ -293,10 +293,10 @@ Hemos configurado un nginx como `Load Balancer` que nos permite balancear la car
 Recordemos que estamos extrayendo la funcionalidad de `User Notification`.
 
 ```
-docker-compose -f Ejemplo_4/1_docker-compose-monolith.yml up --build
+docker-compose -f Example_4/1_docker-compose-monolith.yml up --build
 ```
 ```
-docker-compose -f Ejemplo_4/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_4/1_docker-compose-proxy.yml up -d
 ```
 
 La configuración por defecto es la siguiente:
@@ -329,7 +329,7 @@ Todas las peticiones van al monolito.
 Lanzamos una nueva versión de la aplicación.
 
 ```
-docker-compose -f Ejemplo_4/2_docker-compose.yml up --build
+docker-compose -f Example_4/2_docker-compose.yml up --build
 ```
 
 Podemos probarla utilizando peticiones directas al monolito v2 y al microservicio
@@ -378,16 +378,16 @@ Facilitamos diferentes archivos de configuración que se irían aplicando según
 Arrancamos una nueva configuración del nginx:
 
 ```
-docker-compose -f Ejemplo_4/3_docker-compose-proxy-10-90.yml up -d
+docker-compose -f Example_4/3_docker-compose-proxy-10-90.yml up -d
 ```
 ```
-docker-compose -f Ejemplo_4/3_docker-compose-proxy-50-50.yml up -d
+docker-compose -f Example_4/3_docker-compose-proxy-50-50.yml up -d
 ```
 ```
-docker-compose -f Ejemplo_4/3_docker-compose-proxy-90-10.yml up -d
+docker-compose -f Example_4/3_docker-compose-proxy-90-10.yml up -d
 ```
 ```
-docker-compose -f Ejemplo_4/3_docker-compose-proxy-100-0.yml up -d
+docker-compose -f Example_4/3_docker-compose-proxy-100-0.yml up -d
 ```
 
 Podemos realiar varias peticiones para verificar de forma aproximada los pesos:
@@ -398,6 +398,6 @@ curl payment.service/inventory
 
 En caso de cualquier problema siempre se puede hacer un rollback y redirigir de nuevo las peticiones al monolito inicial.
 ```
-docker-compose -f  Ejemplo_4/1_docker-compose-proxy.yml up -d
+docker-compose -f  Example_4/1_docker-compose-proxy.yml up -d
 ```
 
