@@ -280,6 +280,11 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 ## **Ejemplo 4. Canary Releasing**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/BpS9Syoid6o/0.jpg)](https://www.youtube.com/watch?v=BpS9Syoid6o)
+</div>
+
 ### **Paso 1**
 Lanzar una versión Canary para un subconjunto de usuarios, por si se produce algún problema sólo un pequeño grupo de usuarios se verán afectados.
 
