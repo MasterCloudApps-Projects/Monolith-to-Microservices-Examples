@@ -170,7 +170,7 @@ https://www.paradigmadigital.com/dev/vistazo-debezium-herramienta-change-data-ca
 ______
 <div align="center">
 
-[![Video](https://img.youtube.com/vi/EX93LwF6zBs/0.jpg)](https://www.youtube.com/watch?v=EX93LwF6zBs)
+[![Video](https://img.youtube.com/vi/f2Mr2f-VIGU/0.jpg)](https://www.youtube.com/watch?v=f2Mr2f-VIGU)
 </div>
 
 Probably this is the most simplistic approach, we write a program that periodically scans the database to see what data has changed and copies it to the destination.
