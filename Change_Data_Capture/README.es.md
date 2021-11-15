@@ -168,6 +168,11 @@ https://www.paradigmadigital.com/dev/vistazo-debezium-herramienta-change-data-ca
 
 ## **Ejemplo 2. Batch delta copier**
 ______
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/EX93LwF6zBs/0.jpg)](https://www.youtube.com/watch?v=EX93LwF6zBs)
+</div>
+
 Probablemente el enfoque más sencillo es escribir un programa que de forma periódica escanee la base de datos para ver qué datos han cambiado y se copien en el destino.
 
 El principal problema es averiguar qué datos han cambiado realmente. El diseño del esquema puede complicar mucho esta tarea. 
