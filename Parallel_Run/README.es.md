@@ -286,7 +286,7 @@ Lanzar una versión Canary para un subconjunto de usuarios, por si se produce al
 Hemos configurado un nginx como `Load Balancer` que nos permite balancear la carga utilizando pesos.
 
 ```
-docker-compose -f Ejemplo_4/1_docker-compose.yml up --build
+docker-compose -f Ejemplo_4/1_docker-compose-monolith.yml up --build
 ```
 ```
 docker-compose -f Ejemplo_4/1_docker-compose-proxy.yml up -d
