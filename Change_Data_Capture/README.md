@@ -166,16 +166,16 @@ https://www.paradigmadigital.com/dev/vistazo-debezium-herramienta-change-data-ca
 
 <br>
 
-## **Ejemplo 2. Batch delta copier**
+## **Example 2. Batch delta copier** 
 ______
-Probablemente el enfoque más sencillo es escribir un programa que de forma periódica escanee la base de datos para ver qué datos han cambiado y se copien en el destino.
+Probably this is the most simplistic approach, we write a program that periodically scans the database to see what data has changed and copies it to the destination.
 
-El principal problema es averiguar qué datos han cambiado realmente. El diseño del esquema puede complicar mucho esta tarea. 
+The main problem is to find out what data has actually changed. Schema design can complicate this task. 
 
-Hemos agregado marcas de tiempo nosotros, haciendo un trabajo bastante significativo cuando a través de un sistema de captura de datos de cambios como el anterior podríamos manejar esto de manera mucho más elegante.
+For this example, we added timestamps, but this added significant work and a change data capture system as previous one would handle this problem much more easy.
 
-Hemos utilizado: https://www.baeldung.com/jpa-optimistic-locking 
-Hemos creado una clase abstracta, todas las entidades deben extender de ella.
+We have also used: https://www.baeldung.com/jpa-optimistic-locking 
+We have an abstract class, and every entity must extend this one.
 
 ```java
 @Data
@@ -202,8 +202,8 @@ public abstract class EntityBase<I> {
 }
 ```
 
-### **Paso 1**
-Partimos de nuestra aplicación monolítica que crea fidelizaciones del usuario.
+### **Step 1**
+We start from our monolithic application that creates user fidelities.
 ```
 docker-compose -f Example_2/1_docker-compose-monolith.yml up 
 ```
@@ -211,47 +211,47 @@ docker-compose -f Example_2/1_docker-compose-monolith.yml up
 docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
 ```
 
-Probamos que todo funciona correctamente:
+We test that everything works correctly:
 
 ```
-curl -v -H "Content-Type: application/json" -d '{"customerId":456,"loyaltyAccount":"9860-3892"}' payment.service/loyalty
+curl -v -H "Content-Type: application/json" -d '{"customerId":456, "loyaltyAccount": "9860-3892"}' payment.service/loyalty
 ```
 
-### **Paso 2**
-En este paso, tenemos nuestro microservicio que necesita de la información que insertamos en el monolito.
-Periódicamente se escanea la base de datos para ver qué datos han cambiado y se copien en el destino.
-Utilizamos dos propiedades para identificar los cambios del día:
-- ``creationTimestamp``
-- ``modificationTimestamp``
+### **Step 2**
+In this step, we have our microservice that needs the information we inserted in the monolith.
+Periodically we scan the database to see what data has changed and copy it to the target.
+We use two properties to identify the day's changes:
+- ``creationTimestamp``.
+- ``modificationTimestamp``.
 
 
 ```
 docker-compose -f Example_2/2_docker-compose.yml up 
 ```
 
-Con todo desplegado, vamos a ejecutar nuestro batch de forma manual y probemos si están los datos en nuestro microservicio:
+With everything deployed, let's run our batch manually and test if the data is in our microservice:
 
-Hemos habilitado una opción para que podamos ejecutarlo de forma manual:
+We have enabled an option so we can run it manually:
 
 ```
-curl -v  http://localhost:8083/loyalty/migration
+curl -v http://localhost:8083/loyalty/migration
 ```
 
-Veamos si se encuentran los datos:
+Let's see if the data is found:
 ```
-curl -v  http://localhost:8081/loyalty
+curl -v http://localhost:8081/loyalty
 ```
 
-Se devuelven los datos del día.
+The day's data is returned.
 
-### **Paso 3**
-Podemos en este punto plantearnos dejar de utilizar el monolito y usar exclusivamente la funcionalidad del microservicio.
+### Step 3** **Step 3**
+We can at this point consider dropping the monolith and using the microservice functionality exclusively.
 
 <br>
 
-## **Ejemplo 3. Triggers de BBDD**
+## **Example 3. DB Triggers**
 
-Disponible en futuras versiones...
+Available in future versions...
 
 
 <!-- 
