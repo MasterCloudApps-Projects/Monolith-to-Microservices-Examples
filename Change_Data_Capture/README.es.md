@@ -101,7 +101,7 @@ La captura de pantalla anterior, muestra la interfaz grafica de Kafdrop. Una vis
 
 <div align="center">
 
-![alt text](MensajeCola.png)
+![alt text](queue_message.png)
 </div>
 
 Una vez tenemos la estrustura del esquema, esta dividido en dos partes principales:

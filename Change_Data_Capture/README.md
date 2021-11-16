@@ -7,17 +7,17 @@
 </div>
 
 
-Vamos a proceder a la realización y explicación del patrón `Change Data Capture`. 
-En este patrón, en lugar de intentar interceptar y actuar en las llamadas realizadas en el monolito, reaccionamos a los cambios realizados en la base de datos.
+We will proceed to the realization and explanation of the `Change Data Capture` pattern. 
+In this pattern, instead of trying to intercept and act on the calls made in the monolith, we react to the changes made in the database.
 
-En esta ocasión hemos planteado un nuevo enunciado. Nuestro monolito al realizar una inscripción de un usuario sólo nos responde que se realizó correctamente. Esto provoca que realizar el patrón anterior `Decorating Collaborator` sea difícil de aplicar, tendríamos que hacer consultas adicionales al monolito que puede que no estén expuestas a través de una API.
+On this occasion we have posed a new statement. Our monolith when performing a user registration only responds to us that it was performed correctly. This makes the previous pattern `Decorating Collaborator` difficult to apply, we would have to make additional queries to the monolith that may not be exposed through an API.
 
 <div align="center">
 
 ![alt text](3.34_change_data_capture.png)
 </div>
 
-Por lo que en este caso, utilizamos el patrón `Change Data Capture`, detectamos la inserción en la tabla de `LoyaltyAccount` y hacemos una petición a nuestro microservicio.
+So in this case, we use the `Change Data Capture` pattern, detect the insertion in the `LoyaltyAccount` table and make a request to our microservice.
 
 <div align="center">
 
@@ -26,7 +26,7 @@ Por lo que en este caso, utilizamos el patrón `Change Data Capture`, detectamos
 
 <br>
 
-## **Ejemplo 1. Transaction log pollers - Debezium**
+## **Example 1. Transaction log pollers - Debezium**
 ____________________________________________________________
 
 <div align="center">
@@ -34,7 +34,7 @@ ____________________________________________________________
 ![alt text](3.37_change_data_capture.png)
 </div>
 
-Debezium es una plataforma distribuida open source para Change Data Capture. La [documentación de Debezium](https://debezium.io/documentation/reference/1.6/), esta muy bien estructurada, y posee hasta un tutorial de utilización. Nosotros para este ejemplo vamos a utilizar la siguiente estructura:
+Debezium is an open source distributed platform for Change Data Capture. The [Debezium documentation](https://debezium.io/documentation/reference/1.6/), is very well structured, and even has a tutorial on how to use it. For this example we are going to use the following structure:
 
 - Postgres
 - Kafka
@@ -43,20 +43,19 @@ Debezium es una plataforma distribuida open source para Change Data Capture. La 
   - Kafka Connect with [Debezium](https://debezium.io/).
   - kafdrop For UI to Kafka topics.
 
-Primero de todo, hemos creado un script de inicio junto a un docker-compose para ayudar a montar el ejemplo:
+First of all, we have created a startup script along with a docker-compose to help set up the example (we use version 1.4 or higher):
 ```bash
-export DEBEZIUM_VERSION=1.4 (or latest)
-
-# Monta los docker utilizando docker-compose. Si es la primera vez, tardara un momento.
-
+export DEBEZIUM_VERSION=1.4
+```
+Mount the docker using docker-compose. If this is the first time, it will take a moment.
+```bash
 docker-compose -f Example_1/1_docker-compose.yaml up --build
-
-# Configura los conectores con la DB. Para simplificarlo, hemos creado un script de inicio. 
-
+```
+Configure the connectors with the DB. To simplify it, we have created a startup script.
+```bash
 sh Example_1/init.sh
 ```
-
-Para crear el conector, creamos un JSON con toda la configuracion. La cual, mediante el `./init.sh` iniciaremos la variable que ingresaremos en el docker-compose:
+To create the connector, we create a JSON with all the configuration. Which, by means of `./init.sh` we will start the variable that we will enter in the docker-compose:
 
 ```json
 {
@@ -82,29 +81,30 @@ Para crear el conector, creamos un JSON con toda la configuracion. La cual, medi
 }
 ```
 
-Ahora que tenemos la BBDD conectada, debemos realizar un cambio y ver si se refleja en `Debezium`. A futuro, seria conectarlo junto a `Elastic Search` o algun sistema conector para ver reflejados dichos cambios realizados en Postgres.
+Now that we have the database connected, we must make a change and see if it is reflected in `Debezium`. In the future, it would be to connect it together with `Elastic Search` or some connector system to see reflected those changes made in Postgres.
 
 ```
 curl -v -H "Content-Type: application/json" -d '{"customerId":456,"loyaltyAccount":"9860-3892"}' localhost:8080/loyalty
 ```
 
-Una vez en el KAFDROP nos metemos al topic `Loyalty` y ahi nos apareceran todos los mensajes referentes a los cambios en nuestra BBDD.
+Once in the KAFDROP we go to the `Loyalty` topic and there we will see all the messages related to the changes in our DB.
 
-Hemos utilizado Kafdrop como interfaz de usuario. Podemos ver una lista de mensajes publicados en un tema. Para abrir Kafdrop en local por favor haga clic [aquí](http://localhost:9100/)
+We have used Kafdrop as user interface. We can see a list of messages published in a topic. To open Kafdrop in local please click [here](http://localhost:9100/)
 
 <div align="center">
 
 ![alt text](KafdropUI.png)
 </div>
 
-La captura de pantalla anterior, muestra la interfaz grafica de Kafdrop. Una vista muy intuitiva en la que se ven todos los ALCs y lo que nos interesa en nuestro caso, los TOPICS.
+The above screenshot shows the graphical interface of Kafdrop. A very intuitive view in which you can see all the ALCs and what interests us in our case, the TOPICS.
 
 <div align="center">
 
-![alt text](MensajeCola.png)
+![alt text](queue_message.png)
 </div>
 
-Una vez tenemos la estrustura del esquema, esta dividido en dos partes principales:
+Once we have the schematic structure, it is divided into two main parts:
+
 ```json
 {
   "schema": {},
@@ -112,7 +112,7 @@ Una vez tenemos la estrustura del esquema, esta dividido en dos partes principal
 }
 
 ```
-El objeto schema contiene toda la información sobre la estructura del cambio, desde el esquema (campos y tipos) de la fila afectada antes y después del cambio, hasta la estructura de otro tipo de información que puede ser útil, como la operación de cambio, el conector o la fila modificada.
+The schema object contains all the information about the structure of the change, from the schema (fields and types) of the affected row before and after the change, to the structure of other information that may be useful, such as the change operation, the connector or the modified row.
 ```json
 {
   "schema": {
@@ -138,14 +138,14 @@ El objeto schema contiene toda la información sobre la estructura del cambio, d
   }
 }
 ```
-El objeto payload contiene toda la información sobre los valores del cambio. Este objeto es el que más se suele explotar en los casos de uso que consumen esta información, ya que contiene toda la información de los valores de la fila anteriores al cambio, los posteriores al cambio, la operación que se ha realizado y la información complementaria tanto del conector como del propio cambio.
+The payload object contains all the information about the values of the change. This object is the most commonly exploited in the use cases that consume this information, since it contains all the information about the values of the row before the change, the values after the change, the operation that has been performed and the complementary information of both the connector and the change itself.
 
 <div align="center">
 
 ![alt text](queue_message_creation.png)
 </div>
 
-Como veis, al ser un `op: c` osea un `Create` el objeto de antes es `null` y el de despues el objeto creado.
+As you can see, being an `op: c` that is to say a `Create` the object before is `null` and the one after is the created object.
 ```json
 "payload": {
   "before": null,
@@ -160,7 +160,7 @@ Como veis, al ser un `op: c` osea un `Create` el objeto de antes es `null` y el 
 }
 
 ```
-Un objeto complementa al otro y viceversa, lo que proporciona un gran detalle del cambio que se ha producido.
+As you can see, being an `op: c` that is to say a `Create` the object before is `null` and the one after is the created object.
 
 https://www.paradigmadigital.com/dev/vistazo-debezium-herramienta-change-data-capture/
 
