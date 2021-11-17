@@ -253,6 +253,7 @@ docker run --rm -ti -p 8080:8080 -p 8081:8081 -p 8082:8082 lordofthejars/diferen
 ```
 
 TODO: Las URLs no salen fuera del docker `Diferencia` He rpibado mil maneras.... vamos no consigo conectarlo de dentro afuera ideas? Documentacion.....
+ALTERNATIVA SEGURA Y EQUIVALENTE: https://tech.xing.com/migrating-apis-using-diffy-and-nginx-20cc152ca198
 
 https://lordofthejars.github.io/diferencia-docs-site/diferencia/0.6.0/index.html
 
