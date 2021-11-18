@@ -184,10 +184,11 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 <br>
 
-## **Example 3. Diferencia**
+## **Example 3. Diffy**
 ____________________________________________________________
-This example is somewhat different. Actually `Diferencia` is mounted on top of a proxy that would act in our case as an external comparator. 
-When building a service-based architecture where each service might be deployed independently, it is important to validate that the new version of the service is still compatible with the old version and this new version is able to produce a response that it is still processable by any consumer.
+This example is somewhat different. Actually `Diffy` is mounted on top of a proxy that would act in our case as an external comparator.
+
+Diffy finds potential bugs in your service using running instances of your new code and your old code side by side. Diffy behaves as a proxy and multicasts whatever requests it receives to each of the running instances. It then compares the responses, and reports any regressions that may surface from those comparisons. The premise for Diffy is that if two implementations of the service return “similar” responses for a sufficiently large and diverse set of requests, then the two implementations can be treated as equivalent and the newer implementation is regression-free.
 
 ### **Step 1**
 We start from our monolithic application that logs user notifications.
@@ -208,36 +209,44 @@ First, we would have to initialize the two containers with their respective prox
 
 <div align="center">
 
-![alt text](diferencia_simple.png)
+![alt text](diffy_topology.png)
 </div>
 
-In the above schema, it can be seen that a request is multicast to two instances of Service A, one being V1 and the other V2. Both return a response and then it is compared by Difference. Finally, note that no response is returned but the result (in the form of HTTP Status Code).
+In the above schema, Diffy acts as a proxy that accepts requests drawn from any source that you provide and multicasts each of those requests to three different service instances:
 
-Since Diferencia does not return an actual response, but a comparison, it effectively means that it is necessary to use the Diferencia proxy for testing purposes (to check backward compatibility) and not as a production proxy like Envoy. This means that Diferencia could be used to perform specific backward compatibility tests or to use the Traffic Shadowing/Mirroring technique.
+A candidate instance running your new code
+A primary instance running your last known-good code
+A secondary instance running the same known-good code as the primary instance
+As Diffy receives a request, it is multicast and sent to your candidate, primary, and secondary instances. When those services send responses back, Diffy compares those responses and looks for two things:
+
+Raw differences observed between the candidate and primary instances.
+Non-deterministic noise observed between the primary and secondary instances. Since both of these instances are running known-good code, you should expect responses to be in agreement. If not, your service may have non-deterministic behavior, which is to be expected.
 
 To do this, we independently run both our monolith and our new implementation: 
 
 ```
-docker-compose -f Example_2/3_docker-compose.yml up -d
-```
-In our case we are left with two different endpoints:
-
-```
-Monolith: payment.service;
-MicroService: payment-ms.service;
+docker-compose -f Example_3/2_docker-compose.yml up --build
 ```
 
-And finally we put the `Diferencia` pointing to the two previous endpoints, it will be the same as a proxy. We will make a request to the `Diferencia`, which will replicate to the two services that request. Then, when the response from each instance is returned, `Diferencia` will check if both responses are similar, and if so, then the two implementations could be considered compatible and the new version implementation is regression free.
+Diffy measures how often primary and secondary disagree with each other vs. how often primary and candidate disagree with each other. If these measurements are roughly the same, then Diffy determines that there is nothing wrong and that the error can be ignored.
 
+With this configuration, the web interface from Diffy can be accessed via a browser through the URL http://localhost:3000
+
+![alt text](success_request.png)
+
+The header Canonical-Resource was added to the request, so the Diffy can have a better reference to the API and display it in your interface.And, we can interact with the Diffy proxy through the URL: http://localhost:3001
 ```
-docker run --rm -ti -p 8080:8080 -p 8083:8081 -p 8084:8082 lordofthejars/diferencia:0.6.0 start -c payment.ms.service -p payment.service
+curl -s -i -H Canonical-Resource:success-api localhost:3001/notification/1
 ```
+
+![alt text](diffy_request_fail.png)
+
 
 ### **Step 3**
 Once we have seen that the new implementation in the microservice generates the same results as the monolith, we can release a final version.
 
 ```
-docker-compose -f Example_2/3_docker-compose.yml up -d
+docker-compose -f Example_3/3_docker-compose.yml up -d
 ```
 
 ```

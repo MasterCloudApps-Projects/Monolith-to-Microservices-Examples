@@ -30,24 +30,16 @@ services:
     networks:
       - app-network
   
-  diffy:
-    image: diffy/diffy
-    container_name: diffy
+  diferencia:
+    image: lordofthejars/diferencia:0.6.0
+    container_name: diferencia
     ports:
-      - 3000:8888
-      - 3001:8880
-    command: >
-      -master.primary='2-parallel-run-monolith:8083'
-      -master.secondary='2-parallel-run-monolith:8083'
-      -candidate='2-parallel-run-notification-ms:8084'
-      -service.protocol='http'
-      -serviceName='Diffy Testing Service'
-      -proxy.port=:8880
-      -admin.port=:8881
-      -http.port=:8888
-      -rootUrl='localhost:8888'
-      -allowHttpSideEffects=true
-      -summary.email=''
+      - 3000:8080
+      - 3001:8081
+      - 3002:8082
+    command:
+      --primary '2-parallel-run-monolith:8083'
+      -c '2-parallel-run-notification-ms:8084'
     depends_on: 
       - 2-parallel-run-monolith
     networks:
