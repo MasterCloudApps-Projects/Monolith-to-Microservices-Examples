@@ -123,3 +123,16 @@ Resumen de la reu:
 - Presentación enfocada a ciertos patrones, aunque pasemos por todos hacer ejecución de algunos más impresionantes.
 - Grabar videos de cada ejemplo
 - Ejemplo con colas con una versión del monolito que active/desactive la consumición de payroll con un flag
+
+
+
+- Introducción a los microservicios - akjsdhgkajsdhg
+
+
+
+TODO:
+- Documento
+- Bibliografía
+- Vídeos
+- Readme principal
+

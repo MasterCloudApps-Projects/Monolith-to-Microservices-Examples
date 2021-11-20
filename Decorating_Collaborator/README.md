@@ -153,3 +153,15 @@ request from the microservice.
 </div>
 
 This could generate additional overhead, plus it introduces a circular dependency, it might be better to change the monolith to provide the required information when our request to create an order is completed. However, this would require changing the monolith code or perhaps using another pattern, which we will study next `Change Data Capture`.
+
+# Links of interest:
+
+•	[1] SPRING CLOUD GATEWAY - OVERVIEW. No date. [https://spring.io/projects/spring-cloud-gateway](https://spring.io/projects/spring-cloud-gateway)
+
+•	[2] SPRING CLOUD GATEWAY - DOCUMENTATION. No date. [https://cloud.spring.io/spring-cloud-gateway/reference/html/](https://cloud.spring.io/spring-cloud-gateway/reference/html/)
+
+•	[3] SPRING CLOUD GATEWAY - STARTER PROJECT. No date. [https://spring.io/guides/gs/gateway/](https://spring.io/guides/gs/gateway/)
+
+•	[4] EXPLORING THE NEW SPRING CLOUD GATEWAY. baeldung. 16 July, 2020. [https://www.baeldung.com/spring-cloud-gateway](https://www.baeldung.com/spring-cloud-gateway)
+
+•	[5] SPRING CLOUD GATEWAY - GITHUB. No date. [https://github.com/spring-cloud/spring-cloud-gateway](https://github.com/spring-cloud/spring-cloud-gateway)

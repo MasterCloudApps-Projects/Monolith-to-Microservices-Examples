@@ -125,3 +125,11 @@ We see the response:
 ```
 example_1_step_3_branch_by_abstraction_notification_ms  | 2021-09-24 14:38:13.520  INFO 1 --- [nio-8081-exec-8] e.c.m.b.service.UserNotificationService  : Payroll 3 shipped to Juablaz of 320.0
 ```
+
+<br>
+
+# Enlaces de interés:
+
+•	[1] FF4J - GITHUB. No date. [https://github.com/ff4j/ff4j](https://github.com/ff4j/ff4j)
+
+•	[2] FF4J - OFFICIAL WEB. No date. [https://ff4j.org/](https://ff4j.org/)

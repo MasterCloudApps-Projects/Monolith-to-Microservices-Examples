@@ -477,28 +477,39 @@ Payroll 3 shipped to Juablaz of 220.0
 <br>
 
 # Links of interest:
-https://github.com/javieraviles/split-the-monolith
 
-https://www.it-swarm-es.com/es/nginx/docker-nginx-proxy-como-enrutar-el-trafico-un-contenedor-diferente-utilizando-la-ruta-y-no-el-nombre-de-host/828289465/
+•	[1] SPLIT THE MONOLITH. javieraviles. 29 April, 2020. [https://github.com/javieraviles/split-the-monolith](https://github.com/javieraviles/split-the-monolith)
 
-https://refactorizando.com/kafka-spring-boot-parte-uno/
+•	[2] DOCKER NGINX PROXY. Christian Sepulveda. 15 September, 2016. [https://www.it-swarm-es.com/es/nginx/docker-nginx-proxy-como-enrutar-el-trafico-un-contenedor-diferente-utilizando-la-ruta-y-no-el-nombre-de-host/828289465/](https://www.it-swarm-es.com/es/nginx/docker-nginx-proxy-como-enrutar-el-trafico-un-contenedor-diferente-utilizando-la-ruta-y-no-el-nombre-de-host/828289465/)
 
-https://github.com/flipkart-incubator/kafka-filtering#:~:text=Kafka%20doesn't%20support%20filtering,deserialized%20%26%20make%20such%20a%20decision.
+•	[3] KAFKA CON SPRING BOOT. Noel Rodríguez. 15 July, 2020. [https://refactorizando.com/kafka-spring-boot-parte-uno/](https://refactorizando.com/kafka-spring-boot-parte-uno/)
 
-https://blog.cloudera.com/scalability-of-kafka-messaging-using-consumer-groups/
 
-https://stackoverflow.com/questions/57952538/consuming-from-single-kafka-partition-by-multiple-consumers
+•	[3] KAFKA CON SPRING BOOT. Noel Rodríguez. 15 July, 2020. [https://refactorizando.com/kafka-spring-boot-parte-uno/](https://refactorizando.com/kafka-spring-boot-parte-uno/)
+
+
+•	[4] KAFKA FILTERING. pradeepsrin. 19 August, 2015. [https://github.com/flipkart-incubator/kafka-filtering](https://github.com/flipkart-incubator/kafka-filtering)
+
+•	[5] SCALABILITY OF KAFKA MESSAGING USING CONSUMER GROUPS. Suhita Goswami. 10 May, 2018. [https://blog.cloudera.com/scalability-of-kafka-messaging-using-consumer-groups/](https://blog.cloudera.com/scalability-of-kafka-messaging-using-consumer-groups/)
+
+•	[6] CONSUMING FROM SINGLE KAFKA PARTITION BY MULTIPLE CONSUMERS. anir. 16 September, 2019. [https://stackoverflow.com/questions/57952538/consuming-from-single-kafka-partition-by-multiple-consumers](https://stackoverflow.com/questions/57952538/consuming-from-single-kafka-partition-by-multiple-consumers)
+
+•	[7] INTRO TO APACHE KAFKA WITH SPRING. baeldung. 15 June, 2021. [https://www.baeldung.com/spring-kafka](https://www.baeldung.com/spring-kafka)
 
 
 # Commands of interest:
-Delete all containers:
+Delete containers:
+```
 docker rm -f $(docker ps -a -q)
-
-Delete all volumes:
+```
+Delete volumes:
+```
 docker volume rm -f $(docker volume ls -q)
-
-Delete all images:
+```
+Delete images:
+```
 docker rmi -f $(docker images -a -q)
+```
 
 <br>
 
