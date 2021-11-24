@@ -39,7 +39,7 @@ All projects have a swagger configured to be able to make requests:
 
 <br>
 
-# Enlaces de interés:
+# Documentación:
 
 •	[1] MONOLITH TO MICROSERVICES. Sam Newman. Noviembre, 2018. <https://www.oreilly.com/library/view/monolith-to-microservices/9781492047834/>
 

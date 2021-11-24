@@ -477,7 +477,7 @@ Payroll 3 shipped to Juablaz of 220.0
 ```
 <br>
 
-# Links of interest:
+# Documentation:
 
 •	[1] SPLIT THE MONOLITH. javieraviles. 29 April, 2020. [https://github.com/javieraviles/split-the-monolith](https://github.com/javieraviles/split-the-monolith)
 

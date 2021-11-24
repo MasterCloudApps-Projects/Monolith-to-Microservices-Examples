@@ -156,7 +156,7 @@ petición desde el microservicio.
 Esto podría generar una carga adicional, además introduce una dependencia circular, podría ser mejor cambiar el monolito para proporcionar la información requerida cuando se complete nuestra petición de crear un pedido. Sin embargo, esto requeriría cambiar el código del monolito o quizás usar otro patrón, que estudiaremos a continuación `Change Data Capture`.
 
 
-# Enlaces de interés:
+# Documentación:
 
 •	[1] SPRING CLOUD GATEWAY - OVERVIEW. Sin fecha. [https://spring.io/projects/spring-cloud-gateway](https://spring.io/projects/spring-cloud-gateway)
 
