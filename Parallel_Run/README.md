@@ -1,4 +1,4 @@
-# **Parallel Run**
+<h1 align="center"><b>Parallel Run</b></h1></div>
 
 <div align="center">
 
@@ -386,3 +386,11 @@ In case of any problem you can always rollback and redirect the requests back to
 ```
 docker-compose -f  Example_4/1_docker-compose-proxy.yml up -d
 ```
+
+
+
+
+LINKS:
+Hacer un ejemplito con parallen run y Diferencia:
+- https://lordofthejars.github.io/diferencia-docs-site/diferencia/0.6.0/index.html
+- https://www.infoq.com/articles/tap-compare-diferencia/

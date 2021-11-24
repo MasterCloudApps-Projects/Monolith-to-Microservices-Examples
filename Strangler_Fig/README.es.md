@@ -1,4 +1,4 @@
-# **Strangler Fig**
+<h1 align="center"><b>Strangler Fig</b></h1></div>
 <div align="center">
 
 [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/tree/master/Strangler_Fig/README.md)
@@ -501,20 +501,6 @@ Payroll 3 shipped to Juablaz of 220.0
 
 <br>
 
-# Comandos de interés:
-Delete containers:
-```
-docker rm -f $(docker ps -a -q)
-```
-Delete volumes:
-```
-docker volume rm -f $(docker volume ls -q)
-```
-Delete images:
-```
-docker rmi -f $(docker images -a -q)
-```
-<br>
 
 # Notas 
 
