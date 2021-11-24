@@ -140,7 +140,7 @@ e.runAsync(this::controlFunction, this::candidateFunction);
 ```
 
 In our case, we must make a small modification to the monolith and microservice code, since our operations are `void`. We are going to return a ``String`` previously stored for this example in a ``ConcurrentMap``. This allows us to compare the newCode/oldCode calls of what the new implementation has created with the existing one:
-```
+```Java
 public Boolean scientistExperiment(Long id) {
         DropwizardMetricsProvider metricRegistry = new DropwizardMetricsProvider();
         Experiment<String> experiment = new Experiment<>("notify", metricRegistry);
@@ -231,15 +231,19 @@ docker-compose -f Example_3/2_docker-compose.yml up --build
 Diffy measures how often primary and secondary disagree with each other vs. how often primary and candidate disagree with each other. If these measurements are roughly the same, then Diffy determines that there is nothing wrong and that the error can be ignored.
 
 With this configuration, the web interface from Diffy can be accessed via a browser through the URL http://localhost:3000
+<div align="center">
 
 ![alt text](success_request.png)
+</div>
 
 The header Canonical-Resource was added to the request, so the Diffy can have a better reference to the API and display it in your interface.And, we can interact with the Diffy proxy through the URL: http://localhost:3001
 ```
 curl -s -i -H Canonical-Resource:success-api localhost:3001/notification/1
 ```
+<div align="center">
 
 ![alt text](diffy_request_fail.png)
+</div>
 
 
 ### **Step 3**
