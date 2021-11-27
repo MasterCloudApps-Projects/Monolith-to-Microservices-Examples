@@ -207,7 +207,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 ____________________________________________________________
 Este ejemplo es algo diferente. En realidad `Diffy` se monta sobre un proxy que actuaría en nuestro caso como un comparador externo.
 
-Diffy encuentra posibles errores en su servicio utilizando instancias en ejecución de su nuevo código y su antiguo código uno al lado del otro. Diffy se comporta como un proxy y multiplica las peticiones que recibe a cada una de las instancias en ejecución. A continuación, compara las respuestas e informa de cualquier regresión que pueda surgir de esas comparaciones. La premisa de Diffy es que si dos implementaciones del servicio devuelven respuestas "similares" para un conjunto suficientemente grande y diverso de peticiones, entonces las dos implementaciones pueden ser tratadas como equivalentes y la implementación más nueva está libre de regresiones.
+Diffy encuentra posibles errores en su servicio utilizando instancias en ejecución de su nuevo código y su antiguo código uno al lado del otro. Diffy se comporta como un proxy y multiplica las peticiones que recibe a cada una de las instancias en ejecución. A continuación, compara las respuestas e informa de cualquier regresión que pueda surgir de esas comparaciones. La premisa de Diffy es que si dos implementaciones del servicio devuelven respuestas "similares", para un conjunto suficientemente grande y diverso de peticiones. Entonces las dos implementaciones son equivalentes, la implementación más nueva podria ser definitiva.
 
 ### **Paso 1**
 Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
@@ -234,20 +234,23 @@ Primero, tendriamos que inicializar los dos contenedores con sus respectivas pro
 
 En el esquema anterior, Diffy actúa como un proxy que acepta peticiones procedentes de cualquier fuente que usted proporcione y multiplica cada una de esas peticiones a tres instancias de servicio diferentes:
 
-Una instancia candidata que ejecuta tu nuevo código
-Una instancia primaria que ejecuta su último código conocido
-Una instancia secundaria que ejecuta el mismo código bueno conocido que la instancia primaria
-Cuando Diffy recibe una solicitud, la multidifunde y la envía a sus instancias candidata, primaria y secundaria. Cuando esos servicios envían respuestas de vuelta, Diffy compara esas respuestas y busca dos cosas
+- Una instancia candidata que ejecuta tu nuevo código
+- Una instancia primaria que ejecuta su último código conocido
+- Una instancia secundaria que ejecuta el mismo código bueno conocido que la instancia primaria
 
-Las diferencias brutas observadas entre las instancias candidata y primaria.
-Ruido no determinista observado entre las instancias primaria y secundaria. Dado que ambas instancias están ejecutando un código bueno conocido, debería esperar que las respuestas coincidan. Si no es así, su servicio puede tener un comportamiento no determinista, lo cual es de esperar.
+Cuando Diffy recibe una solicitud, la distribuye y la envía a sus instancias candidata, primaria y secundaria. Cuando esos servicios envían respuestas de vuelta, Diffy compara esas respuestas y busca dos cosas
+
+- Las diferencias brutas observadas entre las instancias candidata y primaria.
+- Ruido no determinista observado entre las instancias primaria y secundaria.
+
+Dado que ambas instancias están ejecutando un código supuestamente bueno, debería esperar que las respuestas coincidan. Si no es así, su servicio puede tener un comportamiento no determinista, lo cual es de esperar.
 
 Para ello, ejecutamos independientemente nuestro monolito y nuestra nueva implementación: 
 
 ```
 docker-compose -f Example_3/2_docker-compose.yml up --build
 ```
-Diffy mide la frecuencia con la que el primario y el secundario discrepan entre sí frente a la frecuencia con la que el primario y el candidato discrepan entre sí. Si estas mediciones son aproximadamente iguales, entonces Diffy determina que no hay nada malo y que el error puede ser ignorado.
+Diffy mide la frecuencia con la que el primario y el secundario discrepan entre sí frente a la frecuencia con la que el primario y el candidato discrepan entre sí. Si estas mediciones son aproximadamente iguales, entonces Diffy determina que no hay nada malo y que el error puede ser ignorado.En este caso, la respuesta seria la misma, si no el te la saca con un porcentaje de diferencia.
 
 Con esta configuración, se puede acceder a la interfaz web de Diffy mediante un navegador a través de la URL http://localhost:3000
 <div align="center">
@@ -255,7 +258,7 @@ Con esta configuración, se puede acceder a la interfaz web de Diffy mediante un
 ![alt text](success_request.png)
 </div>
 
-Se ha añadido la cabecera Canonical-Resource a la petición, para que Diffy pueda tener una mejor referencia a la API y mostrarla en su interfaz.Y, podemos interactuar con el proxy de Diffy a través de la URL: http://localhost:3001
+Se ha añadido la cabecera Canonical-Resource a la petición, para que Diffy pueda tener una mejor referencia a la API y mostrarla en su interfaz.Y podemos interactuar con el proxy de Diffy a través de la URL: http://localhost:3001
 
 ```
 curl -s -i -H Canonical-Resource:success-api localhost:3001/notification/1
