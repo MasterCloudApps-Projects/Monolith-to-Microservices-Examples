@@ -205,9 +205,9 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 ## **Ejemplo 3. Diferencia**
 ____________________________________________________________
-Este ejemplo es algo diferente. En realidad `Diffy` se monta sobre un proxy que actuaría en nuestro caso como un comparador externo.
+Este ejemplo es algo diferente. En realidad `Diffy` actuaria como un proxy externo, en nuestro caso como un comparador externo.
 
-Diffy encuentra posibles errores en su servicio utilizando instancias en ejecución de su nuevo código y su antiguo código uno al lado del otro. Diffy se comporta como un proxy y multiplica las peticiones que recibe a cada una de las instancias en ejecución. A continuación, compara las respuestas e informa de cualquier regresión que pueda surgir de esas comparaciones. La premisa de Diffy es que si dos implementaciones del servicio devuelven respuestas "similares", para un conjunto suficientemente grande y diverso de peticiones. Entonces las dos implementaciones son equivalentes, la implementación más nueva podria ser definitiva.
+Diffy encuentra posibles errores en su servicio utilizando instancias en ejecución de la nueva funcion de código y el antiguo, uno al lado del otro, Monolito y MicroServicio en Parallel Run. Diffy se comporta como un proxy y multiplica las peticiones que recibe a cada una de las instancias en ejecución. A continuación, compara las respuestas e informa de cualquier regresión que pueda surgir de esas comparaciones. La premisa de Diffy es que si dos implementaciones del servicio devuelven respuestas "similares", para un conjunto suficientemente grande y diverso de peticiones. Entonces las dos implementaciones son equivalentes, la implementación más nueva podria ser definitiva.
 
 ### **Paso 1**
 Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
@@ -232,13 +232,13 @@ Primero, tendriamos que inicializar los dos contenedores con sus respectivas pro
 </div>
 
 
-En el esquema anterior, Diffy actúa como un proxy que acepta peticiones procedentes de cualquier fuente que usted proporcione y multiplica cada una de esas peticiones a tres instancias de servicio diferentes:
+En el esquema anterior, Diffy actúa como un proxy que acepta peticiones procedentes de cualquier fuente que proporcionemos y multiplica cada una de esas peticiones a tres instancias del servicio diferentes:
 
 - Una instancia candidata que ejecuta tu nuevo código
 - Una instancia primaria que ejecuta su último código conocido
 - Una instancia secundaria que ejecuta el mismo código bueno conocido que la instancia primaria
 
-Cuando Diffy recibe una solicitud, la distribuye y la envía a sus instancias candidata, primaria y secundaria. Cuando esos servicios envían respuestas de vuelta, Diffy compara esas respuestas y busca dos cosas
+Cuando Diffy recibe una solicitud, la distribuye y la envía a sus instancias candidata, primaria y secundaria. Cuando esos servicios envían respuestas de vuelta, Diffy compara esas respuestas y busca dos cosas:
 
 - Las diferencias brutas observadas entre las instancias candidata y primaria.
 - Ruido no determinista observado entre las instancias primaria y secundaria.
