@@ -250,8 +250,14 @@ With this configuration, the web interface from Diffy can be accessed via a brow
 </div>
 
 The header Canonical-Resource was added to the request, so the Diffy can have a better reference to the API and display it in your interface.And, we can interact with the Diffy proxy through the URL: http://localhost:3001
+
+Success request on 2 end-point:
 ```
 curl -s -i -H Canonical-Resource:success-api localhost:3001/notification/1
+```
+Fail request on 1 end-point:
+```
+curl -s -i -H Canonical-Resource:fail-api localhost:3001/payroll/1
 ```
 <div align="center">
 

@@ -255,8 +255,13 @@ Con esta configuración, se puede acceder a la interfaz web de Diffy mediante un
 
 Se ha añadido la cabecera Canonical-Resource a la petición, para que Diffy pueda tener una mejor referencia a la API y mostrarla en su interfaz.Y podemos interactuar con el proxy de Diffy a través de la URL: http://localhost:3001
 
+Peticion existente en ambos end-point:
 ```
 curl -s -i -H Canonical-Resource:success-api localhost:3001/notification/1
+```
+Peticion existente en un unico end-point:
+```
+curl -s -i -H Canonical-Resource:fail-api localhost:3001/payroll/1
 ```
 <div align="center">
 
