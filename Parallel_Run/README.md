@@ -23,7 +23,7 @@ ____________________________________________________________
 ### **Step 1**
 We start from our monolithic application that logs user notifications.
 ```
-docker-compose -f Example_1/1_docker-compose.yml up 
+docker-compose -f Example_1/1_docker-compose.yml up --build
 ```
 ```
 docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
@@ -45,19 +45,13 @@ Also, we must develop our microservice, with a modified implementation, that doe
 </div>
 
 ```
-docker-compose -f Example_1/2_docker-compose.yml up 
+docker-compose -f Example_1/2_docker-compose.yml up --build
 ```
 
 We can test our new monolith v2 implementation:
 
 ```
 curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8082/payroll
-```
-
-With everything deployed, let's migrate the requests to the new implementation.
-
-```
-docker-compose -f Example_1/2_docker-compose-proxy.yml up -d
 ```
 
 At this moment, the sending of notifications is registered in the database from the microservice and from the monolith. We have a microservice with a batch that periodically performs a comparison of the generated results.
@@ -79,7 +73,7 @@ Returns ``true`` and logs in:
 Once we have seen that the new implementation in the microservice generates the same results as the monolith, we can release a final version.
 
 ```
-docker-compose -f Example_1/3_docker-compose.yml up -d
+docker-compose -f Example_1/3_docker-compose.yml up --build
 ```
 
 We test that it works correctly:
@@ -89,7 +83,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 We migrate the requests to the final version:
 ```
-docker-compose -f Example_1/3_docker-compose-proxy.yml up -d
+docker-compose -f Example_1/3_docker-compose-proxy.yml up --build
 ```
 
 ```

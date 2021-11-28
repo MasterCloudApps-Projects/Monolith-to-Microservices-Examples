@@ -21,7 +21,7 @@ ____________________________________________________________
 ### **Paso 1**
 Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
 ```
-docker-compose -f Example_1/1_docker-compose.yml up 
+docker-compose -f Example_1/1_docker-compose.yml up --build
 ```
 ```
 docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
@@ -42,19 +42,13 @@ También, debemos desarrollar nuestro microservicio, con una implementación mod
 </div>
 
 ```
-docker-compose -f Example_1/2_docker-compose.yml up 
+docker-compose -f Example_1/2_docker-compose.yml up --build
 ```
 
 Podemos probar nuestra nueva implementación del monolito `v2`:
 
 ```
 curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8082/payroll
-```
-
-Con todo desplegado, vamos a migrar las peticiones a la nueva implementación.
-
-```
-docker-compose -f Example_1/2_docker-compose-proxy.yml up -d
 ```
 
 En este momento, se registra en la BBDD desde el microservicio y desde el monolito el envío de notificaciones. Tenemos un microservicio con un batch que periódicamente realiza una comparación de los resultados generados.
@@ -86,7 +80,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 Migramos las peticiones a la versión final:
 ```
-docker-compose -f Example_1/3_docker-compose-proxy.yml up -d
+docker-compose -f Example_1/3_docker-compose-proxy.yml up --build
 ```
 
 ```

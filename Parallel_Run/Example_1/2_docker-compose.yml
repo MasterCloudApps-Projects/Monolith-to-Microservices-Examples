@@ -27,7 +27,7 @@ services:
 
   2-parallel-run-monolith:
     image: 2_parallel_run_monolith
-    container_name: '2_parallel_run_monolith'
+    container_name: 'example_1_2_parallel_run_monolith'
     restart: on-failure
     build: 
       context: ./2_parallel_run_monolith
@@ -49,7 +49,7 @@ services:
 
   2-parallel-run-notification-ms:
     image: 2_parallel_run_notification_ms
-    container_name: '2_parallel_run_notification_ms'
+    container_name: 'example_1_2_parallel_run_notification_ms'
     restart: on-failure
     build: 
       context: ./2_parallel_run_notification_ms
@@ -69,7 +69,7 @@ services:
     
   2-parallel-run-batch-service:
     image: 2_parallel_run_batch_service
-    container_name: '2_parallel_run_batch_service'
+    container_name: 'example_1_2_parallel_run_batch_service'
     restart: on-failure
     build: 
       context: ./2_parallel_run_batch_service
