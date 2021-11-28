@@ -108,10 +108,10 @@ We are going to perform an example of real-time comparison of results through th
 ### **Step 1**
 We start from our monolithic application that logs user notifications.
 ```
-docker-compose -f Example_2/1_docker-compose.yml up 
+docker-compose -f Example_2/1_docker-compose.yml up --build
 ```
 ```
-docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/1_docker-compose-proxy.yml up --build
 ```
 
 We test that everything is working properly:
@@ -155,12 +155,31 @@ public Boolean scientistExperiment(Long id) {
     }
 ```
 
+```
+docker-compose -f Example_2/2_docker-compose.yml up --build
+```
+
+```
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8082/payroll
+```
+
+
+Update for use proxy:
+
+```
+docker-compose -f Example_2/2_docker-compose-proxy.yml up --build
+```
+
+```
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' payment.service/payroll
+```
+
 ### **Step 3**
 
 Once we have seen that the new implementation in the microservice generates the same results as the monolith, we can release a final version.
 
 ```
-docker-compose -f Example_2/3_docker-compose.yml up -d
+docker-compose -f Example_2/3_docker-compose.yml up --build
 ```
 
 ```
@@ -169,7 +188,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 We migrate the requests to the final version:
 ```
-docker-compose -f Example_2/3_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/3_docker-compose-proxy.yml up --build
 ```
 
 ```

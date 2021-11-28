@@ -24,7 +24,7 @@ Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario
 docker-compose -f Example_1/1_docker-compose.yml up --build
 ```
 ```
-docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_1/1_docker-compose-proxy.yml up --build
 ```
 
 Probamos que todo funciona correctamente:
@@ -105,10 +105,10 @@ Vamos a realizar un ejemplo de comparación en tiempo real de resultados a trav�
 ### **Paso 1**
 Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
 ```
-docker-compose -f Example_2/1_docker-compose.yml up 
+docker-compose -f Example_2/1_docker-compose.yml up --build
 ```
 ```
-docker-compose -f Example_2/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/1_docker-compose-proxy.yml up --build
 ```
 
 Probamos que todo funciona correctamente:
@@ -155,7 +155,7 @@ public Boolean scientistExperiment(Long id) {
 ```
 
 ```
-docker-compose -f Example_2/2_docker-compose.yml up 
+docker-compose -f Example_2/2_docker-compose.yml up --build
 ```
 
 ```
@@ -166,7 +166,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 Actualizamos a utilizar el proxy:
 
 ```
-docker-compose -f Example_2/2_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/2_docker-compose-proxy.yml up --build
 ```
 
 ```
@@ -179,7 +179,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
 
 ```
-docker-compose -f Example_2/3_docker-compose.yml up
+docker-compose -f Example_2/3_docker-compose.yml up --build
 ```
 
 ```
@@ -188,7 +188,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 Migramos las peticiones a la versión final:
 ```
-docker-compose -f Example_2/3_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/3_docker-compose-proxy.yml up --build
 ```
 
 ```
