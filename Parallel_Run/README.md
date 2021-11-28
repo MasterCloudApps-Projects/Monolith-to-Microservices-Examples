@@ -154,7 +154,7 @@ public Boolean scientistExperiment(Long id) {
         return result.getCount() == 0;
     }
 ```
-
+Now we are going to run the app to see it:
 ```
 docker-compose -f Example_2/2_docker-compose.yml up --build
 ```
@@ -206,10 +206,10 @@ Diffy finds potential bugs in your service using running instances of your new c
 ### **Step 1**
 We start from our monolithic application that logs user notifications.
 ```
-docker-compose -f Example_3/1_docker-compose.yml up 
+docker-compose -f Example_3/1_docker-compose.yml up --build
 ```
 ```
-docker-compose -f Example_3/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_3/1_docker-compose-proxy.yml up --build
 ```
 
 We test that everything is working properly:
@@ -263,7 +263,7 @@ curl -s -i -H Canonical-Resource:success-api localhost:3001/notification/1
 Once we have seen that the new implementation in the microservice generates the same results as the monolith, we can release a final version.
 
 ```
-docker-compose -f Example_3/3_docker-compose.yml up -d
+docker-compose -f Example_3/3_docker-compose.yml up --build
 ```
 
 ```
@@ -272,7 +272,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 We migrate the requests to the final version:
 ```
-docker-compose -f Example_2/3_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/3_docker-compose-proxy.yml up --build
 ```
 
 ```

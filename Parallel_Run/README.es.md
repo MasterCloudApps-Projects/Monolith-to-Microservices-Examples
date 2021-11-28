@@ -153,6 +153,7 @@ public Boolean scientistExperiment(Long id) {
         return result.getCount() == 0;
     }
 ```
+Ahora, corremos la app para ver el ejemplo:
 
 ```
 docker-compose -f Example_2/2_docker-compose.yml up --build
@@ -197,7 +198,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 <br>
 
-## **Ejemplo 3. Diferencia**
+## **Ejemplo 3. Diffy**
 ____________________________________________________________
 Este ejemplo es algo diferente. En realidad `Diffy` actuaria como un proxy externo, en nuestro caso como un comparador externo.
 
@@ -206,10 +207,10 @@ Diffy encuentra posibles errores en su servicio utilizando instancias en ejecuci
 ### **Paso 1**
 Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
 ```
-docker-compose -f Example_3/1_docker-compose.yml up 
+docker-compose -f Example_3/1_docker-compose.yml up --build
 ```
 ```
-docker-compose -f Example_3/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_3/1_docker-compose-proxy.yml up --build
 ```
 
 Probamos que todo funciona correctamente:
@@ -266,7 +267,7 @@ curl -s -i -H Canonical-Resource:success-api localhost:3001/notification/1
 Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
 
 ```
-docker-compose -f Example_2/3_docker-compose.yml up -d
+docker-compose -f Example_2/3_docker-compose.yml up --build
 ```
 
 ```
@@ -275,7 +276,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 Migramos las peticiones a la versión final:
 ```
-docker-compose -f Example_2/3_docker-compose-proxy.yml up -d
+docker-compose -f Example_2/3_docker-compose-proxy.yml up --build
 ```
 
 ```

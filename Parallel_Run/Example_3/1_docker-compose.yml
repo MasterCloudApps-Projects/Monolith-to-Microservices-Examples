@@ -3,7 +3,7 @@ services:
 
   1-parallel-run-monolith:
     image: 1_parallel_run_monolith
-    container_name: '1_parallel_run_monolith'
+    container_name: 'example_3_1_parallel_run_monolith'
     restart: on-failure
     build: 
       context: ./1_parallel_run_monolith
