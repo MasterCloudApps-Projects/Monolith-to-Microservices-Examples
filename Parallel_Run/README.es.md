@@ -272,7 +272,7 @@ curl -s -i -H Canonical-Resource:fail-api localhost:3001/payroll/1
 Una vez hayamos visto que la nueva implementación en el microservicio genera los mismos resultados que el monolito, podemos sacar una versión final.
 
 ```
-docker-compose -f Example_2/3_docker-compose.yml up --build
+docker-compose -f Example_3/3_docker-compose.yml up --build
 ```
 
 ```
@@ -281,7 +281,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 Migramos las peticiones a la versión final:
 ```
-docker-compose -f Example_2/3_docker-compose-proxy.yml up --build
+docker-compose -f Example_3/3_docker-compose-proxy.yml up --build
 ```
 
 ```

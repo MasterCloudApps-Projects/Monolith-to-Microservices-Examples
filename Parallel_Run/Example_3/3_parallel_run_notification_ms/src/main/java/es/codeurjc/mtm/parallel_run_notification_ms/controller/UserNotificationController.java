@@ -1,11 +1,7 @@
 package es.codeurjc.mtm.parallel_run_notification_ms.controller;
 
-import es.codeurjc.mtm.parallel_run_notification_ms.model.Notification;
 import es.codeurjc.mtm.parallel_run_notification_ms.service.UserNotificationService;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +23,6 @@ public class UserNotificationController {
     this.userNotificationService.notify(msg);
 
     return ResponseEntity.ok().body(msg);
-  }
-
-  @GetMapping({""})
-  public ResponseEntity<List<Notification>> getAllNotConsumedNotifications() {
-    return ResponseEntity.ok().body(this.userNotificationService.getAllNotConsumedNotifications());
   }
 
 }

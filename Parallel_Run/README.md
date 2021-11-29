@@ -278,7 +278,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 We migrate the requests to the final version:
 ```
-docker-compose -f Example_2/3_docker-compose-proxy.yml up --build
+docker-compose -f Example_3/3_docker-compose-proxy.yml up --build
 ```
 
 ```

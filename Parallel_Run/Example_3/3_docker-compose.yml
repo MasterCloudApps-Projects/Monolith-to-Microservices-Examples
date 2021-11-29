@@ -9,7 +9,7 @@ services:
       context: ./3_parallel_run_monolith
       dockerfile: ./Dockerfile
     ports: 
-      - 8084:8080
+      - 8089:8080
     networks:
       - app-network
     environment:
@@ -31,7 +31,7 @@ services:
       context: ./3_parallel_run_notification_ms
       dockerfile: ./Dockerfile
     ports: 
-      - 8085:8081
+      - 8088:8081
     networks:
       - app-network
     
