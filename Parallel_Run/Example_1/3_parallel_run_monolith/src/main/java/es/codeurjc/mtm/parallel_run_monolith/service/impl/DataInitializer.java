@@ -36,9 +36,9 @@ public class DataInitializer {
         .total(1049.95)
         .build();
 
-    invoicingService.saveInvoicing(invoicing);
-    invoicingService.saveInvoicing(invoicing2);
-    invoicingService.saveInvoicing(invoicing3);
+    //invoicingService.saveInvoicing(invoicing);
+    //invoicingService.saveInvoicing(invoicing2);
+    //invoicingService.saveInvoicing(invoicing3);
 
     // Payroll
     Payroll payroll = Payroll.builder()
@@ -56,8 +56,8 @@ public class DataInitializer {
         .total(1449.95)
         .build();
 
-    payrollService.savePayroll(payroll);
-    payrollService.savePayroll(payroll2);
-    payrollService.savePayroll(payroll3);
+    //payrollService.savePayroll(payroll);
+    //payrollService.savePayroll(payroll2);
+    //payrollService.savePayroll(payroll3);
   }
 }
