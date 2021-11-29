@@ -276,7 +276,7 @@ docker-compose -f Example_3/3_docker-compose.yml up --build
 ```
 
 ```
-curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8084/payroll
+curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}' localhost:8089/payroll
 ```
 
 Migramos las peticiones a la versión final:
