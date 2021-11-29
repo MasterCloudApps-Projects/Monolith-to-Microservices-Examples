@@ -1,23 +1,6 @@
 version: '3.9'
 services: 
 
-  2-parallel-run-monolith:
-    image: 2_parallel_run_monolith
-    container_name: 'example_2_2_parallel_run_monolith'
-    restart: on-failure
-    build: 
-      context: ./2_parallel_run_monolith
-      dockerfile: ./Dockerfile
-    ports: 
-      - 8082:8080
-    networks:
-      - app-network
-    environment:
-      - USER_NOTIFICATION_MS_HOST=2-parallel-run-notification-ms
-      - USER_NOTIFICATION_MS_PORT=8081
-    depends_on: 
-      - 2-parallel-run-notification-ms
-
   2-parallel-run-notification-ms:
     image: 2_parallel_run_notification_ms
     container_name: 'example_2_2_parallel_run_notification_ms'
@@ -27,6 +10,23 @@ services:
       dockerfile: ./Dockerfile
     ports: 
       - 8081:8081
+    networks:
+      - app-network
+
+  2-parallel-run-monolith:
+    image: 2_parallel_run_monolith
+    container_name: 'example_2_2_parallel_run_monolith'
+    restart: on-failure
+    build: 
+      context: ./2_parallel_run_monolith
+      dockerfile: ./Dockerfile
+    ports: 
+      - 8082:8080
+    environment:
+      - USER_NOTIFICATION_MS_HOST=2-parallel-run-notification-ms
+      - USER_NOTIFICATION_MS_PORT=8081
+    depends_on: 
+      - 2-parallel-run-notification-ms
     networks:
       - app-network
     
