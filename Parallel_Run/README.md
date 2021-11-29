@@ -26,7 +26,7 @@ We start from our monolithic application that logs user notifications.
 docker-compose -f Example_1/1_docker-compose.yml up --build
 ```
 ```
-docker-compose -f Example_1/1_docker-compose-proxy.yml up -d
+docker-compose -f Example_1/1_docker-compose-proxy.yml up --build
 ```
 
 We test that everything is working properly:
