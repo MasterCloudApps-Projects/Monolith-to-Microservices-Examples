@@ -24,6 +24,8 @@ services:
     restart: on-failure
     networks:
       - app-network
+    depends_on:
+      - postgres-monolith-database
 
   2-parallel-run-monolith:
     image: 2_parallel_run_monolith
