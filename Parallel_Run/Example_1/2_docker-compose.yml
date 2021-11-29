@@ -31,6 +31,11 @@ services:
     image: 2_parallel_run_monolith
     container_name: 'example_1_2_parallel_run_monolith'
     restart: on-failure
+    healthcheck:
+      test: sh -c 'exit 0'
+      interval: 5s
+      timeout: 10s
+      retries: 3
     build: 
       context: ./2_parallel_run_monolith
       dockerfile: ./Dockerfile
@@ -47,12 +52,18 @@ services:
       - USER_NOTIFICATION_MS_HOST=2-parallel-run-notification-ms
       - USER_NOTIFICATION_MS_PORT=8081
     depends_on: 
-      - 2-parallel-run-notification-ms
+      2-parallel-run-notification-ms:
+        condition: service_healthy
 
   2-parallel-run-notification-ms:
     image: 2_parallel_run_notification_ms
     container_name: 'example_1_2_parallel_run_notification_ms'
     restart: on-failure
+    healthcheck:
+      test: sh -c 'exit 0'
+      interval: 5s
+      timeout: 10s
+      retries: 3
     build: 
       context: ./2_parallel_run_notification_ms
       dockerfile: ./Dockerfile
@@ -90,7 +101,8 @@ services:
       - DATABASE_MONOLITH_PASS=password
       - DATABASE_MONOLITH_DB=monolith-db
     depends_on:
-      - 2-parallel-run-monolith
+      2-parallel-run-monolith:
+        condition: service_healthy
     networks:
       - app-network
 networks:
