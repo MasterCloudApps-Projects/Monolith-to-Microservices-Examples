@@ -20,6 +20,11 @@ It uses the `Dark Launching` technique, to implement a new feature but make it i
 
 ## **Example 1. Using Spies**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/oE8hRa3OMHY/0.jpg)](https://www.youtube.com/watch?v=oE8hRa3OMHY)
+</div>
+
 ### **Step 1**
 We start from our monolithic application that logs user notifications.
 ```

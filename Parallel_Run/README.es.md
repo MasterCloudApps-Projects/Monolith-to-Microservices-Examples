@@ -18,6 +18,11 @@ Utiliza la técnica de `Dark Launching`, implementar una nueva funcionalidad per
 
 ## **Ejemplo 1. Usando Spies**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/oE8hRa3OMHY/0.jpg)](https://www.youtube.com/watch?v=oE8hRa3OMHY)
+</div>
+
 ### **Paso 1**
 Partimos de nuestra aplicación monolítica que loguea notificaciones al usuario.
 ```
