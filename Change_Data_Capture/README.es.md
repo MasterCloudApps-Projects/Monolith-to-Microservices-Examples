@@ -28,6 +28,10 @@ Por lo que en este caso, utilizamos el patrón `Change Data Capture`, detectamos
 
 ## **Ejemplo 1. Transaction log pollers - Debezium**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/JImqg2Gvf00/0.jpg)](https://www.youtube.com/watch?v=JImqg2Gvf00)
+</div>
 
 <div align="center">
 
