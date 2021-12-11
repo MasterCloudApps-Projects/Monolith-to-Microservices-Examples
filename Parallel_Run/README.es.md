@@ -96,6 +96,12 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 ## **Ejemplo 2. Github Scientist**
 ____________________________________________________________
+
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/Zy0T3hLKdp8/0.jpg)](https://www.youtube.com/watch?v=Zy0T3hLKdp8)
+</div>
+
 Existen librerías que permiten comparar resultados de forma muy sencilla. En nuestro caso, vamos a proceder a realizar un ejemplo con:
 https://github.com/rawls238/Scientist4J
 
@@ -205,6 +211,12 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 ## **Ejemplo 3. Diffy**
 ____________________________________________________________
+
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/Sshh6-VyHRU/0.jpg)](https://www.youtube.com/watch?v=Sshh6-VyHRU)
+</div>
+
 Este ejemplo es algo diferente. En realidad `Diffy` actuaria como un proxy externo, en nuestro caso como un comparador externo.
 
 Diffy encuentra posibles errores en su servicio utilizando instancias en ejecución de la nueva funcion de código y el antiguo, uno al lado del otro, Monolito y MicroServicio en Parallel Run. Diffy se comporta como un proxy y multiplica las peticiones que recibe a cada una de las instancias en ejecución. A continuación, compara las respuestas e informa de cualquier regresión que pueda surgir de esas comparaciones. La premisa de Diffy es que si dos implementaciones del servicio devuelven respuestas "similares", para un conjunto suficientemente grande y diverso de peticiones. Entonces las dos implementaciones son equivalentes, la implementación más nueva podria ser definitiva.
