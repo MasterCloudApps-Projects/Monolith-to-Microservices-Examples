@@ -99,6 +99,11 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 ## **Example 2. Github Scientist**.
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/Zy0T3hLKdp8/0.jpg)](https://www.youtube.com/watch?v=Zy0T3hLKdp8)
+</div>
+
 There are libraries that allow you to compare results in a very simple way. In our case, we will proceed to perform an example with:
 https://github.com/rawls238/Scientist4J
 
@@ -204,6 +209,11 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 
 ## **Example 3. Diffy**
 ____________________________________________________________
+<div align="center">
+
+[![Video](https://img.youtube.com/vi/Sshh6-VyHRU/0.jpg)](https://www.youtube.com/watch?v=Sshh6-VyHRU)
+</div>
+
 This example is somewhat different. Actually `Diffy` is mounted on top of a proxy that would act in our case as an external comparator.
 
 Diffy finds potential bugs in your service using running instances of your new code and your old code side by side. Diffy behaves as a proxy and multicasts whatever requests it receives to each of the running instances. It then compares the responses, and reports any regressions that may surface from those comparisons. The premise for Diffy is that if two implementations of the service return “similar” responses for a sufficiently large and diverse set of requests, then the two implementations can be treated as equivalent and the newer implementation is regression-free.
