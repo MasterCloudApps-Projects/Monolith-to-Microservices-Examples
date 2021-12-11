@@ -28,7 +28,10 @@ So in this case, we use the `Change Data Capture` pattern, detect the insertion 
 
 ## **Example 1. Transaction log pollers - Debezium**
 ____________________________________________________________
+<div align="center">
 
+[![Video](https://img.youtube.com/vi/JImqg2Gvf00/0.jpg)](https://www.youtube.com/watch?v=JImqg2Gvf00)
+</div>
 <div align="center">
 
 ![alt text](3.37_change_data_capture.png)
