@@ -426,9 +426,14 @@ docker-compose -f  Example_4/1_docker-compose-proxy.yml up -d
 ```
 
 
+# Documentation:
 
+•	[1] Scientist4J. Documentación oficial. No date. <https://github.com/rawls238/Scientist4J>
 
-LINKS:
-Hacer un ejemplito con parallen run y Diferencia:
-- https://lordofthejars.github.io/diferencia-docs-site/diferencia/0.6.0/index.html
-- https://www.infoq.com/articles/tap-compare-diferencia/
+•	[2] Diffy. Documentación oficial. No date. <https://github.com/opendiffy/diffy>
+
+•	[3] NGINX. Documentación oficial. No date. <https://www.nginx.com>
+
+•	[4] Diferencia. Documentación oficial. No date. <https://lordofthejars.github.io/diferencia-docs-site/diferencia/0.6.0/index.html>
+
+•	[5] Diferencia. Alex Soto. No date. <https://www.infoq.com/articles/tap-compare-diferencia/>

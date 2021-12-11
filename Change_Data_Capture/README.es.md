@@ -264,6 +264,14 @@ Podemos en este punto plantearnos dejar de utilizar el monolito y usar exclusiva
 Disponible en futuras versiones...
 
 
+# Documentación:
+
+•	[1] Debezium. Documentación oficial. Fecha sin determinar. <https://debezium.io>
+
+•	[2] KAFDROP. Official Web. Fecha sin determinar. <https://github.com/obsidiandynamics/kafdrop>
+
+•	[3] JPA Optimistic locking. Baeldung. Marzo, 2020. <https://www.baeldung.com/jpa-optimistic-locking>
+
 <!-- 
 <div align="center">
 

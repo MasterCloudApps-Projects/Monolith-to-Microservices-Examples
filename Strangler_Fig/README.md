@@ -486,9 +486,6 @@ Payroll 3 shipped to Juablaz of 220.0
 •	[3] KAFKA CON SPRING BOOT. Noel Rodríguez. 15 July, 2020. [https://refactorizando.com/kafka-spring-boot-parte-uno/](https://refactorizando.com/kafka-spring-boot-parte-uno/)
 
 
-•	[3] KAFKA CON SPRING BOOT. Noel Rodríguez. 15 July, 2020. [https://refactorizando.com/kafka-spring-boot-parte-uno/](https://refactorizando.com/kafka-spring-boot-parte-uno/)
-
-
 •	[4] KAFKA FILTERING. pradeepsrin. 19 August, 2015. [https://github.com/flipkart-incubator/kafka-filtering](https://github.com/flipkart-incubator/kafka-filtering)
 
 •	[5] SCALABILITY OF KAFKA MESSAGING USING CONSUMER GROUPS. Suhita Goswami. 10 May, 2018. [https://blog.cloudera.com/scalability-of-kafka-messaging-using-consumer-groups/](https://blog.cloudera.com/scalability-of-kafka-messaging-using-consumer-groups/)

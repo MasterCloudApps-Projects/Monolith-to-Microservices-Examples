@@ -430,3 +430,14 @@ En caso de cualquier problema siempre se puede hacer un rollback y redirigir de 
 docker-compose -f  Example_4/1_docker-compose-proxy.yml up -d
 ```
 
+# Documentación:
+
+•	[1] Scientist4J. Official Web. Fecha sin determinar. <https://github.com/rawls238/Scientist4J>
+
+•	[2] Diffy. Official Web. Fecha sin determinar. <https://github.com/opendiffy/diffy>
+
+•	[3] NGINX. Official Web. Fecha sin determinar. <https://www.nginx.com>
+
+•	[4] Diferencia. Official Web. Fecha sin determinar. <https://lordofthejars.github.io/diferencia-docs-site/diferencia/0.6.0/index.html>
+
+•	[5] Diferencia. Alex Soto. Fecha sin determinar. <https://www.infoq.com/articles/tap-compare-diferencia/>

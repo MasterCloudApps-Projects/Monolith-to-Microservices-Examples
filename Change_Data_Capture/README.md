@@ -263,6 +263,15 @@ We can at this point consider dropping the monolith and using the microservice f
 Available in future versions...
 
 
+# Documentation:
+
+•	[1] Debezium. Official Web. Fecha sin determinar. <https://debezium.io>
+
+•	[2] KAFDROP. Official Web. No date. <https://github.com/obsidiandynamics/kafdrop>
+
+•	[3] JPA Optimistic locking. Baeldung. March, 2020. <https://www.baeldung.com/jpa-optimistic-locking>
+
+
 <!-- 
 <div align="center">
 
