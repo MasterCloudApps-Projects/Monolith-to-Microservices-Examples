@@ -1,4 +1,4 @@
-<h1 align="center">Monolith-to-Microservices-Examples 👨🏻‍💻 </h1>
+<h1 align="center">Monolith-to-Microservices-Examples </h1>
 
 <div align="center">
 
