@@ -43,3 +43,9 @@ All projects have a swagger configured to be able to make requests:
 •	[1] MONOLITH TO MICROSERVICES. Sam Newman. November, 2018. <https://www.oreilly.com/library/view/monolith-to-microservices/9781492047834/>
 
 <br>
+
+# Additional resources
+You can check:
+
+* 📖 [Essay (Spanish)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/blob/master/docs/Memoria%20acad%C3%A9mica.pdf)
+* 🖼 [Slides (Spanish)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/blob/master/docs/Monolith-To-Microservices.pdf)
