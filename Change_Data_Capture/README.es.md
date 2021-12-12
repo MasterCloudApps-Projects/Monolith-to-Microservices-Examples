@@ -270,7 +270,9 @@ Disponible en futuras versiones...
 
 •	[2] KAFDROP. Official Web. Fecha sin determinar. <https://github.com/obsidiandynamics/kafdrop>
 
-•	[3] JPA Optimistic locking. Baeldung. Marzo, 2020. <https://www.baeldung.com/jpa-optimistic-locking>
+•	[3] Un vistazo a Debezium: una herramienta completa de Change Data Capture. Junio, 2021. <https://www.paradigmadigital.com/dev/vistazo-debezium-herramienta-change-data-capture/>
+
+•	[4] JPA Optimistic locking. Baeldung. Marzo, 2020. <https://www.baeldung.com/jpa-optimistic-locking>
 
 <!-- 
 <div align="center">

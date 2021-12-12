@@ -165,8 +165,6 @@ As you can see, being an `op: c` that is to say a `Create` the object before is 
 ```
 As you can see, being an `op: c` that is to say a `Create` the object before is `null` and the one after is the created object.
 
-https://www.paradigmadigital.com/dev/vistazo-debezium-herramienta-change-data-capture/
-
 <br>
 
 ## **Example 2. Batch delta copier** 
@@ -269,7 +267,11 @@ Available in future versions...
 
 •	[2] KAFDROP. Official Web. No date. <https://github.com/obsidiandynamics/kafdrop>
 
-•	[3] JPA Optimistic locking. Baeldung. March, 2020. <https://www.baeldung.com/jpa-optimistic-locking>
+•	[3] Un vistazo a Debezium: una herramienta completa de Change Data Capture. June, 2021. <https://www.paradigmadigital.com/dev/vistazo-debezium-herramienta-change-data-capture/>
+
+•	[4] JPA Optimistic locking. Baeldung. March, 2020. <https://www.baeldung.com/jpa-optimistic-locking>
+
+
 
 
 <!-- 
