@@ -48,8 +48,8 @@ All projects have a swagger configured to be able to make requests:
 # Recursos adicionales
 Puede revisar:
 
-* 📖 [Memoria Académica (Español)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/blob/master/docs/Memoria%20acad%C3%A9mica.pdf)
-* 🖼 [Presentación con diapositivas (Español)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/blob/master/docs/Monolith-To-Microservices.pdf)
+* [Memoria Académica (Español)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/blob/master/docs/Memoria%20acad%C3%A9mica.pdf)
+* [Presentación con diapositivas (Español)](https://github.com/MasterCloudApps-Projects/Monolith-to-Microservices-Examples/blob/master/docs/Monolith-To-Microservices.pdf)
 
 
 
