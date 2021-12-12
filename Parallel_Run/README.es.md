@@ -240,7 +240,7 @@ curl -v -H "Content-Type: application/json" -d '{"shipTo":"Juablaz","total":320}
 Primero, tendriamos que inicializar los dos contenedores con sus respectivas proxys:
 <div align="center">
 
-![alt text](diferencia_simple.png)
+![alt text](diffy_topology.png)
 </div>
 
 
